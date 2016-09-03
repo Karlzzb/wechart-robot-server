@@ -1,8 +1,10 @@
 package com.karl.fx.controller;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -11,10 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.karl.domain.RuntimeDomain;
 import com.karl.fx.FxmlView;
 import com.karl.fx.StageManager;
-import com.karl.service.WebWechat;
 import com.karl.utils.AppUtils;
 
 @Component
@@ -25,20 +25,10 @@ public class LoginController extends FxmlController {
     @FXML
     private ImageView loginImageView;
 
-    @FXML
-    private Button btn1;
-
-    private WebWechat webWechat;
-
-    private RuntimeDomain runtimeDomain;
-
     @Autowired
     @Lazy(value = true)
-    public LoginController(WebWechat webWechat, RuntimeDomain runtimeDomain,
-            StageManager stageManager) {
+    public LoginController(StageManager stageManager) {
         super();
-        this.webWechat = webWechat;
-        this.runtimeDomain = runtimeDomain;
         this.stageManager = stageManager;
     }
 
@@ -56,17 +46,29 @@ public class LoginController extends FxmlController {
         LOGGER.debug("Longin image path :{}", path);
         Image loginImage = new Image(path);
         loginImageView.setImage(loginImage);
+
+        waitLoginTask();
     }
 
-    public void btn1Action() throws InterruptedException {
-        while (!"200".equals(webWechat.waitForLogin())) {
-            Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
-        }
-        if (!webWechat.login()) {
-            LOGGER.info("微信登录失败");
-            return;
-        }
-        LOGGER.info("[*] 微信登录成功");
-        stageManager.switchScene(FxmlView.MAIN);
+    private void waitLoginTask() {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() throws InterruptedException {
+                Platform.setImplicitExit(false);
+                while (!"200".equals(webWechat.waitForLogin())) {
+                    updateProgress(10, 100);
+                    Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
+                }
+                if (!webWechat.login()) {
+                    LOGGER.info("微信登录失败");
+                }
+                LOGGER.info("[*] 微信登录成功");
+                stageManager.switchScene(FxmlView.MAIN);
+                return null;
+            }
+        };
+        ProgressBar bar = new ProgressBar();
+        bar.progressProperty().bind(task.progressProperty());
+        Platform.runLater(task);
     }
 }

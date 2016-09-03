@@ -2,6 +2,8 @@ package com.karl.service;
 
 import java.util.regex.Matcher;
 
+import javafx.scene.control.TextArea;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -592,8 +594,10 @@ public class WebWechat implements Runnable {
 
     /**
      * 获取最新消息
+     * 
+     * @param logArea
      */
-    public void handleMsg(JSONObject data) {
+    public void handleMsg(JSONObject data, TextArea logArea) {
         if (null == data) {
             return;
         }
@@ -608,7 +612,7 @@ public class WebWechat implements Runnable {
             case 51:
                 break;
             case 1:
-                handleTextMsg(msg);
+                handleTextMsg(msg, logArea);
                 break;
             case 3:
                 // webwxsendmsg("二蛋还不支持图片呢", msg.getString("FromUserName"));
@@ -643,8 +647,9 @@ public class WebWechat implements Runnable {
      * handle text message
      * 
      * @param jsonMsg
+     * @param logArea
      */
-    private void handleTextMsg(JSONObject jsonMsg) {
+    private void handleTextMsg(JSONObject jsonMsg, TextArea logArea) {
 
         String remarkName = "";
         String content = "";
@@ -701,13 +706,14 @@ public class WebWechat implements Runnable {
         }
 
         LOGGER.debug("【" + remarkName + "】说： 【" + content + "】");
+        logArea.appendText("【" + remarkName + "】说： 【" + content + "】\n");
     }
 
-    public void listenMsgMode() {
+    public void listenMsgMode(final TextArea logArea) {
         new Thread(new Runnable() {
 
             public void run() {
-                LOGGER.info("[*] 进入消息监听模式 ...");
+                logArea.appendText("[*] 进入消息监听模式 ...\n");
                 long sleepTime = 1000;
                 while (!stopRequested) {
 
@@ -722,7 +728,7 @@ public class WebWechat implements Runnable {
                     LOGGER.info("[*] retcode={},selector={}", arr[0], arr[1]);
 
                     if (arr[0] == 1100) {
-                        LOGGER.info("[*] 你在手机上登出了微信，债见");
+                        logArea.appendText("[*] 你在手机上登出了微信，债见");
                         break;
                     }
 
@@ -732,12 +738,12 @@ public class WebWechat implements Runnable {
                         switch (arr[1]) {
                         case 2:// 新的消息
                             data = webwxsync();
-                            handleMsg(data);
+                            handleMsg(data, logArea);
                             sleepTime = 1000;
                             break;
                         case 6:// 红包
                             data = webwxsync();
-                            handleMsg(data);
+                            handleMsg(data, logArea);
                             sleepTime = 1000;
                             break;
                         case 7:// 进入/离开聊天界面
@@ -774,14 +780,7 @@ public class WebWechat implements Runnable {
         }
     }
 
-    public void buildWechat() throws InterruptedException {
-
-        if (!login()) {
-            LOGGER.info("微信登录失败");
-            return;
-        }
-
-        LOGGER.info("[*] 微信登录成功");
+    public void buildWechat(TextArea logArea) {
 
         if (!wxInit()) {
             LOGGER.info("[*] 微信初始化失败");
@@ -805,16 +804,12 @@ public class WebWechat implements Runnable {
         // LOGGER.info("[*] 获取群成员失败");
         // return;
         // }
-
-        LOGGER.info("[*] 获取联系人成功");
-        LOGGER.info("[*] 共有 {} 位联系人", runtimeDomain.getAllUsrMap().size());
-        LOGGER.info("[*] 共有 {} 位群聊联系人", runtimeDomain.getGroupUsrMap().size());
-        LOGGER.info("[*] 共有 {} 位特殊联系人", runtimeDomain.getSpecialUsrMap().size());
-        LOGGER.info("[*] 共有 {} 个群", runtimeDomain.getGroupMap().size());
-
-        // 监听消息
-        listenMsgMode();
-
+        logArea.appendText("[*] 获取联系人成功");
+        logArea.appendText("[*] 共有 " + runtimeDomain.getAllUsrMap().size() + " 位联系人");
+        logArea.appendText("[*] 共有 " + runtimeDomain.getGroupUsrMap().size() + " 位群聊联系人");
+        logArea.appendText("[*] 共有 " + runtimeDomain.getSpecialUsrMap().size() + " 位特殊联系人");
+        logArea.appendText("[*] 共有 " + runtimeDomain.getGroupMap().size() + " 个群");
+        listenMsgMode(logArea);
     }
 
     /**

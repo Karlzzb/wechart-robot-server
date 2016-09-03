@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="vBox" prefHeight="400.0" prefWidth="600.0"
+<VBox fx:id="consoleTab" prefHeight="400.0" prefWidth="600.0"
 	xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="com.karl.fx.controller.ConsoleController">
 	<children>
@@ -22,9 +22,7 @@
 				<Button mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0"
 					text="清除日志" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
 					AnchorPane.rightAnchor="529.0" AnchorPane.topAnchor="0.0">
-					<padding>
-						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-					</padding>
+
 				</Button>
 			</children>
 		</AnchorPane>

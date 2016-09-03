@@ -6,7 +6,7 @@ import javafx.scene.control.TextArea;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MainViewController extends FxmlController {
+public class MainController extends FxmlController {
 
     @FXML
     private ConsoleController consoleController;
@@ -17,5 +17,6 @@ public class MainViewController extends FxmlController {
 
     @Override
     public void initialize() {
+
     }
 }

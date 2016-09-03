@@ -4,16 +4,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConsoleController {
+public class ConsoleController extends FxmlController {
 
     @FXML
-    private VBox vBox;
+    private VBox consoleTab;
 
     @FXML
     private TextArea logArea;
+
+    @Autowired
+    private MainController mainViewController;
 
     public TextArea getLogArea() {
         return logArea;
@@ -23,12 +27,14 @@ public class ConsoleController {
         this.logArea = logArea;
     }
 
-    public VBox getvBox() {
-        return vBox;
+    public void injectMainViewController(MainController mainViewController) {
+        this.mainViewController = mainViewController;
     }
 
-    public void setvBox(VBox vBox) {
-        this.vBox = vBox;
+    @Override
+    public void initialize() {
+        webWechat.buildWechat(logArea);
+
     }
 
 }

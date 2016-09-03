@@ -9,7 +9,5 @@
    <children>
       <ImageView fx:id="loginImageView" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <Button  fx:id="btn1" mnemonicParsing="false" text="Button" onAction="#btn1Action" StackPane.alignment="BOTTOM_CENTER">
-      </Button> 
    </children>
 </StackPane>
