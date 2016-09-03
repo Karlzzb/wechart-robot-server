@@ -106,7 +106,7 @@ public class PcClient {
                     if (strFormsocket == null || strFormsocket.isEmpty()) {
                         continue;
                     }
-                    LOGGER.debug("host【{}】 port【{}】 receive data: {}", host, port, strFormsocket);
+                    LOGGER.debug("host【{}】 port【{}】 receive data: {}", host, port + strFormsocket);
                     webWechat.interpretPackage(strFormsocket);
                 }
                 isConnected = Boolean.TRUE;

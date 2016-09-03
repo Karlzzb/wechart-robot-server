@@ -1,5 +1,6 @@
 package com.karl.domain;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,12 +20,15 @@ public class RuntimeDomain implements Serializable {
         publicUsrMap = new HashMap<String, JSONObject>();
         specialUsrMap = new HashMap<String, JSONObject>();
         latestLuckInfo = new HashMap<String, Double>();
+        qrCodeFile = new File("temp.jpg");
 
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
 
     private String currentGroupId;
+
+    private final File qrCodeFile;
 
     private String uuid;
     private int tip = 0;
@@ -247,6 +251,10 @@ public class RuntimeDomain implements Serializable {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public File getQrCodeFile() {
+        return qrCodeFile;
     }
 
 }

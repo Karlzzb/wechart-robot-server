@@ -1,22 +1,21 @@
 package com.karl.fx.controller;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 
-import com.karl.App;
+import org.springframework.stereotype.Component;
 
-public class MainViewController {
-    private App main;
-
-    @FXML
-    private void getConsole() throws IOException {
-        main.showConsole();
-    }
+@Component
+public class MainViewController extends FxmlController {
 
     @FXML
-    private void goHome() throws IOException {
-        main.homeMainView();
+    private ConsoleController consoleController;
+
+    public TextArea getVisualConsole() {
+        return consoleController.getLogArea();
     }
 
+    @Override
+    public void initialize() {
+    }
 }

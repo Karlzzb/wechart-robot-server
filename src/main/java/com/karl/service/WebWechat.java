@@ -1,14 +1,12 @@
 package com.karl.service;
 
-import java.io.File;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import utils.AppUtils;
-import utils.CookieUtil;
-import utils.Matchers;
 import blade.kit.DateKit;
 import blade.kit.StringKit;
 import blade.kit.http.HttpRequest;
@@ -17,9 +15,12 @@ import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
 import com.karl.domain.RuntimeDomain;
+import com.karl.utils.AppUtils;
+import com.karl.utils.CookieUtil;
+import com.karl.utils.Matchers;
 
-//@Service
-public class WebWechat {
+@Service
+public class WebWechat implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebWechat.class);
 
@@ -27,11 +28,23 @@ public class WebWechat {
 
     private QRCodeFrame qrCodeFrame;
 
-    // @Autowired
+    private Thread runThread;
+
+    private volatile boolean stopRequested;
+
+    @Override
+    public void run() {
+        runThread = Thread.currentThread();
+        stopRequested = false;
+        System.setProperty("jsse.enableSNIExtension", "false");
+    }
+
+    @Autowired
     public WebWechat(RuntimeDomain runtimeDomain) throws InterruptedException {
         System.setProperty("jsse.enableSNIExtension", "false");
         this.runtimeDomain = runtimeDomain;
-        appLaunch();
+        // Thread thread = new Thread(this);
+        // thread.start();
     }
 
     /**
@@ -72,19 +85,19 @@ public class WebWechat {
 
         String url = "https://login.weixin.qq.com/qrcode/" + runtimeDomain.getUuid();
 
-        final File output = new File("temp.jpg");
+        HttpRequest.post(url, true, "t", "webwx", "_", DateKit.getCurrentUnixTime()).receive(
+                runtimeDomain.getQrCodeFile());
 
-        HttpRequest.post(url, true, "t", "webwx", "_", DateKit.getCurrentUnixTime())
-                .receive(output);
-
-        if (null != output && output.exists() && output.isFile()) {
-            try {
-                // UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-                qrCodeFrame = new QRCodeFrame(output.getPath());
-            } catch (Exception e) {
-                LOGGER.error("failed:", e);
-            }
-        }
+        // if (null != output && output.exists() && output.isFile()) {
+        // try {
+        // //
+        // UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        // // qrCodeFrame = new QRCodeFrame(output.getPath());
+        //
+        // } catch (Exception e) {
+        // LOGGER.error("failed:", e);
+        // }
+        // }
     }
 
     /**
@@ -696,7 +709,7 @@ public class WebWechat {
             public void run() {
                 LOGGER.info("[*] 进入消息监听模式 ...");
                 long sleepTime = 1000;
-                while (true) {
+                while (!stopRequested) {
 
                     try {
                         Thread.sleep(sleepTime);
@@ -741,57 +754,66 @@ public class WebWechat {
         }, "listenMsgMode").start();
     }
 
-    public void appLaunch() throws InterruptedException {
+    public void loginWechat() throws InterruptedException {
         String uuid = getUUID();
         if (null == uuid || uuid.isEmpty()) {
             LOGGER.info("[*] uuid获取失败");
         } else {
             LOGGER.info("[*] 获取到uuid为 [{}]", runtimeDomain.getUuid());
             showQrCode();
-            while (!waitForLogin().equals("200")) {
-                Thread.sleep(2000);
+            while (!"200".equals(waitForLogin())) {
+                Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
             }
-            closeQrWindow();
+            // closeQrWindow();
 
             if (!login()) {
                 LOGGER.info("微信登录失败");
                 return;
             }
-
             LOGGER.info("[*] 微信登录成功");
-
-            if (!wxInit()) {
-                LOGGER.info("[*] 微信初始化失败");
-                return;
-            }
-
-            LOGGER.info("[*] 微信初始化成功");
-
-            if (!wxStatusNotify()) {
-                LOGGER.info("[*] 开启状态通知失败");
-                return;
-            }
-
-            LOGGER.info("[*] 开启状态通知成功");
-
-            if (!getContact()) {
-                LOGGER.info("[*] 获取联系人失败");
-                return;
-            }
-            // if (!app.getGroupMembers()) {
-            // LOGGER.info("[*] 获取群成员失败");
-            // return;
-            // }
-
-            LOGGER.info("[*] 获取联系人成功");
-            LOGGER.info("[*] 共有 {} 位联系人", runtimeDomain.getAllUsrMap().size());
-            LOGGER.info("[*] 共有 {} 位群聊联系人", runtimeDomain.getGroupUsrMap().size());
-            LOGGER.info("[*] 共有 {} 位特殊联系人", runtimeDomain.getSpecialUsrMap().size());
-            LOGGER.info("[*] 共有 {} 个群", runtimeDomain.getGroupMap().size());
-
-            // 监听消息
-            listenMsgMode();
         }
+    }
+
+    public void buildWechat() throws InterruptedException {
+
+        if (!login()) {
+            LOGGER.info("微信登录失败");
+            return;
+        }
+
+        LOGGER.info("[*] 微信登录成功");
+
+        if (!wxInit()) {
+            LOGGER.info("[*] 微信初始化失败");
+            return;
+        }
+
+        LOGGER.info("[*] 微信初始化成功");
+
+        if (!wxStatusNotify()) {
+            LOGGER.info("[*] 开启状态通知失败");
+            return;
+        }
+
+        LOGGER.info("[*] 开启状态通知成功");
+
+        if (!getContact()) {
+            LOGGER.info("[*] 获取联系人失败");
+            return;
+        }
+        // if (!app.getGroupMembers()) {
+        // LOGGER.info("[*] 获取群成员失败");
+        // return;
+        // }
+
+        LOGGER.info("[*] 获取联系人成功");
+        LOGGER.info("[*] 共有 {} 位联系人", runtimeDomain.getAllUsrMap().size());
+        LOGGER.info("[*] 共有 {} 位群聊联系人", runtimeDomain.getGroupUsrMap().size());
+        LOGGER.info("[*] 共有 {} 位特殊联系人", runtimeDomain.getSpecialUsrMap().size());
+        LOGGER.info("[*] 共有 {} 个群", runtimeDomain.getGroupMap().size());
+
+        // 监听消息
+        listenMsgMode();
 
     }
 
@@ -827,7 +849,13 @@ public class WebWechat {
         } catch (Exception e) {
             LOGGER.error("Luck package[{}] interpret failed!", packageInfo, e);
         }
+    }
 
+    public void stopListen() {
+        stopRequested = true;
+        if (runThread != null) {
+            runThread.interrupt();
+        }
     }
 
     public RuntimeDomain getRuntimeDomain() {

@@ -1,4 +1,4 @@
-package utils;
+package com.karl.utils;
 
 import java.net.HttpURLConnection;
 import java.util.List;

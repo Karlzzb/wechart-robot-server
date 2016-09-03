@@ -6,29 +6,27 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import org.springframework.beans.factory.annotation.Value;
-
+import com.karl.domain.RuntimeDomain;
 import com.karl.service.WebWechat;
 
 public class App extends Application {
 
-    @Value("${app.ui.title}")
     private String windowTitle;
 
-    private Stage primarySate;
+    private static Stage primarySate;
 
     private static BorderPane mainLayout;
 
-    // @Autowired
     private WebWechat webWechat;
 
     @Override
     public void start(Stage primarySate) throws Exception {
-        this.primarySate = primarySate;
-        this.primarySate.setTitle(windowTitle);
-        // this.webWechat = new WebWechat(new RuntimeDomain());
+        App.setPrimarySate(primarySate);
+        App.getPrimarySate().setTitle(windowTitle);
+        this.webWechat = new WebWechat(new RuntimeDomain());
         showMainView();
     }
 
@@ -37,8 +35,8 @@ public class App extends Application {
         loader.setLocation(App.class.getResource("view/MainView.fxml"));
         mainLayout = (BorderPane) loader.load();
         Scene scene = new Scene(mainLayout);
-        primarySate.setScene(scene);
-        primarySate.show();
+        getPrimarySate().setScene(scene);
+        getPrimarySate().show();
     }
 
     public static void homeMainView() throws IOException {
@@ -53,17 +51,31 @@ public class App extends Application {
         loader.setLocation(App.class.getResource("view/ConsoleView.fxml"));
         BorderPane consoleLayout = (BorderPane) loader.load();
         mainLayout.setCenter(consoleLayout);
+    }
+
+    public static void showConsoleState() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(App.class.getResource("view/ConsoleView.fxml"));
+        BorderPane consoleLayout = (BorderPane) loader.load();
+        Stage consoleStage = new Stage();
+        consoleStage.setTitle("The dialog console");
+        consoleStage.initModality(Modality.NONE);
+        consoleStage.initOwner(getPrimarySate());
+        Scene scene = new Scene(consoleLayout);
+        consoleStage.setScene(scene);
+        consoleStage.showAndWait();
 
     }
 
-    // public static void showConsole() throws IOException {
-    // FXMLLoader loader = new FXMLLoader();
-    // loader.setLocation(App.class.getResource("view/MainView.fxml"));
-    // BorderPane mainLayout = (BorderPane) loader.load();
-    // mainLayout.setCenter(mainLayout);
-    // }
-
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getPrimarySate() {
+        return primarySate;
+    }
+
+    public static void setPrimarySate(Stage primarySate) {
+        App.primarySate = primarySate;
     }
 }

@@ -1,4 +1,4 @@
-package utils;
+package com.karl.utils;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -21,5 +21,7 @@ public class AppUtils {
             "brandsessionholder", "weixinreminder", "wxid_novlwrv3lqwv11", "gh_22b87fa7cb3c",
             "officialaccounts", "notification_messages", "wxid_novlwrv3lqwv11", "gh_22b87fa7cb3c",
             "wxitil", "userexperience_alarm", "notification_messages");
+
+    public static final long LOGIN_WAITING_TIME = 2000;
 
 }

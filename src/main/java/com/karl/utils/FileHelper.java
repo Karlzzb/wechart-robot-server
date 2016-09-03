@@ -1,4 +1,4 @@
-package utils;
+package com.karl.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
