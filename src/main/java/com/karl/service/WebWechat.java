@@ -2,8 +2,6 @@ package com.karl.service;
 
 import java.util.regex.Matcher;
 
-import javafx.scene.control.TextArea;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,36 +15,26 @@ import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
 import com.karl.domain.RuntimeDomain;
+import com.karl.fx.controller.ConsoleController;
 import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
 import com.karl.utils.Matchers;
 
 @Service
-public class WebWechat implements Runnable {
+public class WebWechat {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebWechat.class);
 
     private RuntimeDomain runtimeDomain;
 
-    private QRCodeFrame qrCodeFrame;
-
     private Thread runThread;
 
     private volatile boolean stopRequested;
-
-    @Override
-    public void run() {
-        runThread = Thread.currentThread();
-        stopRequested = false;
-        System.setProperty("jsse.enableSNIExtension", "false");
-    }
 
     @Autowired
     public WebWechat(RuntimeDomain runtimeDomain) throws InterruptedException {
         System.setProperty("jsse.enableSNIExtension", "false");
         this.runtimeDomain = runtimeDomain;
-        // Thread thread = new Thread(this);
-        // thread.start();
     }
 
     /**
@@ -144,10 +132,6 @@ public class WebWechat implements Runnable {
             }
         }
         return code;
-    }
-
-    private void closeQrWindow() {
-        qrCodeFrame.dispose();
     }
 
     /**
@@ -446,18 +430,18 @@ public class WebWechat implements Runnable {
 
         HttpRequest request = HttpRequest.get(url, true, "r", DateKit.getCurrentUnixTime(), "skey",
                 runtimeDomain.getSkey(), "uin", runtimeDomain.getWxuin(), "sid",
-                runtimeDomain.getWxsid(), "deviceid", runtimeDomain.getDeviceId(), "SyncKey",
-                runtimeDomain.getSyncKeyJNode(), "_", System.currentTimeMillis()).header("Cookie",
+                runtimeDomain.getWxsid(), "deviceid", runtimeDomain.getDeviceId(), "synckey",
+                runtimeDomain.getSynckey(), "_", System.currentTimeMillis()).header("Cookie",
                 runtimeDomain.getCookie());
 
-        // LOGGER.debug("[syncCheck request ] " + request);
+        LOGGER.info("[syncCheck request ] " + request);
         String res = request.body();
         request.disconnect();
 
         if (StringKit.isBlank(res)) {
             return arr;
         }
-        // LOGGER.debug("[syncCheck response ] " + res);
+        LOGGER.info("[syncCheck response ] " + res);
 
         String retcode = Matchers.match("retcode:\"(\\d+)\",", res);
         String selector = Matchers.match("selector:\"(\\d+)\"}", res);
@@ -595,9 +579,9 @@ public class WebWechat implements Runnable {
     /**
      * 获取最新消息
      * 
-     * @param logArea
+     * @param console
      */
-    public void handleMsg(JSONObject data, TextArea logArea) {
+    public void handleMsg(JSONObject data, ConsoleController console) {
         if (null == data) {
             return;
         }
@@ -612,7 +596,7 @@ public class WebWechat implements Runnable {
             case 51:
                 break;
             case 1:
-                handleTextMsg(msg, logArea);
+                handleTextMsg(msg, console);
                 break;
             case 3:
                 // webwxsendmsg("二蛋还不支持图片呢", msg.getString("FromUserName"));
@@ -647,16 +631,15 @@ public class WebWechat implements Runnable {
      * handle text message
      * 
      * @param jsonMsg
-     * @param logArea
+     * @param console
      */
-    private void handleTextMsg(JSONObject jsonMsg, TextArea logArea) {
+    private void handleTextMsg(JSONObject jsonMsg, ConsoleController console) {
 
         String remarkName = "";
         String content = "";
 
         if (jsonMsg.getString("FromUserName").equals(runtimeDomain.getCurrentGroupId())) {
             LOGGER.debug("FromUserName{} message", jsonMsg.getString("FromUserName"));
-
             String contentStr = jsonMsg.getString("Content");
             if (contentStr != null && !contentStr.isEmpty()) {
                 String[] contentArray = contentStr.split(":<br/>");
@@ -704,31 +687,33 @@ public class WebWechat implements Runnable {
         default:
             break;
         }
-
         LOGGER.debug("【" + remarkName + "】说： 【" + content + "】");
-        logArea.appendText("【" + remarkName + "】说： 【" + content + "】\n");
+        console.writeLog("【" + remarkName + "】说： 【" + content + "】");
     }
 
-    public void listenMsgMode(final TextArea logArea) {
+    public void listenMsgMode(final ConsoleController console) {
         new Thread(new Runnable() {
-
             public void run() {
-                logArea.appendText("[*] 进入消息监听模式 ...\n");
-                long sleepTime = 1000;
+                console.writeLog("[*] 获取联系人成功");
+                console.writeLog("[*] 共有 " + runtimeDomain.getAllUsrMap().size() + " 位联系人");
+                console.writeLog("[*] 共有 " + runtimeDomain.getGroupUsrMap().size() + " 位群聊联系人");
+                console.writeLog("[*] 共有 " + runtimeDomain.getSpecialUsrMap().size() + " 位特殊联系人");
+                console.writeLog("[*] 共有 " + runtimeDomain.getGroupMap().size() + " 个群");
+                console.writeLog("[*] 进入消息监听模式 ...");
                 while (!stopRequested) {
 
                     try {
-                        Thread.sleep(sleepTime);
+                        Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
                     } catch (InterruptedException e) {
                         LOGGER.error("sleeping failed:", e);
                     }
 
                     int[] arr = syncCheck();
 
-                    LOGGER.info("[*] retcode={},selector={}", arr[0], arr[1]);
+                    LOGGER.debug("[*] retcode={},selector={}", arr[0], arr[1]);
 
                     if (arr[0] == 1100) {
-                        logArea.appendText("[*] 你在手机上登出了微信，债见");
+                        // console.writeLog("[*] 你在手机上登出了微信，债见");
                         break;
                     }
 
@@ -738,20 +723,16 @@ public class WebWechat implements Runnable {
                         switch (arr[1]) {
                         case 2:// 新的消息
                             data = webwxsync();
-                            handleMsg(data, logArea);
-                            sleepTime = 1000;
+                            handleMsg(data, console);
                             break;
                         case 6:// 红包
                             data = webwxsync();
-                            handleMsg(data, logArea);
-                            sleepTime = 1000;
+                            handleMsg(data, console);
                             break;
                         case 7:// 进入/离开聊天界面
                             data = webwxsync();
-                            sleepTime = 1000;
                             break;
                         default:
-                            sleepTime = 2000;
                             break;
                         }
                     }
@@ -780,7 +761,7 @@ public class WebWechat implements Runnable {
         }
     }
 
-    public void buildWechat(TextArea logArea) {
+    public void buildWechat() {
 
         if (!wxInit()) {
             LOGGER.info("[*] 微信初始化失败");
@@ -804,12 +785,6 @@ public class WebWechat implements Runnable {
         // LOGGER.info("[*] 获取群成员失败");
         // return;
         // }
-        logArea.appendText("[*] 获取联系人成功");
-        logArea.appendText("[*] 共有 " + runtimeDomain.getAllUsrMap().size() + " 位联系人");
-        logArea.appendText("[*] 共有 " + runtimeDomain.getGroupUsrMap().size() + " 位群聊联系人");
-        logArea.appendText("[*] 共有 " + runtimeDomain.getSpecialUsrMap().size() + " 位特殊联系人");
-        logArea.appendText("[*] 共有 " + runtimeDomain.getGroupMap().size() + " 个群");
-        listenMsgMode(logArea);
     }
 
     /**
@@ -851,6 +826,10 @@ public class WebWechat implements Runnable {
         if (runThread != null) {
             runThread.interrupt();
         }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
     }
 
     public RuntimeDomain getRuntimeDomain() {

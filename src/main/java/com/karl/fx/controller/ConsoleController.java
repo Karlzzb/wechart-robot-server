@@ -33,8 +33,21 @@ public class ConsoleController extends FxmlController {
 
     @Override
     public void initialize() {
-        webWechat.buildWechat(logArea);
+        webWechat.buildWechat();
+        logArea.setWrapText(true);
+        logArea.setEditable(false);
+        webWechat.listenMsgMode(this);
+    }
 
+    public void writeLog(String message) {
+        if (logArea != null) {
+            if (logArea.getText().length() == 0) {
+                logArea.setText(message);
+            } else {
+                logArea.selectEnd();
+                logArea.insertText(logArea.getText().length(), message);
+            }
+        }
     }
 
 }

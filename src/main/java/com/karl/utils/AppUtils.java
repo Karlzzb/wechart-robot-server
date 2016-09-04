@@ -24,4 +24,6 @@ public class AppUtils {
 
     public static final long LOGIN_WAITING_TIME = 2000;
 
+    public static final long WECHAT_LISTEN_INTERVAL = 500;
+
 }

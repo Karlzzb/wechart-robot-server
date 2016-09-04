@@ -17,6 +17,5 @@ public class MainController extends FxmlController {
 
     @Override
     public void initialize() {
-
     }
 }
