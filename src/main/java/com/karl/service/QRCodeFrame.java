@@ -53,6 +53,8 @@ public class QRCodeFrame extends JFrame {
         contentPane.setLayout(null);
 
         JPanel qrcodePanel = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
             public void paintComponent(Graphics g) {
                 ImageIcon icon = new ImageIcon(filePath);
                 // 图片随窗体大小而变化
