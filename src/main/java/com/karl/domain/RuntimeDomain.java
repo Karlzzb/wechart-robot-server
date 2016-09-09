@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import blade.kit.DateKit;
 import blade.kit.json.JSONObject;
 
+import com.karl.db.domain.Player;
+
 @Component
 public class RuntimeDomain implements Serializable {
 
@@ -19,8 +21,9 @@ public class RuntimeDomain implements Serializable {
         groupUsrMap = new HashMap<String, JSONObject>();
         publicUsrMap = new HashMap<String, JSONObject>();
         specialUsrMap = new HashMap<String, JSONObject>();
-        latestLuckInfo = new HashMap<String, Double>();
+        runningPlayeres = new HashMap<String, Player>();
         qrCodeFile = new File("temp.jpg");
+        bankerRemarkName = "";
 
     }
 
@@ -53,41 +56,17 @@ public class RuntimeDomain implements Serializable {
     private Map<String, JSONObject> specialUsrMap;
 
     /**
-     * The latest received LUCKPACKAGE info after interpretation
+     * The latest player info
      */
-    private Map<String, Double> latestLuckInfo;
+    public Map<String, Player> runningPlayeres;
 
     /**
-     * The latest bet info
+     * The current banker
      */
-    private Map<String, Double> latestBetInfo;
+    public String bankerRemarkName;
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
-
-    public Map<String, Double> getLatestLuckInfo() {
-        return latestLuckInfo;
-    }
-
-    public void clearLatestLuckInfo() {
-        latestLuckInfo.clear();
-    }
-
-    public void setLatestLuckInfo(Map<String, Double> latestLuckInfo) {
-        this.latestLuckInfo = latestLuckInfo;
-    }
-
-    public Map<String, Double> getLatestBetInfo() {
-        return latestBetInfo;
-    }
-
-    public void clearLatestBetInfo() {
-        latestBetInfo.clear();
-    }
-
-    public void setLatestBetInfo(Map<String, Double> latestBetInfo) {
-        this.latestBetInfo = latestBetInfo;
-    }
 
     public String getUuid() {
         return uuid;
@@ -257,4 +236,19 @@ public class RuntimeDomain implements Serializable {
         return qrCodeFile;
     }
 
+    public Map<String, Player> getRunningPlayeres() {
+        return runningPlayeres;
+    }
+
+    public void setRunningPlayeres(Map<String, Player> runningPlayeres) {
+        this.runningPlayeres = runningPlayeres;
+    }
+
+    public String getBankerRemarkName() {
+        return bankerRemarkName;
+    }
+
+    public void setBankerRemarkName(String bankerRemarkName) {
+        this.bankerRemarkName = bankerRemarkName;
+    }
 }

@@ -16,13 +16,19 @@ public class Player implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private String weId;
-
-    @Column(nullable = false)
     private String remarkName;
 
     @Column(nullable = true)
     private Long points;
+
+    @Column(nullable = true)
+    private Long latestBet;
+
+    @Column(nullable = true)
+    private Double latestLuck;
+
+    @Column(nullable = true)
+    private Long latestResult;
 
     public Long getId() {
         return id;
@@ -30,14 +36,6 @@ public class Player implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getWeId() {
-        return weId;
-    }
-
-    public void setWeId(String weId) {
-        this.weId = weId;
     }
 
     public String getRemarkName() {
@@ -62,8 +60,31 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return "{id:" + id + ",weId:" + weId + ",remarkName:" + remarkName + ",points" + points
-                + "}";
+        return "{id:" + id + "remarkName:" + remarkName + ",points" + points + "}";
+    }
+
+    public Long getLatestBet() {
+        return latestBet;
+    }
+
+    public void setLatestBet(Long latestBet) {
+        this.latestBet = latestBet;
+    }
+
+    public Double getLatestLuck() {
+        return latestLuck;
+    }
+
+    public void setLatestLuck(Double latestLuck) {
+        this.latestLuck = latestLuck;
+    }
+
+    public Long getLatestResult() {
+        return latestResult;
+    }
+
+    public void setLatestResult(Long latestResult) {
+        this.latestResult = latestResult;
     }
 
 }

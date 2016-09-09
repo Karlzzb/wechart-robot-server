@@ -8,10 +8,17 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import blade.kit.json.JSON;
+import blade.kit.json.JSONArray;
+import blade.kit.json.JSONObject;
+
+import com.karl.utils.Matchers;
 
 public class PcClient {
 
@@ -23,7 +30,7 @@ public class PcClient {
     private Socket socket;
 
     @Autowired
-    private WebWechat webWechat;
+    private GameService gameService;
 
     public PcClient() {
         try {
@@ -107,7 +114,7 @@ public class PcClient {
                         continue;
                     }
                     LOGGER.debug("host【{}】 port【{}】 receive data: {}", host, port + strFormsocket);
-                    webWechat.interpretPackage(strFormsocket);
+                    interpretPackage(strFormsocket);
                 }
                 isConnected = Boolean.TRUE;
             } catch (UnknownHostException e1) {
@@ -139,5 +146,38 @@ public class PcClient {
             e.printStackTrace();
         }
         return msg;
+    }
+
+    /**
+     * Interpret LUCKAGEPACAKGE that received from socket connection
+     * 
+     * @param packageInfo
+     *            JSON string
+     */
+    private void interpretPackage(String packageInfo) {
+        try {
+            JSONObject jsonObject = JSON.parse(packageInfo).asObject();
+            JSONArray jsonLuckPeople = jsonObject.getJSONArray("LuckPeople");
+            if (jsonLuckPeople == null || jsonLuckPeople.size() < 1) {
+                LOGGER.warn("Luck package is empty! {}", packageInfo);
+                return;
+            }
+
+            JSONObject jsonLuckOne = null;
+            for (int i = 0; i < jsonLuckPeople.size(); i++) {
+                jsonLuckOne = jsonLuckPeople.getJSONObject(i);
+
+                Matcher matcher = Matchers.DOUBLE.matcher(jsonLuckOne.getString("Money"));
+                if (matcher.find()) {
+                    gameService.puttingLuckInfo(jsonLuckOne.getString("RemarkName"),
+                            Double.valueOf(matcher.group(0)));
+                } else {
+                    LOGGER.warn("Luck message RemarkUser {} Money{} interpret failed!",
+                            jsonLuckOne.getString("RemarkName"), jsonLuckOne.getString("Money"));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Luck package[{}] interpret failed!", packageInfo, e);
+        }
     }
 }

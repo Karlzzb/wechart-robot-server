@@ -27,14 +27,18 @@ public class WebWechat {
 
     private RuntimeDomain runtimeDomain;
 
+    private GameService gameService;
+
     private Thread runThread;
 
     private volatile boolean stopRequested;
 
     @Autowired
-    public WebWechat(RuntimeDomain runtimeDomain) throws InterruptedException {
+    public WebWechat(RuntimeDomain runtimeDomain, GameService gameService)
+            throws InterruptedException {
         System.setProperty("jsse.enableSNIExtension", "false");
         this.runtimeDomain = runtimeDomain;
+        this.gameService = gameService;
     }
 
     /**
@@ -454,38 +458,6 @@ public class WebWechat {
     }
 
     /**
-     * sent the latest luck info to specific group
-     */
-    public void webwxsendLuckInfo() {
-        String content = "公布结果如下：\n";
-        content += "========\n";
-        for (String name : runtimeDomain.getLatestLuckInfo().keySet()) {
-            content += name + ":    " + runtimeDomain.getLatestLuckInfo().get(name).toString()
-                    + "\n";
-        }
-        content += "========\n";
-
-        webwxsendmsg(content);
-        runtimeDomain.clearLatestLuckInfo();
-    }
-
-    /**
-     * sent the latest Bet info to specific group
-     */
-    public void webwxsendBetInfo() {
-        String content = "Bet result：\n";
-        content += "======\n";
-        for (String name : runtimeDomain.getLatestBetInfo().keySet()) {
-            content += name + " Bet " + runtimeDomain.getLatestBetInfo().get(name).doubleValue()
-                    + "\n";
-        }
-        content += "======\n";
-
-        webwxsendmsg(content);
-        runtimeDomain.clearLatestBetInfo();
-    }
-
-    /**
      * Sent message to specific group
      * 
      * @param content
@@ -638,6 +610,7 @@ public class WebWechat {
         String remarkName = "";
         String content = "";
 
+        // Message from others
         if (jsonMsg.getString("FromUserName").equals(runtimeDomain.getCurrentGroupId())) {
             LOGGER.debug("FromUserName{} message", jsonMsg.getString("FromUserName"));
             String contentStr = jsonMsg.getString("Content");
@@ -662,31 +635,32 @@ public class WebWechat {
                     jsonMsg.getString("FromUserName"), runtimeDomain.getCurrentGroupId());
         }
 
+        // Message from myself
         if (runtimeDomain.getUser().getString("UserName").equals(jsonMsg.getString("FromUserName"))) {
             remarkName = runtimeDomain.getUser().getString("NickName");
             content = jsonMsg.getString("Content");
-
         }
 
+        // Message is the pattern of betting
         Matcher matcher = Matchers.DOUBLE.matcher(content);
         if (matcher.find()) {
-            runtimeDomain.getLatestBetInfo().put(remarkName, Double.valueOf(matcher.group(0)));
+            gameService.puttingBetInfo(remarkName, Double.valueOf(matcher.group(0)));
         } else {
             LOGGER.warn("FromUserName{} message's message content {}",
                     jsonMsg.getString("FromUserName"), content);
         }
 
-        switch (content) {
-        case "bet":
-            this.webwxsendBetInfo();
-            break;
-        case "luck":
-            this.webwxsendLuckInfo();
-            break;
-
-        default:
-            break;
-        }
+        // switch (content) {
+        // case "bet":
+        // this.webwxsendBetInfo();
+        // break;
+        // case "luck":
+        // this.webwxsendLuckInfo();
+        // break;
+        //
+        // default:
+        // break;
+        // }
         LOGGER.debug("【" + remarkName + "】说： 【" + content + "】");
         console.writeLog("【" + remarkName + "】说： 【" + content + "】");
     }
@@ -785,40 +759,6 @@ public class WebWechat {
         // LOGGER.info("[*] 获取群成员失败");
         // return;
         // }
-    }
-
-    /**
-     * Interpret LUCKAGEPACAKGE that received from socket connection
-     * 
-     * @param packageInfo
-     *            JSON string
-     */
-    public void interpretPackage(String packageInfo) {
-        try {
-            JSONObject jsonObject = JSON.parse(packageInfo).asObject();
-            JSONArray jsonLuckPeople = jsonObject.getJSONArray("LuckPeople");
-            if (jsonLuckPeople == null || jsonLuckPeople.size() < 1) {
-                LOGGER.warn("Luck package is empty! {}", packageInfo);
-                return;
-            }
-
-            JSONObject jsonLuckOne = null;
-            for (int i = 0; i < jsonLuckPeople.size(); i++) {
-                jsonLuckOne = jsonLuckPeople.getJSONObject(i);
-
-                Matcher matcher = Matchers.DOUBLE.matcher(jsonLuckOne.getString("Money"));
-                if (matcher.find()) {
-
-                    this.runtimeDomain.getLatestBetInfo().put(jsonLuckOne.getString("RemarkName"),
-                            Double.valueOf(matcher.group(0)));
-                } else {
-                    LOGGER.warn("Luck message RemarkUser {} Money{} interpret failed!",
-                            jsonLuckOne.getString("RemarkName"), jsonLuckOne.getString("Money"));
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error("Luck package[{}] interpret failed!", packageInfo, e);
-        }
     }
 
     public void stopListen() {

@@ -1,7 +1,6 @@
 package com.karl;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ public class DBtest {
         for (int i = 0; i < 10; i++) {
             player = new Player();
             player.setPoints(Long.valueOf(i));
-            player.setWeId(UUID.randomUUID().toString());
             player.setRemarkName("test" + i);
             playerService.save(player);
         }
