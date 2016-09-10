@@ -1,5 +1,8 @@
 package com.karl.service;
 
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -9,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.karl.db.domain.Player;
 import com.karl.db.service.PlayerService;
+import com.karl.domain.LotteryRule;
 import com.karl.domain.PlayConfigDomain;
 import com.karl.domain.RuntimeDomain;
+import com.karl.utils.AppUtils;
+import com.karl.utils.DigitalUtils;
 
 @Service
 public class GameService {
@@ -26,9 +32,6 @@ public class GameService {
     @Autowired
     private PlayerService playerService;
 
-    @Autowired
-    private WebWechat webWechat;
-
     /**
      * open the lottery
      */
@@ -39,13 +42,11 @@ public class GameService {
         Player banker = runningBanker();
         Long bankerResult = getResult(banker.getLatestLuck());
 
-        // TODU need to sort by some rule???????????
         for (String remarkName : runningPlayers().keySet()) {
             player = runningPlayers().get(remarkName);
             player.setLatestResult(getResult(player.getLatestLuck(), bankerResult));
         }
-
-        webWechat.webwxsendmsg(result);
+        resetPlayers(AppUtils.sortByValue(runningPlayers()));
     }
 
     /**
@@ -61,6 +62,7 @@ public class GameService {
             player.setRemarkName(remarkName);
         }
         player.setLatestBet(betInfo.longValue());
+        player.setLatestBetTime(new Date().getTime());
         runningPlayers().put(remarkName, player);
     }
 
@@ -81,19 +83,29 @@ public class GameService {
     }
 
     /**
-     * Calculate banker result
+     * Calculate single player result
      * 
      * @param luckInfo
      * @return
      */
     private Long getResult(Double luckInfo) {
-        Long result = Long.MIN_VALUE;
-        // TODO
+        Long result = Long.valueOf(0);
+        EnumSet<LotteryRule> theRule = currentRule();
+        for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator.hasNext();) {
+            LotteryRule lotteryRule = (LotteryRule) iterator.next();
+            if (lotteryRule.getRuleResult(luckInfo)) {
+                result = lotteryRule.getTimes();
+                break;
+            }
+        }
+        if (result.compareTo(Long.valueOf(0)) == 0) {
+            result = DigitalUtils.getSumFromDouble(luckInfo);
+        }
         return result;
     }
 
     /**
-     * Calculate player result
+     * Calculate player result comparing to banker
      * 
      * @param luckInfo
      * @param bankerResult
@@ -101,7 +113,6 @@ public class GameService {
      */
     private Long getResult(Double luckInfo, Long bankerResult) {
         Long selfResult = getResult(luckInfo);
-
         return selfResult - bankerResult;
     }
 
@@ -109,8 +120,16 @@ public class GameService {
         return runtimeDomain.getRunningPlayeres();
     }
 
+    private void resetPlayers(Map<String, Player> players) {
+        runtimeDomain.setRunningPlayeres(players);
+    }
+
     private Player runningBanker() {
         return runningPlayers().get(runtimeDomain.bankerRemarkName);
+    }
+
+    private EnumSet<LotteryRule> currentRule() {
+        return runtimeDomain.getCurrentRule();
     }
 
 }

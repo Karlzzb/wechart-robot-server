@@ -166,7 +166,6 @@ public class PcClient {
             JSONObject jsonLuckOne = null;
             for (int i = 0; i < jsonLuckPeople.size(); i++) {
                 jsonLuckOne = jsonLuckPeople.getJSONObject(i);
-
                 Matcher matcher = Matchers.DOUBLE.matcher(jsonLuckOne.getString("Money"));
                 if (matcher.find()) {
                     gameService.puttingLuckInfo(jsonLuckOne.getString("RemarkName"),

@@ -25,11 +25,14 @@ public class LoginController extends FxmlController {
     @FXML
     private ImageView loginImageView;
 
+    private ConsoleController consoleController;
+
     @Autowired
     @Lazy(value = true)
-    public LoginController(StageManager stageManager) {
+    public LoginController(StageManager stageManager, ConsoleController consoleController) {
         super();
         this.stageManager = stageManager;
+        this.consoleController = consoleController;
     }
 
     @Override
@@ -63,6 +66,8 @@ public class LoginController extends FxmlController {
                     LOGGER.info("微信登录失败");
                 }
                 LOGGER.info("[*] 微信登录成功");
+                webWechat.buildWechat();
+                webWechat.listenMsgMode(consoleController);
                 stageManager.switchScene(FxmlView.MAIN);
                 return null;
             }

@@ -30,6 +30,9 @@ public class Player implements Serializable {
     @Column(nullable = true)
     private Long latestResult;
 
+    @Column(nullable = true)
+    private Long latestBetTime;
+
     public Long getId() {
         return id;
     }
@@ -85,6 +88,14 @@ public class Player implements Serializable {
 
     public void setLatestResult(Long latestResult) {
         this.latestResult = latestResult;
+    }
+
+    public Long getLatestBetTime() {
+        return latestBetTime;
+    }
+
+    public void setLatestBetTime(Long latestBetTime) {
+        this.latestBetTime = latestBetTime;
     }
 
 }

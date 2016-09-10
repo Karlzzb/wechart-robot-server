@@ -475,31 +475,36 @@ public class WebWechat {
      */
     public void webwxsendmsg(String content, String to) {
 
-        String url = AppUtils.base_uri + "/webwxsendmsg?lang=zh_CN&pass_ticket="
-                + runtimeDomain.getPassTicket();
-
-        JSONObject body = new JSONObject();
-
-        String clientMsgId = DateKit.getCurrentUnixTime() + StringKit.getRandomNumber(5);
-        JSONObject Msg = new JSONObject();
-        Msg.put("Type", 1);
-        Msg.put("Content", content);
-        Msg.put("FromUserName", runtimeDomain.getUser().getString("UserName"));
-        Msg.put("ToUserName", to);
-        Msg.put("LocalID", clientMsgId);
-        Msg.put("ClientMsgId", clientMsgId);
-        body.put("BaseRequest", this.runtimeDomain.getBaseRequest());
-        body.put("Msg", Msg);
-
-        HttpRequest request = HttpRequest.post(url)
-                .header("Content-Type", "application/json;charset=utf-8")
-                .header("Cookie", runtimeDomain.getCookie()).send(body.toString());
-
-        LOGGER.debug("Message sent to runtimeDomain.getUser()[{}] reuest {}", to, request);
-
-        LOGGER.debug("Message sent to runtimeDomain.getUser()[{}] response {}", to, request.body());
-
-        request.disconnect();
+        // String url = AppUtils.base_uri +
+        // "/webwxsendmsg?lang=zh_CN&pass_ticket="
+        // + runtimeDomain.getPassTicket();
+        //
+        // JSONObject body = new JSONObject();
+        //
+        // String clientMsgId = DateKit.getCurrentUnixTime() +
+        // StringKit.getRandomNumber(5);
+        // JSONObject Msg = new JSONObject();
+        // Msg.put("Type", 1);
+        // Msg.put("Content", content);
+        // Msg.put("FromUserName",
+        // runtimeDomain.getUser().getString("UserName"));
+        // Msg.put("ToUserName", to);
+        // Msg.put("LocalID", clientMsgId);
+        // Msg.put("ClientMsgId", clientMsgId);
+        // body.put("BaseRequest", this.runtimeDomain.getBaseRequest());
+        // body.put("Msg", Msg);
+        //
+        // HttpRequest request = HttpRequest.post(url)
+        // .header("Content-Type", "application/json;charset=utf-8")
+        // .header("Cookie", runtimeDomain.getCookie()).send(body.toString());
+        //
+        // LOGGER.debug("Message sent to runtimeDomain.getUser()[{}] reuest {}",
+        // to, request);
+        //
+        // LOGGER.debug("Message sent to runtimeDomain.getUser()[{}] response {}",
+        // to, request.body());
+        //
+        // request.disconnect();
 
     }
 

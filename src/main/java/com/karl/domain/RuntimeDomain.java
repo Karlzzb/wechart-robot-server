@@ -2,6 +2,7 @@ package com.karl.domain;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class RuntimeDomain implements Serializable {
         runningPlayeres = new HashMap<String, Player>();
         qrCodeFile = new File("temp.jpg");
         bankerRemarkName = "";
-
+        currentRule = EnumSet.allOf(LotteryRule.class);
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -64,6 +65,8 @@ public class RuntimeDomain implements Serializable {
      * The current banker
      */
     public String bankerRemarkName;
+
+    private EnumSet<LotteryRule> currentRule;
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
@@ -250,5 +253,13 @@ public class RuntimeDomain implements Serializable {
 
     public void setBankerRemarkName(String bankerRemarkName) {
         this.bankerRemarkName = bankerRemarkName;
+    }
+
+    public EnumSet<LotteryRule> getCurrentRule() {
+        return currentRule;
+    }
+
+    public void setCurrentRule(EnumSet<LotteryRule> currentRule) {
+        this.currentRule = currentRule;
     }
 }

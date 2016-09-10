@@ -9,10 +9,10 @@ import com.karl.db.domain.Player;
 
 public interface PlayerRepository extends Repository<Player, Long> {
 
-    @Query("select id, weId, remarkName, points from Player p where p.remarkName like ?1")
+    @Query("select id, remarkName, points from Player p where p.remarkName like ?1")
     List<Player> findLikeRemarkName(String remarkName);
 
-    @Query("select id, weId, remarkName, points from Player p where p.remarkName = ?1")
+    @Query("select id, remarkName, points from Player p where p.remarkName = ?1")
     Player findByRemarkName(String remarkName);
 
     Player save(Player player);
