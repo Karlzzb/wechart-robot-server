@@ -63,7 +63,7 @@ public class WebWechat {
                     runtimeDomain.setUuid(Matchers.match("window.QRLogin.uuid = \"(.*)\";", res));
                     return runtimeDomain.getUuid();
                 } else {
-                    LOGGER.info("[*] 错误的状态码: %s", code);
+                    LOGGER.info("[*] 错误的状态码: {}", code);
                 }
             }
         }
@@ -125,14 +125,14 @@ public class WebWechat {
                 LOGGER.info("[*] 正在登录...");
                 String pm = Matchers.match("window.redirect_uri=\"(\\S+?)\";", res);
                 AppUtils.redirect_uri = pm + "&fun=new";
-                LOGGER.info("[*] redirect_uri=%s", AppUtils.redirect_uri);
+                LOGGER.info("[*] redirect_uri={}", AppUtils.redirect_uri);
                 AppUtils.base_uri = AppUtils.redirect_uri.substring(0,
                         AppUtils.redirect_uri.lastIndexOf("/"));
-                LOGGER.info("[*] base_uri=%s", AppUtils.base_uri);
+                LOGGER.info("[*] base_uri={}", AppUtils.base_uri);
             } else if (code.equals("408")) {
                 LOGGER.info("[*] 登录超时");
             } else {
-                LOGGER.info("[*] 扫描code=%s", code);
+                LOGGER.info("[*] 扫描code={}", code);
             }
         }
         return code;
@@ -161,10 +161,10 @@ public class WebWechat {
         runtimeDomain.setWxuin(Matchers.match("<wxuin>(\\S+)</wxuin>", res));
         runtimeDomain.setPassTicket(Matchers.match("<pass_ticket>(\\S+)</pass_ticket>", res));
 
-        LOGGER.info("[*] skey[%s]", runtimeDomain.getSkey());
-        LOGGER.info("[*] wxsid[%s]", runtimeDomain.getWxsid());
-        LOGGER.info("[*] wxuin[%s]", runtimeDomain.getWxuin());
-        LOGGER.info("[*] pass_ticket[%s]", runtimeDomain.getPassTicket());
+        LOGGER.info("[*] skey[{}]", runtimeDomain.getSkey());
+        LOGGER.info("[*] wxsid[{}]", runtimeDomain.getWxsid());
+        LOGGER.info("[*] wxuin[{}]", runtimeDomain.getWxuin());
+        LOGGER.info("[*] pass_ticket[{}]", runtimeDomain.getPassTicket());
 
         runtimeDomain.setBaseRequest(new JSONObject());
         runtimeDomain.getBaseRequest().put("Uin", runtimeDomain.getWxuin());

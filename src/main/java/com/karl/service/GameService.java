@@ -36,8 +36,6 @@ public class GameService {
      * open the lottery
      */
     public void openLottery() {
-        String result = "";
-
         Player player = null;
         Player banker = runningBanker();
         Long bankerResult = getResult(banker.getLatestLuck());

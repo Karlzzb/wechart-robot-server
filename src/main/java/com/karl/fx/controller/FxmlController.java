@@ -11,16 +11,16 @@ import com.karl.service.WebWechat;
 @Component
 public abstract class FxmlController {
 
+    @Autowired
+    @Lazy
     public StageManager stageManager;
 
-    public abstract void initialize();
-
     @Autowired
-    @Lazy(value = true)
     public WebWechat webWechat;
 
     @Autowired
-    @Lazy(value = true)
     public RuntimeDomain runtimeDomain;
 
+    public void initialize() {
+    };
 }
