@@ -1,6 +1,5 @@
 package com.karl.fx.controller;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -49,8 +48,8 @@ public class MainDeskController extends FxmlController {
         groupList = FXCollections.observableArrayList();
         for (String groupId : webWechat.getRuntimeDomain().getGroupMap().keySet()) {
             groupList.add(new ChatGroup(groupId, runtimeDomain.getGroupMap().get(groupId)
-                    .getString("NickName"), runtimeDomain.getGroupMap().get(groupId)
-                    .getJSONArray("MemberList").size()));
+                    .getString("NickName").replaceAll("</?[^>]+>", ""), runtimeDomain.getGroupMap()
+                    .get(groupId).getJSONArray("MemberList").size()));
         }
         return groupList;
     }
@@ -62,7 +61,7 @@ public class MainDeskController extends FxmlController {
 
     @FXML
     private void flushGroup(ActionEvent event) {
-        webWechat.wxInit();
+        // webWechat.wxInit();
         webWechat.getContact();
         groupChoiseTab.setItems(generateDataInMap());
     }
@@ -85,18 +84,20 @@ public class MainDeskController extends FxmlController {
                 setGraphic(null);
             } else {
                 setGraphic(radio);
-                if (ov instanceof BooleanProperty) {
-                    radio.selectedProperty().unbindBidirectional((BooleanProperty) ov);
+                if (ov instanceof SimpleBooleanProperty) {
+                    radio.selectedProperty().unbindBidirectional((SimpleBooleanProperty) ov);
                 }
                 ov = getTableColumn().getCellObservableValue(getIndex());
-                if (ov instanceof BooleanProperty) {
-                    radio.selectedProperty().bindBidirectional((BooleanProperty) ov);
+                if (ov instanceof SimpleBooleanProperty) {
+                    radio.selectedProperty().bindBidirectional((SimpleBooleanProperty) ov);
                 }
             }
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void assemableTable() {
+        groupChoiseTab.setEditable(true);
         groupChoiseTab.setItems(generateDataInMap());
         TableColumn<ChatGroup, Boolean> selectColumn = new TableColumn<>("选择");
         selectColumn.setCellValueFactory(new PropertyValueFactory<ChatGroup, Boolean>(
@@ -128,7 +129,8 @@ public class MainDeskController extends FxmlController {
                 ChatGroup.groupNameColumnKey));
         qunSizeColumn.setCellValueFactory(new PropertyValueFactory<ChatGroup, Integer>(
                 ChatGroup.groupSizeColumnKey));
-        groupChoiseTab.getColumns().setAll(selectColumn, qunNameColumn, qunSizeColumn);
+
+        groupChoiseTab.getColumns().addAll(selectColumn, qunNameColumn, qunSizeColumn);
     }
 
     public class ChatGroup {

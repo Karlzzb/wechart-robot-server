@@ -14,8 +14,10 @@
 		</AnchorPane>
 		<AnchorPane prefHeight="0.0" prefWidth="600.0">
 			<children>
-				<Button mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" text="清除日志" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="529.0" AnchorPane.topAnchor="0.0">
-
+				<Button mnemonicParsing="false" fx:id="cleanButton" onAction="#clearLog"
+	prefHeight="27.0" prefWidth="66.0" text="清除日志" AnchorPane.bottomAnchor="5.0"
+	AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="529.0"
+	AnchorPane.topAnchor="0.0">
 				</Button>
 			</children>
 		</AnchorPane>

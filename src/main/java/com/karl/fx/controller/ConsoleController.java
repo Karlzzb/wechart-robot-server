@@ -1,6 +1,7 @@
 package com.karl.fx.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 
@@ -15,6 +16,9 @@ public class ConsoleController extends FxmlController {
 
     @FXML
     private TextArea logArea;
+
+    @FXML
+    private Button cleanButton;
 
     @Autowired
     private MainController mainViewController;
@@ -45,9 +49,16 @@ public class ConsoleController extends FxmlController {
                 logArea.setText(message);
             } else {
                 logArea.selectEnd();
-                logArea.insertText(logArea.getText().length(), message);
+                logArea.insertText(logArea.getText().length(), message.replaceAll("</?[^>]+>", "")
+                        + "\n");
             }
         }
+    }
+
+    @FXML
+    public void clearLog() {
+        logArea.clear();
+
     }
 
 }
