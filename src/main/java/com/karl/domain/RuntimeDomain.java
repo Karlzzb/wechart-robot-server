@@ -6,12 +6,16 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import org.springframework.stereotype.Component;
 
 import blade.kit.DateKit;
 import blade.kit.json.JSONObject;
 
 import com.karl.db.domain.Player;
+import com.karl.fx.model.ChatGroupModel;
 
 @Component
 public class RuntimeDomain implements Serializable {
@@ -26,6 +30,7 @@ public class RuntimeDomain implements Serializable {
         qrCodeFile = new File("temp.jpg");
         bankerRemarkName = "";
         currentRule = EnumSet.allOf(LotteryRule.class);
+        groupList = FXCollections.observableArrayList();
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -67,6 +72,11 @@ public class RuntimeDomain implements Serializable {
     public String bankerRemarkName;
 
     private EnumSet<LotteryRule> currentRule;
+
+    /**
+     * current groups
+     */
+    private ObservableList<ChatGroupModel> groupList;
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
@@ -261,5 +271,13 @@ public class RuntimeDomain implements Serializable {
 
     public void setCurrentRule(EnumSet<LotteryRule> currentRule) {
         this.currentRule = currentRule;
+    }
+
+    public ObservableList<ChatGroupModel> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(ObservableList<ChatGroupModel> groupList) {
+        this.groupList = groupList;
     }
 }

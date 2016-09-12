@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import java.net.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0"
 	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
@@ -14,20 +14,23 @@
 			mnemonicParsing="false" onAction="#wechatLogin" text="登陆" />
 		<Button fx:id="groupFlush" layoutX="119.0" layoutY="378.0"
 			mnemonicParsing="false" onAction="#flushGroup" text="刷新群" />
-		<TableView fx:id="groupChoiseTab" maxHeight="1.7976931348623157E308"
-			maxWidth="1.7976931348623157E308" prefHeight="293.0" prefWidth="467.0"
-			AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="758.0">
+		<TableView fx:id="groupChoiseTab" layoutX="14.0" layoutY="14.0"
+			maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+			prefHeight="293.0" prefWidth="467.0" AnchorPane.bottomAnchor="345.0"
+			AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="749.0"
+			AnchorPane.topAnchor="14.0">
 			<columns>
-				<TableColumn fx:id="selectColumn" prefWidth="94.00003051757812"
+				<TableColumn fx:id="selectColumn" prefWidth="109.0"
 					resizable="false" text="选择" />
-				<TableColumn fx:id="qunNameColumn" prefWidth="224.99996948242188"
-					resizable="false" text="名称" />
-				<TableColumn fx:id="qunSizeColumn" maxWidth="316.0"
-					prefWidth="148.66668701171875" resizable="false" text="数量" />
+				<TableColumn fx:id="qunNameColumn" editable="false"
+					prefWidth="236.0" resizable="false" text="名称" />
+				<TableColumn fx:id="qunSizeColumn" editable="false"
+					maxWidth="316.0" prefWidth="124.33331298828125" resizable="false"
+					text="数量" />
 			</columns>
 		</TableView>
 	</children>
-		<stylesheets>
-			<URL value="@../css/Metro-UI.css" />
-		</stylesheets>
+	<stylesheets>
+		<URL value="@../css/Metro-UI.css" />
+	</stylesheets>
 </AnchorPane>

@@ -2,7 +2,6 @@ package com.karl.fx.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,11 +53,16 @@ public class MainDeskController extends FxmlController {
     private ObservableList<ChatGroupModel> generateDataInMap() {
         if (groupList != null)
             groupList.clear();
-        groupList = FXCollections.observableArrayList();
-        for (String groupId : webWechat.getRuntimeDomain().getGroupMap().keySet()) {
-            groupList.add(new ChatGroupModel(groupId, runtimeDomain.getGroupMap().get(groupId)
+        groupList = runtimeDomain.getGroupList();
+        ChatGroupModel groupModel = null;
+        for (String groupId : runtimeDomain.getGroupMap().keySet()) {
+            groupModel = new ChatGroupModel(groupId, runtimeDomain.getGroupMap().get(groupId)
                     .getString("NickName").replaceAll("</?[^>]+>", ""), runtimeDomain.getGroupMap()
-                    .get(groupId).getJSONArray("MemberList").size()));
+                    .get(groupId).getJSONArray("MemberList").size());
+            if (groupId.equals(runtimeDomain.getCurrentGroupId())) {
+                groupModel.setSelector(Boolean.TRUE);
+            }
+            groupList.add(groupModel);
         }
         return groupList;
     }
@@ -90,6 +94,7 @@ public class MainDeskController extends FxmlController {
                 ChatGroupModel.groupNameColumnKey));
         qunSizeColumn.setCellValueFactory(new PropertyValueFactory<ChatGroupModel, Integer>(
                 ChatGroupModel.groupSizeColumnKey));
+
     }
 
     class RadioButtonCell extends TableCell<ChatGroupModel, Boolean> {
@@ -104,9 +109,9 @@ public class MainDeskController extends FxmlController {
             radio = new RadioButton();
             radio.focusedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
-                public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1,
-                        Boolean arg2) {
-                    if (!arg2) {
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
+                        Boolean now) {
+                    if (now) {
                         commitEdit(radio.isSelected());
                     }
                 }
@@ -135,9 +140,11 @@ public class MainDeskController extends FxmlController {
             final ObservableList<ChatGroupModel> items = getTableView().getItems();
             if (items != null) {
                 if (getIndex() < items.size()) {
+                    radio.setSelected(items.get(getIndex()).getSelector());
                     setGraphic(radio);
                 }
             }
+
         }
     }
 }
