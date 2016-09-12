@@ -68,7 +68,7 @@ public class LoginController extends FxmlController {
                 LOGGER.info("[*] 微信登录成功");
                 webWechat.buildWechat();
                 webWechat.listenMsgMode(consoleController);
-                stageManager.switchScene(FxmlView.MAIN);
+                stageManager.switchScene(FxmlView.MENU);
                 return null;
             }
         };

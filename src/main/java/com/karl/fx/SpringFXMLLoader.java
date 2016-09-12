@@ -33,7 +33,9 @@ public class SpringFXMLLoader {
         });
         fxmlLoader.setResources(resourceBundle);
         fxmlLoader.setLocation(getClass().getResource(fxmlPath));
-        return (Parent) fxmlLoader.load();
-    }
 
+        Parent node = (Parent) fxmlLoader.load();
+
+        return node;
+    }
 }

@@ -1,9 +1,11 @@
 package com.karl.fx;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import org.slf4j.Logger;
@@ -57,5 +59,14 @@ public class StageManager {
             LOGGER.error("Uable to load FXML view " + fxmlFile, e);
         }
         return rootNode;
+    }
+
+    public void loadAnchorPaneMemu(AnchorPane ap, final FxmlView view) {
+        try {
+            AnchorPane p = (AnchorPane) springFXMLLoader.load(view.getFxmlFile());
+            ap.getChildren().setAll(p);
+        } catch (IOException e) {
+            LOGGER.error("Load menu failed!", e);
+        }
     }
 }

@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import java.net.*?>
 
-<VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0"
+	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
-		<SplitPane dividerPositions="0.3795986622073579" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-			<items>
-				<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
-					<tabs>
-						<Tab text="Untitled Tab 1">
-							<content>
-								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="262.0" prefWidth="117.0">
-									<children>
-										<CheckBox layoutX="14.0" layoutY="39.0" mnemonicParsing="false" text="CheckBox" />
-										<CheckBox layoutX="14.0" layoutY="79.0" mnemonicParsing="false" text="CheckBox" />
-										<Button fx:id="loginButton" layoutX="14.0" layoutY="223.0" mnemonicParsing="false" onAction="#wechatLogin" text="登陆" />
-										<Button fx:id="groupFlush" layoutX="86.0" layoutY="223.0" mnemonicParsing="false" onAction="#flushGroup" text="刷新群" />
-									</children>
-								</AnchorPane>
-							</content>
-						</Tab>
-					</tabs>
-				</TabPane>
-				<TableView fx:id="groupChoiseTab" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-				</TableView>
-			</items>
-		</SplitPane>
+		<Button fx:id="loginButton" layoutX="234.0" layoutY="378.0"
+			mnemonicParsing="false" onAction="#wechatLogin" text="登陆" />
+		<Button fx:id="groupFlush" layoutX="119.0" layoutY="378.0"
+			mnemonicParsing="false" onAction="#flushGroup" text="刷新群" />
+		<TableView fx:id="groupChoiseTab" maxHeight="1.7976931348623157E308"
+			maxWidth="1.7976931348623157E308" prefHeight="293.0" prefWidth="467.0"
+			AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="758.0">
+			<columns>
+				<TableColumn fx:id="selectColumn" prefWidth="94.00003051757812"
+					resizable="false" text="选择" />
+				<TableColumn fx:id="qunNameColumn" prefWidth="224.99996948242188"
+					resizable="false" text="名称" />
+				<TableColumn fx:id="qunSizeColumn" maxWidth="316.0"
+					prefWidth="148.66668701171875" resizable="false" text="数量" />
+			</columns>
+		</TableView>
 	</children>
-</VBox>
+		<stylesheets>
+			<URL value="@../css/Metro-UI.css" />
+		</stylesheets>
+</AnchorPane>

@@ -3,7 +3,6 @@ package com.karl.fx;
 import java.util.ResourceBundle;
 
 public enum FxmlView {
-
     MAIN {
         @Override
         String getTitle() {
@@ -12,7 +11,7 @@ public enum FxmlView {
 
         @Override
         String getFxmlFile() {
-            return "/fxml/Main.fxml";
+            return "/fxml/MainDesk.fxml";
         }
     },
     LOGIN {
@@ -23,7 +22,29 @@ public enum FxmlView {
 
         @Override
         String getFxmlFile() {
-            return "/fxml/Login.fxml";
+            return "/fxml/RawLogin.fxml";
+        }
+    },
+    MENU {
+        @Override
+        String getTitle() {
+            return getStringFromResourceBundle("/fxml/login.title");
+        }
+
+        @Override
+        String getFxmlFile() {
+            return "/fxml/Menu.fxml";
+        }
+    },
+    PLAYER {
+        @Override
+        String getTitle() {
+            return getStringFromResourceBundle("/fxml/login.title");
+        }
+
+        @Override
+        String getFxmlFile() {
+            return "/fxml/Player.fxml";
         }
     },
     CONSOLE {
@@ -35,8 +56,7 @@ public enum FxmlView {
 
         @Override
         String getFxmlFile() {
-            // TODO Auto-generated method stub
-            return null;
+            return "/fxml/ConsoleTab.fxml";
         }
     };
 

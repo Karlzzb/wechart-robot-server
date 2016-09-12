@@ -3,16 +3,15 @@ package com.karl.fx.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.AnchorPane;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConsoleController extends FxmlController {
 
     @FXML
-    private VBox consoleTab;
+    private AnchorPane consoleTab;
 
     @FXML
     private TextArea logArea;
@@ -20,19 +19,12 @@ public class ConsoleController extends FxmlController {
     @FXML
     private Button cleanButton;
 
-    @Autowired
-    private MainController mainViewController;
-
     public TextArea getLogArea() {
         return logArea;
     }
 
     public void setLogArea(TextArea logArea) {
         this.logArea = logArea;
-    }
-
-    public void injectMainViewController(MainController mainViewController) {
-        this.mainViewController = mainViewController;
     }
 
     @Override

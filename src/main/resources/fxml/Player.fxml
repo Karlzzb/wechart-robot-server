@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0"
+	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.PlayerController">
+	<children>
+		<AnchorPane layoutY="91.0" opacity="0.0"
+			prefHeight="560.0" prefWidth="1225.0">
+			<children>
+				<TableView fx:id="playerTab" layoutX="7.0" layoutY="7.0"
+					 prefHeight="546.0" prefWidth="1226.0"
+					AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="7.0"
+					AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="7.0">
+					<columns>
+						<TableColumn fx:id="colPalyerName" prefWidth="130.0" text="名字">
+							<graphic>
+								<ImageView fitHeight="30.0" fitWidth="28.0" opacity="0.49"
+									pickOnBounds="true" smooth="false">
+									<image>
+										<Image url="@../img/tabel.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</TableColumn>
+						<TableColumn fx:id="colPalyerPoint" prefWidth="130.0" text="积分">
+							<graphic>
+								<ImageView fitHeight="30.0" fitWidth="28.0" opacity="0.49"
+									pickOnBounds="true" smooth="false">
+									<image>
+										<Image url="@../img/tabel.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</TableColumn>
+					</columns>
+				</TableView>
+			</children>
+		</AnchorPane>
+		<ImageView fx:id="imgLoad" fitHeight="33.0" fitWidth="40.0"
+			layoutX="225.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true"
+			visible="false">
+			<image>
+				<Image url="@../img/301.GIF" />
+			</image>
+		</ImageView>
+		<ProgressBar fx:id="bar" layoutY="82.0" prefHeight="3.0"
+			prefWidth="1225.0" progress="0.0" />
+	</children>
+</AnchorPane>
