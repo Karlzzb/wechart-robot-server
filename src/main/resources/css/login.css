@@ -573,7 +573,7 @@ and open the template in the editor.
  ******************************************************************************/
 
 .text-field{
-    -fx-skin: "herudi.style.MetroTextFieldSkin";
+    -fx-skin: "com.karl.fx.style.MetroTextFieldSkin";
 }
 
 .text-input{
@@ -648,7 +648,7 @@ and open the template in the editor.
  ******************************************************************************/
 
 .password-field {
-    -fx-skin: "herudi.style.MetroPasswordFieldSkin";
+    -fx-skin: "com.karl.fx.style.MetroPasswordFieldSkin";
 }
 
 .password-field > .right-button > .right-button-graphic {

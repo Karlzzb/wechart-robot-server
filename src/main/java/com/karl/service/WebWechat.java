@@ -18,7 +18,7 @@ import com.karl.domain.RuntimeDomain;
 import com.karl.fx.controller.ConsoleController;
 import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
-import com.karl.utils.Matchers;
+import com.karl.utils.StringUtils;
 
 @Service
 public class WebWechat {
@@ -57,10 +57,10 @@ public class WebWechat {
         request.disconnect();
 
         if (StringKit.isNotBlank(res)) {
-            String code = Matchers.match("window.QRLogin.code = (\\d+);", res);
+            String code = StringUtils.match("window.QRLogin.code = (\\d+);", res);
             if (null != code) {
                 if (code.equals("200")) {
-                    runtimeDomain.setUuid(Matchers.match("window.QRLogin.uuid = \"(.*)\";", res));
+                    runtimeDomain.setUuid(StringUtils.match("window.QRLogin.uuid = \"(.*)\";", res));
                     return runtimeDomain.getUuid();
                 } else {
                     LOGGER.info("[*] 错误的状态码: {}", code);
@@ -113,7 +113,7 @@ public class WebWechat {
             return "";
         }
 
-        String code = Matchers.match("window.code=(\\d+);", res);
+        String code = StringUtils.match("window.code=(\\d+);", res);
         if (null == code) {
             LOGGER.info("[*] 扫描二维码验证失败");
             return "";
@@ -123,7 +123,7 @@ public class WebWechat {
                 runtimeDomain.setTip(0);
             } else if (code.equals("200")) {
                 LOGGER.info("[*] 正在登录...");
-                String pm = Matchers.match("window.redirect_uri=\"(\\S+?)\";", res);
+                String pm = StringUtils.match("window.redirect_uri=\"(\\S+?)\";", res);
                 AppUtils.redirect_uri = pm + "&fun=new";
                 LOGGER.info("[*] redirect_uri={}", AppUtils.redirect_uri);
                 AppUtils.base_uri = AppUtils.redirect_uri.substring(0,
@@ -156,10 +156,10 @@ public class WebWechat {
             return false;
         }
 
-        runtimeDomain.setSkey(Matchers.match("<skey>(\\S+)</skey>", res));
-        runtimeDomain.setWxsid(Matchers.match("<wxsid>(\\S+)</wxsid>", res));
-        runtimeDomain.setWxuin(Matchers.match("<wxuin>(\\S+)</wxuin>", res));
-        runtimeDomain.setPassTicket(Matchers.match("<pass_ticket>(\\S+)</pass_ticket>", res));
+        runtimeDomain.setSkey(StringUtils.match("<skey>(\\S+)</skey>", res));
+        runtimeDomain.setWxsid(StringUtils.match("<wxsid>(\\S+)</wxsid>", res));
+        runtimeDomain.setWxuin(StringUtils.match("<wxuin>(\\S+)</wxuin>", res));
+        runtimeDomain.setPassTicket(StringUtils.match("<pass_ticket>(\\S+)</pass_ticket>", res));
 
         LOGGER.info("[*] skey[{}]", runtimeDomain.getSkey());
         LOGGER.info("[*] wxsid[{}]", runtimeDomain.getWxsid());
@@ -447,8 +447,8 @@ public class WebWechat {
         }
         LOGGER.info("[syncCheck response ] " + res);
 
-        String retcode = Matchers.match("retcode:\"(\\d+)\",", res);
-        String selector = Matchers.match("selector:\"(\\d+)\"}", res);
+        String retcode = StringUtils.match("retcode:\"(\\d+)\",", res);
+        String selector = StringUtils.match("selector:\"(\\d+)\"}", res);
         if (null != retcode && null != selector) {
             arr[0] = Integer.parseInt(retcode);
             arr[1] = Integer.parseInt(selector);
@@ -591,19 +591,6 @@ public class WebWechat {
         LOGGER.debug("Message Package： {}", data.toString());
     }
 
-    private String getUserRemarkName(String id) {
-        String name = "这个人物名字未知";
-        JSONObject member = runtimeDomain.getAllUsrMap().get(id);
-        if (member != null && member.getString("UserName").equals(id)) {
-            if (StringKit.isNotBlank(member.getString("RemarkName"))) {
-                name = member.getString("RemarkName");
-            } else {
-                name = member.getString("NickName");
-            }
-        }
-        return name;
-    }
-
     /**
      * handle text message
      * 
@@ -624,7 +611,7 @@ public class WebWechat {
                 if (contentArray.length > 1) {
                     content = contentArray[1];
                     String fromUsrId = contentArray[0];
-                    remarkName = getUserRemarkName(fromUsrId);
+                    remarkName = runtimeDomain.getUserRemarkName(fromUsrId);
                 } else {
                     LOGGER.warn("FromUserName{} message's message can't be interpret! {}",
                             jsonMsg.getString("FromUserName"), contentStr);
@@ -635,8 +622,10 @@ public class WebWechat {
                         jsonMsg.getString("FromUserName"));
 
             }
+            LOGGER.debug("【" + remarkName + "】       说：        【" + content + "】");
+            console.writeLog("【" + remarkName + "】       说：        【" + content + "】");
         } else {
-            LOGGER.warn("FromUserName[{}] message is not come from specific group[{}]!",
+            LOGGER.debug("FromUserName[{}] message is not come from specific group[{}]!",
                     jsonMsg.getString("FromUserName"), runtimeDomain.getCurrentGroupId());
         }
 
@@ -647,7 +636,7 @@ public class WebWechat {
         }
 
         // Message is the pattern of betting
-        Matcher matcher = Matchers.DOUBLE.matcher(content);
+        Matcher matcher = StringUtils.DOUBLE.matcher(content);
         if (matcher.find()) {
             gameService.puttingBetInfo(remarkName, Double.valueOf(matcher.group(0)));
         } else {
@@ -666,8 +655,6 @@ public class WebWechat {
         // default:
         // break;
         // }
-        LOGGER.debug("【" + remarkName + "】说： 【" + content + "】");
-        console.writeLog("【" + remarkName + "】说： 【" + content + "】");
     }
 
     public void listenMsgMode(final ConsoleController console) {

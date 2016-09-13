@@ -36,17 +36,6 @@ public enum FxmlView {
             return "/fxml/Menu.fxml";
         }
     },
-    PLAYER {
-        @Override
-        String getTitle() {
-            return getStringFromResourceBundle("/fxml/login.title");
-        }
-
-        @Override
-        String getFxmlFile() {
-            return "/fxml/Player.fxml";
-        }
-    },
     CONSOLE {
         @Override
         String getTitle() {

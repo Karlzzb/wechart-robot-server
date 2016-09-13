@@ -18,7 +18,7 @@ import blade.kit.logging.LoggerFactory;
 
 import com.karl.service.QRCodeFrame;
 import com.karl.utils.CookieUtil;
-import com.karl.utils.Matchers;
+import com.karl.utils.StringUtils;
 
 /**
  * Hello world!
@@ -73,10 +73,10 @@ public class RawApp {
         request.disconnect();
 
         if (StringKit.isNotBlank(res)) {
-            String code = Matchers.match("window.QRLogin.code = (\\d+);", res);
+            String code = StringUtils.match("window.QRLogin.code = (\\d+);", res);
             if (null != code) {
                 if (code.equals("200")) {
-                    this.uuid = Matchers.match("window.QRLogin.uuid = \"(.*)\";", res);
+                    this.uuid = StringUtils.match("window.QRLogin.uuid = \"(.*)\";", res);
                     return this.uuid;
                 } else {
                     LOGGER.info("[*] 错误的状态码: {}", code);
@@ -134,7 +134,7 @@ public class RawApp {
             return "";
         }
 
-        String code = Matchers.match("window.code=(\\d+);", res);
+        String code = StringUtils.match("window.code=(\\d+);", res);
         if (null == code) {
             LOGGER.info("[*] 扫描二维码验证失败");
             return "";
@@ -144,7 +144,7 @@ public class RawApp {
                 tip = 0;
             } else if (code.equals("200")) {
                 LOGGER.info("[*] 正在登录...");
-                String pm = Matchers.match("window.redirect_uri=\"(\\S+?)\";", res);
+                String pm = StringUtils.match("window.redirect_uri=\"(\\S+?)\";", res);
                 this.redirect_uri = pm + "&fun=new";
                 LOGGER.info("[*] redirect_uri={}", this.redirect_uri);
                 this.base_uri = this.redirect_uri.substring(0, this.redirect_uri.lastIndexOf("/"));
@@ -180,10 +180,10 @@ public class RawApp {
             return false;
         }
 
-        this.skey = Matchers.match("<skey>(\\S+)</skey>", res);
-        this.wxsid = Matchers.match("<wxsid>(\\S+)</wxsid>", res);
-        this.wxuin = Matchers.match("<wxuin>(\\S+)</wxuin>", res);
-        this.pass_ticket = Matchers.match("<pass_ticket>(\\S+)</pass_ticket>", res);
+        this.skey = StringUtils.match("<skey>(\\S+)</skey>", res);
+        this.wxsid = StringUtils.match("<wxsid>(\\S+)</wxsid>", res);
+        this.wxuin = StringUtils.match("<wxuin>(\\S+)</wxuin>", res);
+        this.pass_ticket = StringUtils.match("<pass_ticket>(\\S+)</pass_ticket>", res);
 
         LOGGER.info("[*] skey[{}]", this.skey);
         LOGGER.info("[*] wxsid[{}]", this.wxsid);
@@ -378,8 +378,8 @@ public class RawApp {
             return arr;
         }
 
-        String retcode = Matchers.match("retcode:\"(\\d+)\",", res);
-        String selector = Matchers.match("selector:\"(\\d+)\"}", res);
+        String retcode = StringUtils.match("retcode:\"(\\d+)\",", res);
+        String selector = StringUtils.match("selector:\"(\\d+)\"}", res);
         if (null != retcode && null != selector) {
             arr[0] = Integer.parseInt(retcode);
             arr[1] = Integer.parseInt(selector);

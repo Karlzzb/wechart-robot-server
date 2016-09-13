@@ -32,6 +32,8 @@ public class AppUtils {
     public static final long LOGIN_WAITING_TIME = 2000;
 
     public static final long WECHAT_LISTEN_INTERVAL = 500;
+    
+    public static final String UNCONTACTUSRNAME= "非好友故无名";
 
     /**
      * sort by bet time

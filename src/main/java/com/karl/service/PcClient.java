@@ -18,7 +18,7 @@ import blade.kit.json.JSON;
 import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
-import com.karl.utils.Matchers;
+import com.karl.utils.StringUtils;
 
 public class PcClient {
 
@@ -166,7 +166,7 @@ public class PcClient {
             JSONObject jsonLuckOne = null;
             for (int i = 0; i < jsonLuckPeople.size(); i++) {
                 jsonLuckOne = jsonLuckPeople.getJSONObject(i);
-                Matcher matcher = Matchers.DOUBLE.matcher(jsonLuckOne.getString("Money"));
+                Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne.getString("Money"));
                 if (matcher.find()) {
                     gameService.puttingLuckInfo(jsonLuckOne.getString("RemarkName"),
                             Double.valueOf(matcher.group(0)));

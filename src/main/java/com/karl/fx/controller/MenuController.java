@@ -75,10 +75,6 @@ public class MenuController extends FxmlController {
             stageManager.loadAnchorPaneMemu(paneData, FxmlView.CONSOLE);
         }
             break;
-        case 2: {
-            stageManager.loadAnchorPaneMemu(paneData, FxmlView.PLAYER);
-        }
-            break;
         }
     }
 

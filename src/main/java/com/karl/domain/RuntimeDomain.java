@@ -2,8 +2,10 @@ package com.karl.domain;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
@@ -12,10 +14,14 @@ import javafx.collections.ObservableList;
 import org.springframework.stereotype.Component;
 
 import blade.kit.DateKit;
+import blade.kit.StringKit;
+import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
 import com.karl.db.domain.Player;
 import com.karl.fx.model.ChatGroupModel;
+import com.karl.fx.model.PlayerModel;
+import com.karl.utils.AppUtils;
 
 @Component
 public class RuntimeDomain implements Serializable {
@@ -31,6 +37,7 @@ public class RuntimeDomain implements Serializable {
         bankerRemarkName = "";
         currentRule = EnumSet.allOf(LotteryRule.class);
         groupList = FXCollections.observableArrayList();
+        playerList = FXCollections.observableArrayList();
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -77,9 +84,56 @@ public class RuntimeDomain implements Serializable {
      * current groups
      */
     private ObservableList<ChatGroupModel> groupList;
+    
+    /**
+     * current player
+     */
+    private ObservableList<PlayerModel> playerList;
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
+    
+    
+    
+    public List<String> getCurrentPlayersName() {
+    	List<String> playersName = new ArrayList<String>();
+    	if (getCurrentGroupId() == null ||getCurrentGroupId().isEmpty()) {
+    		return playersName;
+    	}
+    	
+    	JSONObject groupNode = getGroupMap().get(getCurrentGroupId());
+    	if (groupNode == null) {
+    		return playersName;
+    	}
+        JSONArray memberList = groupNode.getJSONArray("MemberList");
+        if (memberList == null || memberList.size() <1) {
+    		return playersName;
+        }
+        JSONObject contact = null;
+        String remarkName = "";
+        for (int i = 0, len = memberList.size(); i < len; i++) {
+            contact = memberList.getJSONObject(i);
+            remarkName = getUserRemarkName(contact.getString("UserName"));
+            if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
+            	playersName.add(remarkName);
+            }
+        }
+    	return playersName;
+    }
+    
+    public String getUserRemarkName(String id) {
+        String name = AppUtils.UNCONTACTUSRNAME;
+        JSONObject member = getAllUsrMap().get(id);
+        if (member != null && member.getString("UserName").equals(id)) {
+            if (StringKit.isNotBlank(member.getString("RemarkName"))) {
+                name = member.getString("RemarkName");
+            } else {
+                name = member.getString("NickName");
+            }
+        }
+        return name;
+    }
+    
 
     public String getUuid() {
         return uuid;
@@ -280,4 +334,12 @@ public class RuntimeDomain implements Serializable {
     public void setGroupList(ObservableList<ChatGroupModel> groupList) {
         this.groupList = groupList;
     }
+
+	public ObservableList<PlayerModel> getPlayerList() {
+		return playerList;
+	}
+
+	public void setPlayerList(ObservableList<PlayerModel> playerList) {
+		this.playerList = playerList;
+	}
 }

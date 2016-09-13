@@ -1,16 +1,20 @@
 package com.karl.fx.controller;
 
+import java.util.List;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -19,52 +23,137 @@ import org.springframework.stereotype.Component;
 
 import com.karl.fx.FxmlView;
 import com.karl.fx.model.ChatGroupModel;
+import com.karl.fx.model.EditingCell;
+import com.karl.fx.model.PlayerModel;
+import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
 public class MainDeskController extends FxmlController {
+	
     @FXML
     private Button loginButton;
 
     @FXML
     private Button groupFlush;
+    
+    @FXML
+    private ChoiceBox<ChatGroupModel> groupBox;
+    
+    @FXML
+    private Label groupSizeLable;
 
     @FXML
-    private TableColumn<ChatGroupModel, Boolean> selectColumn;
+    private TableColumn<PlayerModel, Integer> colAutoID;
 
     @FXML
-    private TableColumn<ChatGroupModel, String> qunNameColumn;
+    private TableColumn<PlayerModel, String> colPlayerName;
 
     @FXML
-    TableColumn<ChatGroupModel, Integer> qunSizeColumn;
+    TableColumn<PlayerModel, String> colPlayerPoint;
 
     @FXML
-    private TableView<ChatGroupModel> groupChoiseTab;
-
-    final ToggleGroup group = new ToggleGroup();
+    private TableView<PlayerModel> playerTab;
 
     private ObservableList<ChatGroupModel> groupList;
+    
+    private ObservableList<PlayerModel> playerList;
 
     @Override
     public void initialize() {
-        assemableTable();
+    	buildGroupBox();
+    	buildPlayerTab();
+    }
+    
+    private void buildGroupBox() {
+    	groupBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ChatGroupModel>() {
+
+			@Override
+			public void changed(
+					ObservableValue<? extends ChatGroupModel> observable,
+					ChatGroupModel oldValue, ChatGroupModel newValue) {
+				if (newValue != null && !newValue.getGroupId().equals(String.valueOf(0))) {
+					runtimeDomain.setCurrentGroupId(newValue.getGroupId());
+					groupSizeLable.setText("群人数  :"+String.valueOf(newValue.getGroupSize()));
+					fillPlayerTab();
+				}
+			}
+		});
+    	fillUpGroupBox();
+    }
+    
+
+    private void buildPlayerTab() {
+        playerTab.setEditable(true);
+        Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>> cellFactory =
+                new Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>>() {
+                    public TableCell<PlayerModel, String> call(TableColumn<PlayerModel, String> p) {
+                       return new EditingCell();
+                    }
+                };
+        
+        
+        colAutoID.setCellValueFactory(new PropertyValueFactory<PlayerModel, Integer>(
+        		PlayerModel.AUDOIDCOLKEY));
+        colPlayerName.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
+        		PlayerModel.PLAYERNAMECOLKEY));
+        colPlayerName.setEditable(Boolean.FALSE);
+        
+        colPlayerPoint.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
+        		PlayerModel.PLAYERPOINTCOLKEY));
+        colPlayerPoint.setCellFactory(cellFactory);
+        colPlayerPoint.setOnEditCommit(new EventHandler<CellEditEvent<PlayerModel,String>>() {
+			@Override
+			public void handle(CellEditEvent<PlayerModel, String> cell) {
+				if (!StringUtils.matchLong(cell.getNewValue())) {
+					return;
+				}
+				cell.getTableView().getItems().get(cell.getTablePosition().getRow()).setPlayerPoint(cell.getNewValue());
+				// TODO DATABASE options
+			}
+		});
+        
+        
+        fillPlayerTab();
+    }
+    
+    
+    private void fillPlayerTab() {
+    	if (playerList != null) {
+    		playerList.clear();
+    	}
+        playerList = runtimeDomain.getPlayerList();
+        PlayerModel playerModle = null;
+        List<String> currentPlayersName = runtimeDomain.getCurrentPlayersName();
+        for (int i = 0; i < currentPlayersName.size(); i++) {
+        	currentPlayersName.get(i);
+        	playerModle = new PlayerModel(i+1, currentPlayersName.get(i), 0);
+        	playerList.add(playerModle);
+        	//TODO database part
+		}
+        playerTab.setItems(playerList);
     }
 
-    private ObservableList<ChatGroupModel> generateDataInMap() {
+    private void fillUpGroupBox() {
         if (groupList != null)
             groupList.clear();
         groupList = runtimeDomain.getGroupList();
         ChatGroupModel groupModel = null;
+        int  i = 1;
+        int selected = 0;
+        groupList.add(new ChatGroupModel(String.valueOf(0),"请选择群",0));
         for (String groupId : runtimeDomain.getGroupMap().keySet()) {
             groupModel = new ChatGroupModel(groupId, runtimeDomain.getGroupMap().get(groupId)
                     .getString("NickName").replaceAll("</?[^>]+>", ""), runtimeDomain.getGroupMap()
                     .get(groupId).getJSONArray("MemberList").size());
             if (groupId.equals(runtimeDomain.getCurrentGroupId())) {
-                groupModel.setSelector(Boolean.TRUE);
+            	selected = i;
             }
             groupList.add(groupModel);
+            i++;
         }
-        return groupList;
+        groupBox.setItems(groupList);
+        groupBox.getSelectionModel().select(selected);
     }
 
     @FXML
@@ -76,75 +165,9 @@ public class MainDeskController extends FxmlController {
     private void flushGroup(ActionEvent event) {
         webWechat.wxInit();
         // webWechat.getContact();
-        groupChoiseTab.setItems(generateDataInMap());
+        fillUpGroupBox();
     }
 
-    private void assemableTable() {
-        groupChoiseTab.setEditable(true);
-        groupChoiseTab.setItems(generateDataInMap());
-        Callback<TableColumn<ChatGroupModel, Boolean>, TableCell<ChatGroupModel, Boolean>> cellFactory = new Callback<TableColumn<ChatGroupModel, Boolean>, TableCell<ChatGroupModel, Boolean>>() {
-            @Override
-            public TableCell<ChatGroupModel, Boolean> call(TableColumn<ChatGroupModel, Boolean> p) {
-                return new RadioButtonCell();
-            }
-        };
-        selectColumn.setCellFactory(cellFactory);
 
-        qunNameColumn.setCellValueFactory(new PropertyValueFactory<ChatGroupModel, String>(
-                ChatGroupModel.groupNameColumnKey));
-        qunSizeColumn.setCellValueFactory(new PropertyValueFactory<ChatGroupModel, Integer>(
-                ChatGroupModel.groupSizeColumnKey));
 
-    }
-
-    class RadioButtonCell extends TableCell<ChatGroupModel, Boolean> {
-
-        private RadioButton radio;
-
-        public RadioButtonCell() {
-            createRadioButton();
-        }
-
-        private void createRadioButton() {
-            radio = new RadioButton();
-            radio.focusedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
-                        Boolean now) {
-                    if (now) {
-                        commitEdit(radio.isSelected());
-                    }
-                }
-            });
-            radio.setToggleGroup(group);
-        }
-
-        @Override
-        public void commitEdit(Boolean t) {
-            super.commitEdit(t);
-            final ObservableList<ChatGroupModel> items = getTableView().getItems();
-            for (int i = 0; i < items.size(); i++) {
-                ChatGroupModel chatGroup = items.get(i);
-                if (i == getIndex()) {
-                    chatGroup.setSelector(t);
-                    runtimeDomain.setCurrentGroupId(chatGroup.getGroupId());
-                } else {
-                    chatGroup.setSelector(Boolean.FALSE);
-                }
-            }
-        }
-
-        @Override
-        public void updateItem(Boolean item, boolean empty) {
-            super.updateItem(item, empty);
-            final ObservableList<ChatGroupModel> items = getTableView().getItems();
-            if (items != null) {
-                if (getIndex() < items.size()) {
-                    radio.setSelected(items.get(getIndex()).getSelector());
-                    setGraphic(radio);
-                }
-            }
-
-        }
-    }
 }

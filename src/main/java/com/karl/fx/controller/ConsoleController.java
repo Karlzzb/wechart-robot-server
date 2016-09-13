@@ -7,6 +7,8 @@ import javafx.scene.layout.AnchorPane;
 
 import org.springframework.stereotype.Component;
 
+import com.karl.utils.StringUtils;
+
 @Component
 public class ConsoleController extends FxmlController {
 
@@ -41,7 +43,7 @@ public class ConsoleController extends FxmlController {
                 logArea.setText(message);
             } else {
                 logArea.selectEnd();
-                logArea.insertText(logArea.getText().length(), message.replaceAll("</?[^>]+>", "")
+                logArea.insertText(logArea.getText().length(), StringUtils.replaceHtml(message)
                         + "\n");
             }
         }
