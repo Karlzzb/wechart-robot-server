@@ -6,35 +6,39 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0"
 	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
-		<Button fx:id="loginButton" layoutX="600.0" layoutY="12.0"
+		<Button fx:id="loginButton" layoutX="477.0" layoutY="12.0"
 			mnemonicParsing="false" onAction="#wechatLogin" text="登陆" />
-		<Button fx:id="groupFlush" layoutX="1111.0" layoutY="13.0"
-			mnemonicParsing="false" onAction="#flushGroup" text="刷新群" />
-		<TableView fx:id="playerTab" depthTest="DISABLE" layoutX="701.0"
-			layoutY="63.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-			prefHeight="509.0" prefWidth="498.0" AnchorPane.bottomAnchor="80.0"
-			AnchorPane.leftAnchor="701.0" AnchorPane.rightAnchor="0.0"
-			AnchorPane.topAnchor="63.0" editable="true">
+		<ChoiceBox fx:id="groupBox" layoutX="393.0" layoutY="55.0"
+			prefHeight="25.0" prefWidth="127.0" />
+		<Label fx:id="groupSizeLable" layoutX="535.0" layoutY="59.0"
+			text="群人数 ：0" />
+		<Button fx:id="groupFlush" layoutX="654.0" layoutY="55.0"
+			mnemonicParsing="false" onAction="#flushGroup" text="刷新"
+			AnchorPane.rightAnchor="106.0" />
+		<Button fx:id="syncPlayer" layoutX="738.0" layoutY="55.0"
+			onAction="#savePlayerPoint" mnemonicParsing="false" text="同步" />
+		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true"
+			layoutX="393.0" layoutY="89.0" maxHeight="1.7976931348623157E308"
+			maxWidth="1.7976931348623157E308" prefHeight="431.0" prefWidth="399.0"
+			AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="393.0"
+			AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="89.0">
 			<columns>
 				<TableColumn fx:id="colAutoID" prefWidth="52.333251953125"
 					resizable="false" text="编号" />
 				<TableColumn fx:id="colPlayerName" editable="true"
 					prefWidth="110.0" resizable="false" text="名称" />
-				<TableColumn fx:id="colPlayerPoint" maxWidth="316.0"
-					prefWidth="81.3333740234375" editable="true" resizable="false" text="积分" />
-				<TableColumn prefWidth="331.6666259765625" text="操作" />
+				<TableColumn fx:id="colPlayerPoint" editable="true"
+					maxWidth="316.0" prefWidth="144.66668701171875" resizable="false"
+					text="积分" />
+				<TableColumn prefWidth="269.33331298828125" text="操作" />
 			</columns>
 		</TableView>
-		<ChoiceBox fx:id="groupBox" layoutX="752.0" layoutY="12.0"
-			prefWidth="150.0" />
-		<Label fx:id="groupSizeLable" layoutX="917.0" layoutY="16.0" text="群人数 ：0" />
 	</children>
 	<stylesheets>
 		<URL value="@../css/Metro-UI.css" />

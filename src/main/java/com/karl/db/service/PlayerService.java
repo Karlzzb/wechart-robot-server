@@ -11,5 +11,7 @@ public interface PlayerService {
     public Player save(Player player);
 
     public Player getPlayerByRemarkName(String remarkName);
+    
+    public Player getPlayerById(String playerId);
 
 }

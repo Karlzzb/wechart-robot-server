@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
@@ -12,8 +11,8 @@ public class Player implements Serializable {
     private static final long serialVersionUID = -7909930972652408103L;
 
     @Id
-    @GeneratedValue
-    private Long id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     @Column(nullable = false)
     private String remarkName;
@@ -33,13 +32,6 @@ public class Player implements Serializable {
     @Column(nullable = true)
     private Long latestBetTime;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getRemarkName() {
         return remarkName;
@@ -97,5 +89,13 @@ public class Player implements Serializable {
     public void setLatestBetTime(Long latestBetTime) {
         this.latestBetTime = latestBetTime;
     }
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 }

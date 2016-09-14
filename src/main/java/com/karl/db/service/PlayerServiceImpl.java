@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.karl.db.domain.Player;
+import com.karl.db.repositories.PlayerRepository;
 
 @Component("playerService")
 @Transactional
@@ -36,6 +37,12 @@ public class PlayerServiceImpl implements PlayerService {
     public Player getPlayerByRemarkName(String remarkName) {
         Assert.notNull(remarkName, "remarkName must not be null");
         return playerRepository.findByRemarkName(remarkName);
+    }
+    
+    @Override
+    public Player getPlayerById(String playerId) {
+        Assert.notNull(playerId, "player must not be null");
+        return playerRepository.findOne(playerId);
     }
 
 }

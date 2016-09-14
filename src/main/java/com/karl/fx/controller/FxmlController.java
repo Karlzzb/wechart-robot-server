@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.karl.domain.RuntimeDomain;
 import com.karl.fx.StageManager;
+import com.karl.service.GameService;
 import com.karl.service.WebWechat;
 
 @Component
@@ -20,6 +21,9 @@ public abstract class FxmlController {
 
     @Autowired
     public RuntimeDomain runtimeDomain;
+    
+    @Autowired
+    public GameService gameService;
 
     public void initialize() {
     };

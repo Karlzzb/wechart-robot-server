@@ -38,6 +38,9 @@ public class MainDeskController extends FxmlController {
     private Button groupFlush;
     
     @FXML
+    private Button syncPlayer;
+    
+    @FXML
     private ChoiceBox<ChatGroupModel> groupBox;
     
     @FXML
@@ -128,8 +131,9 @@ public class MainDeskController extends FxmlController {
         for (int i = 0; i < currentPlayersName.size(); i++) {
         	currentPlayersName.get(i);
         	playerModle = new PlayerModel(i+1, currentPlayersName.get(i), 0);
-        	playerList.add(playerModle);
         	//TODO database part
+        	gameService.rsyncPlayerModel(playerModle, currentPlayersName.get(i));
+        	playerList.add(playerModle);
 		}
         playerTab.setItems(playerList);
     }
@@ -166,6 +170,11 @@ public class MainDeskController extends FxmlController {
         webWechat.wxInit();
         // webWechat.getContact();
         fillUpGroupBox();
+    }
+    
+    @FXML
+    private void savePlayerPoint(ActionEvent event) {
+    	gameService.ryncPlayersPoint(playerList);
     }
 
 

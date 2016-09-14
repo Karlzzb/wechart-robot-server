@@ -34,7 +34,7 @@ class RadioButtonCell extends TableCell<ChatGroupModel, Boolean> {
         super.commitEdit(t);
         final ObservableList<ChatGroupModel> items = getTableView().getItems();
         for (int i = 0; i < items.size(); i++) {
-            ChatGroupModel chatGroup = items.get(i);
+//            ChatGroupModel chatGroup = items.get(i);
             if (i == getIndex()) {
 //                chatGroup.setSelector(t);
             } else {

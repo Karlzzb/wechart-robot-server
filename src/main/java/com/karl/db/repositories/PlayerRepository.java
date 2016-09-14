@@ -1,20 +1,16 @@
-package com.karl.db.service;
+package com.karl.db.repositories;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 import com.karl.db.domain.Player;
 
-public interface PlayerRepository extends Repository<Player, Long> {
+public interface PlayerRepository extends CrudRepository<Player, String> {
 
     @Query("select id, remarkName, points from Player p where p.remarkName like ?1")
     List<Player> findLikeRemarkName(String remarkName);
 
-    @Query("select id, remarkName, points from Player p where p.remarkName = ?1")
     Player findByRemarkName(String remarkName);
-
-    Player save(Player player);
-
 }
