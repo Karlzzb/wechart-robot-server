@@ -5,11 +5,7 @@ import java.util.ResourceBundle;
 import com.karl.utils.DigitalUtils;
 
 public enum LotteryRule {
-    MOMO_SAME(15) {
-        @Override
-        public String getRuleName() {
-            return getStringFromResourceBundle("momo.same");
-        }
+    MOMO_SAME("momo.same",15) {
 
         @Override
         public Boolean getRuleResult(Double luckInfo) {
@@ -22,11 +18,7 @@ public enum LotteryRule {
             return Boolean.FALSE;
         }
     },
-    MOMO_FULL(14) {
-        @Override
-        public String getRuleName() {
-            return getStringFromResourceBundle("momo.full");
-        }
+    MOMO_FULL("momo.full",14) {
 
         @Override
         public Boolean getRuleResult(Double luckInfo) {
@@ -38,11 +30,7 @@ public enum LotteryRule {
             return Boolean.FALSE;
         }
     },
-    MOMO_STRAIGHT(13) {
-        @Override
-        public String getRuleName() {
-            return getStringFromResourceBundle("momo.straight");
-        }
+    MOMO_STRAIGHT("momo.straight",13) {
 
         @Override
         public Boolean getRuleResult(Double luckInfo) {
@@ -56,11 +44,7 @@ public enum LotteryRule {
             return Boolean.FALSE;
         }
     },
-    MOMO_GOLD(12) {
-        @Override
-        public String getRuleName() {
-            return getStringFromResourceBundle("momo.gold");
-        }
+    MOMO_GOLD("momo.gold",12) {
 
         @Override
         public Boolean getRuleResult(Double luckInfo) {
@@ -72,11 +56,7 @@ public enum LotteryRule {
             return Boolean.FALSE;
         }
     },
-    MOMO_PAIR(11) {
-        @Override
-        public String getRuleName() {
-            return getStringFromResourceBundle("momo.pair");
-        }
+    MOMO_PAIR("momo.pair",11) {
 
         @Override
         public Boolean getRuleResult(Double luckInfo) {
@@ -88,15 +68,25 @@ public enum LotteryRule {
             }
             return Boolean.FALSE;
         }
+
     };
 
     private final long times;
+    
+    private final String ruleKey;
 
-    private LotteryRule(long times) {
+    private LotteryRule(String ruleKey, long times) {
         this.times = times;
+        this.ruleKey = ruleKey;
     }
 
-    abstract public String getRuleName();
+   public String getRuleName() {
+	   return getStringFromResourceBundle(ruleKey); 
+   }
+    
+    public String getRuleDetail() {
+    	return String.valueOf(times)+"倍";
+    }
 
     abstract public Boolean getRuleResult(Double luckInfo);
 

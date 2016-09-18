@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.karl.db.domain.Player;
 import com.karl.db.service.PlayerService;
 import com.karl.domain.LotteryRule;
-import com.karl.domain.PlayConfigDomain;
 import com.karl.domain.RuntimeDomain;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
@@ -29,9 +28,6 @@ public class GameService {
 
 	@Autowired
 	private RuntimeDomain runtimeDomain;
-
-	@Autowired
-	private PlayConfigDomain playConfigDomain;
 
 	@Autowired
 	private PlayerService playerService;

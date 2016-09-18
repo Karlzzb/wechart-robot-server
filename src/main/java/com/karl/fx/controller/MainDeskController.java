@@ -1,5 +1,7 @@
 package com.karl.fx.controller;
 
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.value.ChangeListener;
@@ -21,9 +23,11 @@ import javafx.util.Callback;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.karl.fx.FxmlView;
+import com.karl.domain.LotteryRule;
 import com.karl.fx.model.ChatGroupModel;
+import com.karl.fx.model.CheckBoxButtonCell;
 import com.karl.fx.model.EditingCell;
+import com.karl.fx.model.PlayRule;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.StringUtils;
 
@@ -31,8 +35,6 @@ import com.karl.utils.StringUtils;
 @Lazy
 public class MainDeskController extends FxmlController {
 	
-    @FXML
-    private Button loginButton;
 
     @FXML
     private Button groupFlush;
@@ -61,11 +63,42 @@ public class MainDeskController extends FxmlController {
     private ObservableList<ChatGroupModel> groupList;
     
     private ObservableList<PlayerModel> playerList;
+    
+    @FXML
+    private TableView<PlayRule> ruleTab;
+    
+    @FXML private TableColumn<PlayRule,Boolean> ruleCheck;
+    
+    @FXML private TableColumn<PlayRule,String> ruleName;
+    
+    @FXML private TableColumn<PlayRule,String> ruleDetail;
+    
+    private ObservableList<PlayRule> ruleList;
+
 
     @Override
     public void initialize() {
     	buildGroupBox();
+    	buidRuleBox();
     	buildPlayerTab();
+    }
+    
+    private void buidRuleBox() {
+    	ruleTab.setEditable(true);
+    	ruleCheck.setCellFactory(new Callback<TableColumn<PlayRule,Boolean>, TableCell<PlayRule,Boolean>>() {
+			@Override
+			public TableCell<PlayRule, Boolean> call(
+					TableColumn<PlayRule, Boolean> arg0) {
+				return new CheckBoxButtonCell();
+			}
+    		
+		});
+    	
+    	ruleName.setCellValueFactory(new PropertyValueFactory<PlayRule, String>(
+    			PlayRule.RULENAMEKEY));
+    	ruleDetail.setCellValueFactory(new PropertyValueFactory<PlayRule, String>(
+    			PlayRule.RULEDETAILKEY));
+    	fillRuleTab();
     }
     
     private void buildGroupBox() {
@@ -77,7 +110,7 @@ public class MainDeskController extends FxmlController {
 					ChatGroupModel oldValue, ChatGroupModel newValue) {
 				if (newValue != null && !newValue.getGroupId().equals(String.valueOf(0))) {
 					runtimeDomain.setCurrentGroupId(newValue.getGroupId());
-					groupSizeLable.setText("群人数  :"+String.valueOf(newValue.getGroupSize()));
+					groupSizeLable.setText("群人数 :"+String.valueOf(newValue.getGroupSize()));
 					fillPlayerTab();
 				}
 			}
@@ -121,6 +154,7 @@ public class MainDeskController extends FxmlController {
     }
     
     
+    
     private void fillPlayerTab() {
     	if (playerList != null) {
     		playerList.clear();
@@ -159,11 +193,24 @@ public class MainDeskController extends FxmlController {
         groupBox.setItems(groupList);
         groupBox.getSelectionModel().select(selected);
     }
-
-    @FXML
-    private void wechatLogin(ActionEvent event) {
-        stageManager.switchScene(FxmlView.LOGIN);
+    
+    private void fillRuleTab() {
+    	if (ruleList != null) 
+    		ruleList.clear();
+    	ruleList = runtimeDomain.getRuleList();
+    	
+		EnumSet<LotteryRule> theRule = runtimeDomain.getCurrentRule();
+		if (theRule == null) {
+			return;
+		}
+		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
+				.hasNext();) {
+			LotteryRule lotteryRule = (LotteryRule) iterator.next();
+			ruleList.add(new PlayRule(Boolean.TRUE,lotteryRule.getRuleName(),lotteryRule.getRuleDetail()));
+		}
+		ruleTab.setItems(ruleList);
     }
+
 
     @FXML
     private void flushGroup(ActionEvent event) {

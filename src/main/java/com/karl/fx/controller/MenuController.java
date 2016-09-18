@@ -24,17 +24,7 @@ import com.karl.fx.FxmlView;
 public class MenuController extends FxmlController {
 
     private static final Logger LOGGER = getLogger(MenuController.class);
-
-    @FXML
-    private Button close;
-    @FXML
-    private Button maximize;
-    @FXML
-    private Button minimize;
-    @FXML
-    private Button resize;
-    @FXML
-    private Button fullscreen;
+    
     @FXML
     private Label title;
     @FXML
@@ -43,12 +33,13 @@ public class MenuController extends FxmlController {
     private AnchorPane paneData;
     @FXML
     private Button btnLogout;
+    @FXML
+    private Button loginButton;
+
 
     @Override
     public void initialize() {
         listMenu.getItems().addAll("  工作台", "  日志", "  用户列表");
-        maximize.getStyleClass().add("decoration-button-restore");
-        resize.setVisible(false);
         listMenu.getSelectionModel().select(0);
         listMenu.requestFocus();
         stageManager.loadAnchorPaneMemu(paneData, FxmlView.MAIN);
@@ -76,6 +67,11 @@ public class MenuController extends FxmlController {
         }
             break;
         }
+    }
+    
+    @FXML
+    private void wechatLogin(ActionEvent event) {
+        stageManager.popupWindow(FxmlView.LOGIN);
     }
 
 }

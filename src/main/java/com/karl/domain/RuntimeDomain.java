@@ -20,6 +20,7 @@ import blade.kit.json.JSONObject;
 
 import com.karl.db.domain.Player;
 import com.karl.fx.model.ChatGroupModel;
+import com.karl.fx.model.PlayRule;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
 
@@ -38,6 +39,7 @@ public class RuntimeDomain implements Serializable {
         currentRule = EnumSet.allOf(LotteryRule.class);
         groupList = FXCollections.observableArrayList();
         playerList = FXCollections.observableArrayList();
+        ruleList = FXCollections.observableArrayList();
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -89,11 +91,16 @@ public class RuntimeDomain implements Serializable {
      * current player
      */
     private ObservableList<PlayerModel> playerList;
+    
+    /**
+     * current rule List
+     */
+    private ObservableList<PlayRule> ruleList;
+
+    
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
-    
-    
     
     public List<String> getCurrentPlayersName() {
     	List<String> playersName = new ArrayList<String>();
@@ -341,5 +348,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setPlayerList(ObservableList<PlayerModel> playerList) {
 		this.playerList = playerList;
+	}
+
+	public ObservableList<PlayRule> getRuleList() {
+		return ruleList;
+	}
+
+	public void setRuleList(ObservableList<PlayRule> ruleList) {
+		this.ruleList = ruleList;
 	}
 }

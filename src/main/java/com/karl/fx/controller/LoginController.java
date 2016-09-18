@@ -24,6 +24,9 @@ public class LoginController extends FxmlController {
 
     @FXML
     private ImageView loginImageView;
+    
+    @FXML
+    private ProgressBar taskBar;
 
     private ConsoleController consoleController;
 
@@ -49,7 +52,7 @@ public class LoginController extends FxmlController {
         LOGGER.debug("Longin image path :{}", path);
         Image loginImage = new Image(path);
         loginImageView.setImage(loginImage);
-
+        taskBar.setProgress(-1.0f);
         waitLoginTask();
     }
 
@@ -68,12 +71,13 @@ public class LoginController extends FxmlController {
                 LOGGER.info("[*] 微信登录成功");
                 webWechat.buildWechat();
                 webWechat.listenMsgMode(consoleController);
+//                Stage stage = (Stage)loginImageView.getScene().getWindow();
+//                stage.close();
                 stageManager.switchScene(FxmlView.MENU);
                 return null;
             }
         };
-        ProgressBar bar = new ProgressBar();
-        bar.progressProperty().bind(task.progressProperty());
+//        taskBar.progressProperty().bind(task.progressProperty());
         Platform.runLater(task);
     }
 }

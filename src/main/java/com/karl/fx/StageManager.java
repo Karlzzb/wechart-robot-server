@@ -6,6 +6,7 @@ import java.util.Objects;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import org.slf4j.Logger;
@@ -25,6 +26,27 @@ public class StageManager {
     public void switchScene(final FxmlView view) {
         Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
         show(viewRootNodeHierarchy, view.getFxmlFile());
+    }
+    
+    public void popupWindow(final FxmlView view) {
+        Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
+        popup(viewRootNodeHierarchy, view.getFxmlFile());
+    }
+    
+    private void popup(final Parent rootnode, String title) {
+        Scene scene = prepareScene(rootnode);
+        Stage newStage = new Stage();
+        newStage.setTitle(title);
+        newStage.initModality(Modality.NONE);
+        newStage.initOwner(primaryStage);
+        newStage.setScene(scene);
+        newStage.sizeToScene();
+        newStage.centerOnScreen();
+        try {
+        	newStage.showAndWait();
+        } catch (Exception e) {
+            LOGGER.error("Uable to show scene for title " + title, e);
+        }
     }
 
     private void show(final Parent rootnode, String title) {

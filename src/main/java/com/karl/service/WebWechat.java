@@ -438,14 +438,14 @@ public class WebWechat {
                 runtimeDomain.getSynckey(), "_", System.currentTimeMillis()).header("Cookie",
                 runtimeDomain.getCookie());
 
-        LOGGER.info("[syncCheck request ] " + request);
+        LOGGER.debug("[syncCheck request ] " + request);
         String res = request.body();
         request.disconnect();
 
         if (StringKit.isBlank(res)) {
             return arr;
         }
-        LOGGER.info("[syncCheck response ] " + res);
+        LOGGER.debug("[syncCheck response ] " + res);
 
         String retcode = StringUtils.match("retcode:\"(\\d+)\",", res);
         String selector = StringUtils.match("selector:\"(\\d+)\"}", res);
