@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 import com.karl.utils.StringUtils;
 
-public class PlayerModel {
+public class PlayerModel{
     public static final String AUDOIDCOLKEY = "autoID";
     public static final String PLAYERIDCOLKEY = "playerId";
     public static final String PLAYERNAMECOLKEY = "playerName";

@@ -5,6 +5,7 @@ import java.util.Map;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,17 +24,24 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.karl.db.domain.Player;
 import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
+import com.karl.utils.AppUtils;
 import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
 public class MainDeskController extends FxmlController {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(MainDeskController.class);
 
 	@FXML
 	private Button groupFlush;
@@ -46,7 +54,7 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Label groupSizeLable;
-	
+
 	@FXML
 	private TableColumn<PlayerModel, Boolean> colBankerSgin;
 
@@ -58,7 +66,7 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private TableColumn<PlayerModel, String> colPlayerPoint;
-	
+
 	@FXML
 	private TableColumn<PlayerModel, String> colPlayerLatestBet;
 
@@ -85,7 +93,7 @@ public class MainDeskController extends FxmlController {
 	private Label bankerLabel;
 
 	final ToggleGroup group = new ToggleGroup();
-	
+
 	final ToggleGroup playerGroup = new ToggleGroup();
 
 	@Override
@@ -95,9 +103,8 @@ public class MainDeskController extends FxmlController {
 		gameStart.setUserData(Boolean.TRUE);
 		gameEnd.setUserData(Boolean.FALSE);
 		gameStart.setSelected(runtimeDomain.getGlobalGameSignal());
-		gameEnd
-				.setSelected(runtimeDomain.getGlobalGameSignal() ? Boolean.FALSE
-						: Boolean.TRUE);
+		gameEnd.setSelected(runtimeDomain.getGlobalGameSignal() ? Boolean.FALSE
+				: Boolean.TRUE);
 		group.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					public void changed(ObservableValue<? extends Toggle> ov,
@@ -107,13 +114,14 @@ public class MainDeskController extends FxmlController {
 						} else {
 							runtimeDomain.setGlobalGameSignal((Boolean) group
 									.getSelectedToggle().getUserData());
-							 messageBoard.setText(gameService.declareGame());
+							messageBoard.setText(gameService.declareGame());
 						}
 					}
 				});
 
 		buildGroupBox();
 		buildPlayerTab();
+		playerAutoFlush();
 	}
 
 	private void buildGroupBox() {
@@ -129,7 +137,8 @@ public class MainDeskController extends FxmlController {
 										String.valueOf(0))) {
 							runtimeDomain.setCurrentGroupId(newValue
 									.getGroupId());
-							runtimeDomain.setCurrentGroupName(newValue.getGroupName());
+							runtimeDomain.setCurrentGroupName(newValue
+									.getGroupName());
 							groupSizeLable.setText("群人数 :"
 									+ String.valueOf(newValue.getGroupSize()));
 							fillPlayerTab();
@@ -148,14 +157,15 @@ public class MainDeskController extends FxmlController {
 				return new EditingCell();
 			}
 		};
-		
-	   Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {
-            @Override
-            public TableCell<PlayerModel, Boolean> call(TableColumn<PlayerModel, Boolean> p) {
-                return new RadioButtonCell();
-            }
-        };
-        colBankerSgin.setCellFactory(radioFactory);
+
+		Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {
+			@Override
+			public TableCell<PlayerModel, Boolean> call(
+					TableColumn<PlayerModel, Boolean> p) {
+				return new RadioButtonCell();
+			}
+		};
+		colBankerSgin.setCellFactory(radioFactory);
 
 		colAutoID
 				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Integer>(
@@ -182,8 +192,9 @@ public class MainDeskController extends FxmlController {
 						// TODO DATABASE options
 					}
 				});
-		colPlayerLatestBet.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
-				PlayerModel.PLAYERBETCOLKEY));
+		colPlayerLatestBet
+				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
+						PlayerModel.PLAYERBETCOLKEY));
 
 		fillPlayerTab();
 	}
@@ -193,6 +204,7 @@ public class MainDeskController extends FxmlController {
 			playerList.clear();
 		}
 		playerList = runtimeDomain.getPlayerList();
+		runtimeDomain.getRunningPlayeres().clear();
 		PlayerModel playerModle = null;
 		Map<String, String> currentPlayersName = runtimeDomain
 				.getCurrentPlayersName();
@@ -202,6 +214,10 @@ public class MainDeskController extends FxmlController {
 					currentPlayersName.get(remarkName), 0, remarkName);
 			gameService.rsyncPlayerModel(playerModle,
 					currentPlayersName.get(remarkName));
+			if (playerModle.getPlayerName().equals(
+					runtimeDomain.getBankerRemarkName())) {
+				playerModle.setIsBanker(Boolean.TRUE);
+			}
 			playerList.add(playerModle);
 		}
 		playerTab.setItems(playerList);
@@ -242,63 +258,103 @@ public class MainDeskController extends FxmlController {
 	private void savePlayerPoint(ActionEvent event) {
 		gameService.ryncPlayersPoint(playerList);
 	}
-	
+
 	@FXML
 	private void sendMessage(ActionEvent event) {
 		webWechat.webwxsendmsg(messageBoard.getText());
 	}
-	
+
 	private class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
 
-	    private RadioButton radio;
+		private RadioButton radio;
 
-	    public RadioButtonCell() {
-	        createRadioButton();
-	    }
+		public RadioButtonCell() {
+			createRadioButton();
+		}
 
-	    private void createRadioButton() {
-	        radio = new RadioButton();
-	        radio.focusedProperty().addListener(new ChangeListener<Boolean>() {
-	            @Override
-	            public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
-	                    Boolean now) {
-	                if (now) {
-	                    commitEdit(radio.isSelected());
-	                }
-	            }
-	        });
-	        radio.setToggleGroup(playerGroup);
-	    }
+		private void createRadioButton() {
+			radio = new RadioButton();
+			radio.focusedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> arg0,
+						Boolean before, Boolean now) {
+					if (now) {
+						commitEdit(radio.isSelected());
+					}
+				}
+			});
+			radio.setToggleGroup(playerGroup);
+		}
 
-	    @Override
-	    public void commitEdit(Boolean t) {
-	        super.commitEdit(t);
-	        final ObservableList<PlayerModel> items = getTableView().getItems();
-	        for (int i = 0; i < items.size(); i++) {
-	            PlayerModel playerModel = items.get(i);
-	            if (i == getIndex()) {
-	            	playerModel.setIsBanker(t);
-	            	runtimeDomain.setBankerRemarkName(playerModel.getPlayerName());
-	            	bankerLabel.setText(playerModel.getPlayerName());
-	            } else {
-	            	playerModel.setIsBanker(Boolean.FALSE);
-	            }
-	        }
-	    }
+		@Override
+		public void commitEdit(Boolean t) {
+			super.commitEdit(t);
+			final ObservableList<PlayerModel> items = getTableView().getItems();
+			for (int i = 0; i < items.size(); i++) {
+				PlayerModel playerModel = items.get(i);
+				if (i == getIndex()) {
+					playerModel.setIsBanker(t);
+					runtimeDomain.setBankerRemarkName(playerModel
+							.getPlayerName());
+					bankerLabel.setText(playerModel.getPlayerName());
+				} else {
+					playerModel.setIsBanker(Boolean.FALSE);
+				}
+			}
+		}
 
-	    @Override
-	    public void updateItem(Boolean item, boolean empty) {
-	        super.updateItem(item, empty);
-	        final ObservableList<PlayerModel> items = getTableView().getItems();
-	        if (items != null) {
-	            if (getIndex() < items.size()) {
-	                radio.setSelected(items.get(getIndex()).getIsBanker());
-	                setGraphic(radio);
-	            }
-	        }
+		@Override
+		public void updateItem(Boolean item, boolean empty) {
+			super.updateItem(item, empty);
+			final ObservableList<PlayerModel> items = getTableView().getItems();
+			if (items != null) {
+				if (getIndex() < items.size()) {
+					radio.setSelected(items.get(getIndex()).getIsBanker());
+					setGraphic(radio);
+				}
+			}
 
-	    }
-	}	
-	
+		}
+	}
+
+	private void playerAutoFlush() {
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() {
+				while (true) {
+					try {
+						Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if (playerTab == null) {
+						return null;
+					}
+					ObservableList<PlayerModel> playerTabData = playerTab
+							.getItems();
+					PlayerModel pModel = null;
+					Player pEntity = null;
+					if (playerTabData == null || playerTabData.size() < 1) {
+						continue;
+					}
+					for (int i = 0; i < playerTabData.size(); i++) {
+						pModel = playerTabData.get(i);
+						pModel.getPlayerName();
+						pEntity = runtimeDomain.getRunningPlayeres().get(
+								pModel.getPlayerName());
+						if (pEntity != null) {
+							pModel.setPlayerLatestBet(pEntity.getLatestBet() == null ? ""
+									: pEntity.getLatestBet());
+						}
+					}
+					playerTab.setItems(playerTabData);
+					//TODO It's not auto fresh;
+				}
+			}
+		};
+		Thread t1 = new Thread(task);
+		t1.setDaemon(Boolean.TRUE);
+		t1.start();
+	}
 
 }

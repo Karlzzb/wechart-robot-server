@@ -43,6 +43,7 @@ public class RuntimeDomain implements Serializable {
         maximumBet = AppUtils.DEFAULT_MAXBET;
         bankerPackageNum = AppUtils.DEFAULT_PACKAGE_NUM;
         bankerIndex = 1;
+        betOrder = 0;
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -122,6 +123,11 @@ public class RuntimeDomain implements Serializable {
      * game key for play
      */
     private String currentGameKey;
+    
+    /**
+     * 
+     */
+    private Integer betOrder;
     
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
@@ -433,5 +439,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBankerIndex(Integer bankerIndex) {
 		this.bankerIndex = bankerIndex;
+	}
+
+	public Integer getBetOrder() {
+		return betOrder;
+	}
+
+	public void setBetOrder(Integer betOrder) {
+		this.betOrder = betOrder;
 	}
 }

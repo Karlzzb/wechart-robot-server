@@ -21,10 +21,10 @@
 				<TableColumn fx:id="colAutoID" prefWidth="100.0" resizable="false" text="编号" />
 				<TableColumn fx:id="colPlayerName" editable="true" minWidth="4.33343505859375" prefWidth="90.66656494140625" resizable="false" text="名称" />
 				<TableColumn fx:id="colPlayerPoint" editable="true" maxWidth="316.0" prefWidth="89.333251953125" resizable="false" text="积分" />
-            <TableColumn fx:id="colPlayerLatestBet" resizable="false" prefWidth="113.666748046875" text="当前" />
+            <TableColumn fx:id="colPlayerLatestBet" prefWidth="113.666748046875" resizable="false" text="当前局下注" />
 			</columns>
 		</TableView>
-      <TextArea fx:id="messageBoard" layoutX="50.0" layoutY="35.0" prefHeight="631.0" prefWidth="466.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="729.0" AnchorPane.topAnchor="20.0" />
+      <TextArea fx:id="messageBoard" layoutX="21.0" layoutY="62.0" prefHeight="485.0" prefWidth="466.0" AnchorPane.bottomAnchor="125.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="738.0" AnchorPane.topAnchor="62.0" />
       <Button fx:id="msgSendBut" layoutX="514.0" layoutY="214.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="45.0" prefWidth="90.0" text="信息发出" AnchorPane.bottomAnchor="413.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="214.0" />
       <ToggleButton fx:id="gameStart" layoutX="514.0" layoutY="300.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="开始" AnchorPane.bottomAnchor="346.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="300.0" />
       <ToggleButton fx:id="gameEnd" layoutX="514.0" layoutY="358.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="结束" AnchorPane.bottomAnchor="288.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="358.0" />

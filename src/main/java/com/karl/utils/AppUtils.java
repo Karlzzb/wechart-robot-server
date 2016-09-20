@@ -33,6 +33,8 @@ public class AppUtils {
 			"wxitil", "userexperience_alarm", "notification_messages");
 
 	public static final long LOGIN_WAITING_TIME = 2000;
+	
+	public static final long PLAYER_TAB_FLSH_TERVAL = 1000;
 
 	public static final long WECHAT_LISTEN_INTERVAL = 500;
 

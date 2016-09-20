@@ -208,7 +208,6 @@ public class GameService {
 		if (playerModle == null || remarkName == null || remarkName.isEmpty()) {
 			return;
 		}
-		runningPlayers().clear();
 		Player playerEntity = playerService.getPlayerByRemarkName(remarkName);
 		if (playerEntity != null) {
 			playerModle
