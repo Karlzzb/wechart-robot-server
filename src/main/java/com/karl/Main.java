@@ -45,6 +45,7 @@ public class Main extends Application {
 
     protected void displayINitialScene() {
         stageManager.switchScene(FxmlView.LOGIN);
+//        stageManager.switchScene(FxmlView.MENU);
     }
 
     private ConfigurableApplicationContext bootstapSpringApplicationContext() {

@@ -2,10 +2,8 @@ package com.karl.domain;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
@@ -30,7 +28,6 @@ public class RuntimeDomain implements Serializable {
     public RuntimeDomain() {
         groupMap = new HashMap<String, JSONObject>();
         allUsrMap = new HashMap<String, JSONObject>();
-        groupUsrMap = new HashMap<String, JSONObject>();
         publicUsrMap = new HashMap<String, JSONObject>();
         specialUsrMap = new HashMap<String, JSONObject>();
         runningPlayeres = new HashMap<String, Player>();
@@ -40,11 +37,19 @@ public class RuntimeDomain implements Serializable {
         groupList = FXCollections.observableArrayList();
         playerList = FXCollections.observableArrayList();
         ruleList = FXCollections.observableArrayList();
+        globalGameSignal = Boolean.FALSE;
+        currentGameKey = AppUtils.PLAYLONGSPLIT;
+        minimumBet = AppUtils.DEFAULT_MINBET;
+        maximumBet = AppUtils.DEFAULT_MAXBET;
+        bankerPackageNum = AppUtils.DEFAULT_PACKAGE_NUM;
+        bankerIndex = 1;
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
 
     private String currentGroupId;
+    
+    private String currentGroupName;
 
     private final File qrCodeFile;
 
@@ -61,9 +66,6 @@ public class RuntimeDomain implements Serializable {
     // 所有用戶信息
     private Map<String, JSONObject> allUsrMap;
 
-    // 群用户
-    private Map<String, JSONObject> groupUsrMap;
-
     // 公众号／服务号
     private Map<String, JSONObject> publicUsrMap;
 
@@ -71,14 +73,28 @@ public class RuntimeDomain implements Serializable {
     private Map<String, JSONObject> specialUsrMap;
 
     /**
-     * The latest player info
+     * The latest player info(key= remarkName)
      */
-    public Map<String, Player> runningPlayeres;
+    private Map<String, Player> runningPlayeres;
 
     /**
      * The current banker
      */
     public String bankerRemarkName;
+    
+    /**
+     * The current banker defined 
+     */
+    public Integer bankerPackageNum;
+    
+    /**
+     * The current banker defined 
+     */
+    public Integer bankerIndex;
+    
+    public Long minimumBet;
+    
+    public Long maximumBet;
 
     private EnumSet<LotteryRule> currentRule;
 
@@ -97,13 +113,26 @@ public class RuntimeDomain implements Serializable {
      */
     private ObservableList<PlayRule> ruleList;
 
+    /**
+     * game start/end signal
+     */
+    private Boolean globalGameSignal;
+    
+    /**
+     * game key for play
+     */
+    private String currentGameKey;
     
 
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
     
-    public List<String> getCurrentPlayersName() {
-    	List<String> playersName = new ArrayList<String>();
+    /**
+     * key=wechatId
+     * @return
+     */
+    public Map<String, String> getCurrentPlayersName() {
+    	Map<String, String> playersName = new HashMap<String,String>();
     	if (getCurrentGroupId() == null ||getCurrentGroupId().isEmpty()) {
     		return playersName;
     	}
@@ -122,7 +151,7 @@ public class RuntimeDomain implements Serializable {
             contact = memberList.getJSONObject(i);
             remarkName = getUserRemarkName(contact.getString("UserName"));
             if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
-            	playersName.add(remarkName);
+            	playersName.put(contact.getString("UserName"), remarkName);
             }
         }
     	return playersName;
@@ -212,18 +241,6 @@ public class RuntimeDomain implements Serializable {
 
     public void putAllUsrMap(String key, JSONObject value) {
         this.allUsrMap.put(key, value);
-    }
-
-    public Map<String, JSONObject> getGroupUsrMap() {
-        return groupUsrMap;
-    }
-
-    public void setGroupUsrMap(Map<String, JSONObject> groupUsrMap) {
-        this.groupUsrMap = groupUsrMap;
-    }
-
-    public void putGroupUsrMap(String key, JSONObject value) {
-        this.groupUsrMap.put(key, value);
     }
 
     public Map<String, JSONObject> getPublicUsrMap() {
@@ -317,6 +334,10 @@ public class RuntimeDomain implements Serializable {
     public void setRunningPlayeres(Map<String, Player> runningPlayeres) {
         this.runningPlayeres = runningPlayeres;
     }
+    
+    public void putRunningPlayeres(String remarkName, Player runningPlayer) {
+        this.runningPlayeres.put(remarkName, runningPlayer);
+    }
 
     public String getBankerRemarkName() {
         return bankerRemarkName;
@@ -356,5 +377,61 @@ public class RuntimeDomain implements Serializable {
 
 	public void setRuleList(ObservableList<PlayRule> ruleList) {
 		this.ruleList = ruleList;
+	}
+
+	public Boolean getGlobalGameSignal() {
+		return globalGameSignal;
+	}
+
+	public void setGlobalGameSignal(Boolean globalGameSignal) {
+		this.globalGameSignal = globalGameSignal;
+	}
+
+	public String getCurrentGameKey() {
+		return currentGameKey;
+	}
+
+	public void setCurrentGameKey(String currentGameKey) {
+		this.currentGameKey = currentGameKey;
+	}
+
+	public String getCurrentGroupName() {
+		return currentGroupName;
+	}
+
+	public void setCurrentGroupName(String currentGroupName) {
+		this.currentGroupName = currentGroupName;
+	}
+
+	public Long getMinimumBet() {
+		return minimumBet;
+	}
+
+	public void setMinimumBet(Long minimumBet) {
+		this.minimumBet = minimumBet;
+	}
+
+	public Long getMaximumBet() {
+		return maximumBet;
+	}
+
+	public void setMaximumBet(Long maximumBet) {
+		this.maximumBet = maximumBet;
+	}
+
+	public Integer getBankerPackageNum() {
+		return bankerPackageNum;
+	}
+
+	public void setBankerPackageNum(Integer bankerPackageNum) {
+		this.bankerPackageNum = bankerPackageNum;
+	}
+
+	public Integer getBankerIndex() {
+		return bankerIndex;
+	}
+
+	public void setBankerIndex(Integer bankerIndex) {
+		this.bankerIndex = bankerIndex;
 	}
 }

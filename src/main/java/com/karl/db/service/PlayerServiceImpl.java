@@ -45,4 +45,28 @@ public class PlayerServiceImpl implements PlayerService {
         return playerRepository.findOne(playerId);
     }
 
+	@Override
+	public void updateResult(String playerId, Long latestResult) {
+        Assert.notNull(playerId, "playerId must not be null");
+        Assert.notNull(latestResult, "latestResult must not be null");
+        playerRepository.updateResult(playerId, latestResult);
+	}
+
+	@Override
+	public void updateLuckInfo(String playerId, Double latestLuck) {
+        Assert.notNull(playerId, "playerId must not be null");
+        Assert.notNull(latestLuck, "latestLuck must not be null");
+        playerRepository.updateLuckInfo(playerId, latestLuck);
+	}
+
+	@Override
+	public void updateBetInfo(String playerId, String latestBet,
+			Long latestBetTime, Long latestBetValue) {
+        Assert.notNull(playerId, "playerId must not be null");
+        Assert.notNull(latestBet, "latestBet must not be null");
+        Assert.notNull(latestBetTime, "latestBetTime must not be null");
+        Assert.notNull(latestBetValue, "latestBetValue must not be null");
+      playerRepository.updateBetInfo(playerId, latestBet, latestBetTime, latestBetValue);
+	}
+
 }

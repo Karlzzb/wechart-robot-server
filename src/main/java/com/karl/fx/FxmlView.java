@@ -17,7 +17,7 @@ public enum FxmlView {
     LOGIN {
         @Override
         String getTitle() {
-            return getStringFromResourceBundle("/fxml/login.title");
+            return getStringFromResourceBundle("login.title");
         }
 
         @Override
@@ -28,7 +28,7 @@ public enum FxmlView {
     MENU {
         @Override
         String getTitle() {
-            return getStringFromResourceBundle("/fxml/login.title");
+            return getStringFromResourceBundle("menu.title");
         }
 
         @Override
@@ -39,13 +39,22 @@ public enum FxmlView {
     CONSOLE {
         @Override
         String getTitle() {
-            // TODO Auto-generated method stub
-            return null;
+            return getStringFromResourceBundle("console.title");
         }
 
         @Override
         String getFxmlFile() {
             return "/fxml/ConsoleTab.fxml";
+        }
+    }, CONFIG{
+        @Override
+        String getTitle() {
+            return getStringFromResourceBundle("config.title");
+        }
+
+        @Override
+        String getFxmlFile() {
+            return "/fxml/Configuration.fxml";
         }
     };
 

@@ -7,7 +7,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.ToggleGroup;
 
-class RadioButtonCell extends TableCell<ChatGroupModel, Boolean> {
+class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
 
     private RadioButton radio;
 
@@ -32,9 +32,9 @@ class RadioButtonCell extends TableCell<ChatGroupModel, Boolean> {
     @Override
     public void commitEdit(Boolean t) {
         super.commitEdit(t);
-        final ObservableList<ChatGroupModel> items = getTableView().getItems();
+        final ObservableList<PlayerModel> items = getTableView().getItems();
         for (int i = 0; i < items.size(); i++) {
-//            ChatGroupModel chatGroup = items.get(i);
+//            PlayerModel chatGroup = items.get(i);
             if (i == getIndex()) {
 //                chatGroup.setSelector(t);
             } else {
@@ -46,10 +46,10 @@ class RadioButtonCell extends TableCell<ChatGroupModel, Boolean> {
     @Override
     public void updateItem(Boolean item, boolean empty) {
         super.updateItem(item, empty);
-        final ObservableList<ChatGroupModel> items = getTableView().getItems();
+        final ObservableList<PlayerModel> items = getTableView().getItems();
         if (items != null) {
             if (getIndex() < items.size()) {
-//                radio.setSelected(items.get(getIndex()).getSelector());
+                radio.setSelected(items.get(getIndex()).getIsBanker());
                 setGraphic(radio);
             }
         }

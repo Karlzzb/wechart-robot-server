@@ -12,7 +12,10 @@ public class Player implements Serializable {
 
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private String playerId;
+
+    @Column(nullable = true)
+    private String webchatId;
 
     @Column(nullable = false)
     private String remarkName;
@@ -21,7 +24,10 @@ public class Player implements Serializable {
     private Long points;
 
     @Column(nullable = true)
-    private Long latestBet;
+    private Long latestBetValue;
+    
+    @Column(nullable = true)
+    private String latestBet;
 
     @Column(nullable = true)
     private Double latestLuck;
@@ -53,16 +59,11 @@ public class Player implements Serializable {
         super();
     }
 
-    @Override
-    public String toString() {
-        return "{id:" + id + "remarkName:" + remarkName + ",points" + points + "}";
-    }
-
-    public Long getLatestBet() {
+    public String getLatestBet() {
         return latestBet;
     }
 
-    public void setLatestBet(Long latestBet) {
+    public void setLatestBet(String latestBet) {
         this.latestBet = latestBet;
     }
 
@@ -90,12 +91,28 @@ public class Player implements Serializable {
         this.latestBetTime = latestBetTime;
     }
 
-	public String getId() {
-		return id;
+	public String getPlayerId() {
+		return playerId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
+	}
+
+	public String getWebchatId() {
+		return webchatId;
+	}
+
+	public void setWebchatId(String webchatId) {
+		this.webchatId = webchatId;
+	}
+
+	public Long getLatestBetValue() {
+		return latestBetValue;
+	}
+
+	public void setLatestBetValue(Long latestBetValue) {
+		this.latestBetValue = latestBetValue;
 	}
 
 }

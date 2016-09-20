@@ -5,49 +5,29 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0"
-	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
-		<TableView fx:id="ruleTab" layoutX="41.0" layoutY="59.0"
-			prefHeight="577.0" prefWidth="333.0" AnchorPane.bottomAnchor="20.0"
-			AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="872.0"
-			AnchorPane.topAnchor="50.0">
+		<ChoiceBox fx:id="groupBox" layoutX="761.0" layoutY="30.0" prefHeight="26.0" prefWidth="200.0" AnchorPane.bottomAnchor="616.0" AnchorPane.leftAnchor="751.0" AnchorPane.rightAnchor="310.0" AnchorPane.topAnchor="30.0" />
+		<Label fx:id="groupSizeLable" layoutX="958.0" layoutY="35.0" text="群人数 :0" AnchorPane.bottomAnchor="620.0" AnchorPane.leftAnchor="936.0" AnchorPane.rightAnchor="199.0" AnchorPane.topAnchor="35.0" />
+		<Button fx:id="groupFlush" layoutX="1153.0" layoutY="47.0" mnemonicParsing="false" onAction="#flushGroup" text="刷新" AnchorPane.bottomAnchor="616.0" AnchorPane.leftAnchor="1135.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="30.0" />
+		<Button fx:id="syncPlayer" layoutX="1073.0" layoutY="30.0" mnemonicParsing="false" onAction="#savePlayerPoint" text="同步" AnchorPane.bottomAnchor="616.0" AnchorPane.leftAnchor="1048.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="30.0" />
+		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="774.0" layoutY="89.0" prefHeight="585.0" prefWidth="500.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
 			<columns>
-				<TableColumn fx:id="ruleCheck" prefWidth="103" text="选择" />
-				<TableColumn fx:id="ruleName" prefWidth="130" text="名称" />
-				<TableColumn fx:id="ruleDetail" prefWidth="99.0" text="倍数" />
+            <TableColumn fx:id="colBankerSgin" prefWidth="60.0" text="选主" />
+				<TableColumn fx:id="colAutoID" prefWidth="100.0" resizable="false" text="编号" />
+				<TableColumn fx:id="colPlayerName" editable="true" minWidth="4.33343505859375" prefWidth="90.66656494140625" resizable="false" text="名称" />
+				<TableColumn fx:id="colPlayerPoint" editable="true" maxWidth="316.0" prefWidth="89.333251953125" resizable="false" text="积分" />
+            <TableColumn fx:id="colPlayerLatestBet" resizable="false" prefWidth="113.666748046875" text="当前" />
 			</columns>
 		</TableView>
-		<ChoiceBox fx:id="groupBox" layoutX="761.0" layoutY="30.0"
-			prefHeight="26.0" prefWidth="200.0" AnchorPane.bottomAnchor="616.0"
-			AnchorPane.leftAnchor="751.0" AnchorPane.rightAnchor="310.0"
-			AnchorPane.topAnchor="30.0" />
-		<Label fx:id="groupSizeLable" layoutX="958.0" layoutY="35.0" text="群人数 :0"
-			AnchorPane.bottomAnchor="620.0" AnchorPane.leftAnchor="936.0"
-			AnchorPane.rightAnchor="199.0" AnchorPane.topAnchor="35.0" />
-		<Button fx:id="groupFlush" layoutX="1153.0" layoutY="47.0"
-			mnemonicParsing="false" onAction="#flushGroup" text="刷新" AnchorPane.bottomAnchor="616.0"
-			AnchorPane.leftAnchor="1135.0" AnchorPane.rightAnchor="20.0"
-			AnchorPane.topAnchor="30.0" />
-		<Button fx:id="syncPlayer" layoutX="1073.0" layoutY="30.0"
-			mnemonicParsing="false" onAction="#savePlayerPoint" text="同步" AnchorPane.bottomAnchor="616.0"
-			AnchorPane.leftAnchor="1048.0" AnchorPane.rightAnchor="100.0"
-			AnchorPane.topAnchor="30.0" />
-		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true"
-			layoutX="774.0" layoutY="89.0" prefHeight="585.0" prefWidth="500.0"
-			AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="750.0"
-			AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
-			<columns>
-				<TableColumn fx:id="colAutoID" prefWidth="121.0"
-					resizable="false" text="编号" />
-				<TableColumn fx:id="colPlayerName" editable="true"
-					prefWidth="188.0" resizable="false" text="名称" />
-				<TableColumn fx:id="colPlayerPoint" editable="true"
-					maxWidth="316.0" prefWidth="145.0" resizable="false" text="积分" />
-			</columns>
-		</TableView>
+      <TextArea fx:id="messageBoard" layoutX="50.0" layoutY="35.0" prefHeight="631.0" prefWidth="466.0" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="729.0" AnchorPane.topAnchor="20.0" />
+      <Button fx:id="msgSendBut" layoutX="514.0" layoutY="214.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="45.0" prefWidth="90.0" text="信息发出" AnchorPane.bottomAnchor="413.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="214.0" />
+      <ToggleButton fx:id="gameStart" layoutX="514.0" layoutY="300.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="开始" AnchorPane.bottomAnchor="346.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="300.0" />
+      <ToggleButton fx:id="gameEnd" layoutX="514.0" layoutY="358.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="结束" AnchorPane.bottomAnchor="288.0" AnchorPane.leftAnchor="514.0" AnchorPane.rightAnchor="621.0" AnchorPane.topAnchor="358.0" />
+      <Label fx:id="bankerLabel" layoutX="514.0" layoutY="165.0" prefHeight="26.0" prefWidth="90.0" text="主人：" />
 	</children>
 </AnchorPane>

@@ -14,4 +14,11 @@ public interface PlayerService {
     
     public Player getPlayerById(String playerId);
 
+	public void updateResult(String playerId, Long latestResult);
+
+	public void updateBetInfo(String playerId, String latestBet,
+			Long latestBetTime, Long latestBetValue);
+
+	public void updateLuckInfo(String playerId, Double latestLuck);
+
 }

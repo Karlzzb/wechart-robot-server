@@ -168,7 +168,7 @@ public class PcClient {
                 jsonLuckOne = jsonLuckPeople.getJSONObject(i);
                 Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne.getString("Money"));
                 if (matcher.find()) {
-                    gameService.puttingLuckInfo(jsonLuckOne.getString("RemarkName"),
+                    gameService.puttingLuckInfo(i, jsonLuckOne.getString("RemarkName"),
                             Double.valueOf(matcher.group(0)));
                 } else {
                     LOGGER.warn("Luck message RemarkUser {} Money{} interpret failed!",

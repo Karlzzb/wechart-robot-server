@@ -13,8 +13,11 @@ public class StringUtils {
 			.getLogger(StringUtils.class);
 
     public static Pattern DOUBLE = Pattern.compile("([0-9]*\\.?[0-9]+)");
+    public static Pattern LONGSPLIT = Pattern.compile("([0-9]+/[0-9]+)");
     public static Pattern LONG = Pattern.compile("([0-9]+)");
     public static String ANGLEINLINE = "</?[^>]+>";
+    
+    public static String BETSPLIT = "/";
     
 
     public static String match(String p, String str) {
