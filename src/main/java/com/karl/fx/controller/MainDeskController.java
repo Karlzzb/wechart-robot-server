@@ -116,6 +116,13 @@ public class MainDeskController extends FxmlController {
 									.getSelectedToggle().getUserData());
 							messageBoard.setText(gameService.declareGame());
 						}
+
+						// start/end game, the view actions
+						if (runtimeDomain.getGlobalGameSignal()) {
+							startGameViewAction();
+						}else {
+							endGameViewAction();
+						}
 					}
 				});
 
@@ -127,7 +134,6 @@ public class MainDeskController extends FxmlController {
 	private void buildGroupBox() {
 		groupBox.getSelectionModel().selectedItemProperty()
 				.addListener(new ChangeListener<ChatGroupModel>() {
-
 					@Override
 					public void changed(
 							ObservableValue<? extends ChatGroupModel> observable,
@@ -212,7 +218,7 @@ public class MainDeskController extends FxmlController {
 		for (String remarkName : currentPlayersName.keySet()) {
 			playerModle = new PlayerModel(i++,
 					currentPlayersName.get(remarkName), 0, remarkName);
-			gameService.rsyncPlayerModel(playerModle,
+			gameService.initialCurrentPlayer(playerModle,
 					currentPlayersName.get(remarkName));
 			if (playerModle.getPlayerName().equals(
 					runtimeDomain.getBankerRemarkName())) {
@@ -264,6 +270,70 @@ public class MainDeskController extends FxmlController {
 		webWechat.webwxsendmsg(messageBoard.getText());
 	}
 
+	/**
+	 * auto rync player table
+	 */
+	private void playerAutoFlush() {
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() {
+				while (true) {
+					try {
+						Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
+						PlayerModel pModel = null;
+						Player pEntity = null;
+						if (playerList == null || playerList.size() < 1) {
+							continue;
+						}
+						for (int i = 0; i < playerList.size(); i++) {
+							pModel = playerList.get(i);
+							pModel.getPlayerName();
+							pEntity = runtimeDomain.getRunningPlayeres().get(
+									pModel.getPlayerName());
+							if (pEntity != null) {
+								pModel.setPlayerPoint(String.valueOf(pEntity
+										.getPoints() == null ? 0 : pEntity
+										.getPoints()));
+								// Rsync the bet info when game start
+								if (runtimeDomain.getGlobalGameSignal() && pEntity
+										.getLatestBet() != null) {
+									pModel.setPlayerLatestBet(pEntity.getLatestBet());
+								}
+							}
+						}
+					} catch (Exception e) {
+						LOGGER.error("player table auto change failed!", e);
+					}
+
+				}
+			}
+		};
+		Thread t1 = new Thread(task);
+		t1.setDaemon(Boolean.TRUE);
+		t1.start();
+	}
+	
+	private void startGameViewAction() {
+		PlayerModel pModel = null;
+		for (int i = 0; i < playerList.size(); i++) {
+			pModel = playerList.get(i);
+			pModel.getPlayerName();
+			pModel.setPlayerLatestBet(AppUtils.NONEBET);
+		}
+		for(String remarkName:runtimeDomain.getRunningPlayeres().keySet()) {
+			runtimeDomain.getRunningPlayeres().get(remarkName).setLatestBet(AppUtils.NONEBET);
+		}
+		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
+		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
+		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
+	}
+	
+	private void endGameViewAction() {
+		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
+		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
+		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
+	}
+
 	private class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
 
 		private RadioButton radio;
@@ -278,6 +348,11 @@ public class MainDeskController extends FxmlController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> arg0,
 						Boolean before, Boolean now) {
+					//game time no change
+					if (runtimeDomain.getGlobalGameSignal()) {
+						radio.setSelected(before);
+						return;
+					}
 					if (now) {
 						commitEdit(radio.isSelected());
 					}
@@ -315,46 +390,6 @@ public class MainDeskController extends FxmlController {
 			}
 
 		}
-	}
-
-	private void playerAutoFlush() {
-		Task<Void> task = new Task<Void>() {
-			@Override
-			public Void call() {
-				while (true) {
-					try {
-						Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					if (playerTab == null) {
-						return null;
-					}
-					ObservableList<PlayerModel> playerTabData = playerTab
-							.getItems();
-					PlayerModel pModel = null;
-					Player pEntity = null;
-					if (playerTabData == null || playerTabData.size() < 1) {
-						continue;
-					}
-					for (int i = 0; i < playerTabData.size(); i++) {
-						pModel = playerTabData.get(i);
-						pModel.getPlayerName();
-						pEntity = runtimeDomain.getRunningPlayeres().get(
-								pModel.getPlayerName());
-						if (pEntity != null) {
-							pModel.setPlayerLatestBet(pEntity.getLatestBet() == null ? ""
-									: pEntity.getLatestBet());
-						}
-					}
-					playerTab.setItems(playerTabData);
-					//TODO It's not auto fresh;
-				}
-			}
-		};
-		Thread t1 = new Thread(task);
-		t1.setDaemon(Boolean.TRUE);
-		t1.start();
 	}
 
 }

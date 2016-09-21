@@ -204,18 +204,24 @@ public class GameService {
 		return runtimeDomain.getCurrentRule();
 	}
 
-	public void rsyncPlayerModel(PlayerModel playerModle, String remarkName) {
+	public void initialCurrentPlayer(PlayerModel playerModle, String remarkName) {
 		if (playerModle == null || remarkName == null || remarkName.isEmpty()) {
 			return;
 		}
 		Player playerEntity = playerService.getPlayerByRemarkName(remarkName);
 		if (playerEntity != null) {
-			playerModle
-					.setPlayerPoint(String.valueOf(playerEntity.getPoints()));
-			playerModle.setPlayerLatestBet(playerEntity.getLatestBet());
+			rsynPlayerEntityToModel(playerModle, playerEntity);
 			runningPlayers().put(playerEntity.getRemarkName(), playerEntity);
 		}
-
+	}
+	
+	public void rsynPlayerEntityToModel(PlayerModel playerModle, Player playerEntity) {
+		if (playerEntity != null && playerModle != null) {
+			playerModle.setPlayerName(playerEntity.getRemarkName());
+			playerModle.setWechatId(playerEntity.getWebchatId());
+			playerModle.setPlayerId(playerEntity.getPlayerId());
+			playerModle.setPlayerPoint(String.valueOf(playerEntity.getPoints()==null?0:playerEntity.getPoints()));
+		}
 	}
 
 	public void ryncPlayersPoint(ObservableList<PlayerModel> playerList) {
@@ -279,7 +285,7 @@ public class GameService {
 		if (playerMap != null) {
 			for (String remarkName : playerMap.keySet()) {
 				player = playerMap.get(remarkName);
-				if (player.getLatestBetValue() == null
+				if (player.getLatestBet() == null || AppUtils.NONEBET.equals(player.getLatestBet())||player.getLatestBetValue() == null
 						|| player.getLatestBetValue()
 								.compareTo(Long.valueOf(0)) == 0) {
 					continue;

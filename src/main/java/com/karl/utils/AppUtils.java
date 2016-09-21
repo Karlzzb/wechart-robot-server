@@ -69,6 +69,8 @@ public class AppUtils {
 	public static final Long DEFAULT_MINBET = Long.valueOf("10") ;
 	public static final Integer DEFAULT_PACKAGE_NUM = 8;
 
+	public static final String NONEBET = "未下注";
+
 	/**
 	 * sort by bet time
 	 * 

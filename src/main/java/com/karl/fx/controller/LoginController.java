@@ -60,7 +60,6 @@ public class LoginController extends FxmlController {
         Task<Void> task = new Task<Void>() {
             @Override
             public Void call() throws InterruptedException {
-                Platform.setImplicitExit(false);
                 while (!"200".equals(webWechat.waitForLogin())) {
                     updateProgress(10, 100);
                     Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
@@ -78,6 +77,7 @@ public class LoginController extends FxmlController {
             }
         };
 //        taskBar.progressProperty().bind(task.progressProperty());
+        Platform.setImplicitExit(false);
         Platform.runLater(task);
     }
 }

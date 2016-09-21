@@ -19,7 +19,7 @@ import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
 import com.karl.utils.StringUtils;
-
+//@Service
 public class PcClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PcClient.class);

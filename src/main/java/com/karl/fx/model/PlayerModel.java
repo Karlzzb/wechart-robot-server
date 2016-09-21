@@ -29,6 +29,14 @@ public class PlayerModel{
         this.isBanker = new SimpleBooleanProperty(Boolean.FALSE);
         this.playerLatestBet = new SimpleStringProperty("");
     }
+    
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleStringProperty playerLatestBetProperty() {
+    	return playerLatestBet;
+    }
 
     public String getPlayerId() {
         return playerId.getValue();
