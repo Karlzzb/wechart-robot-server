@@ -12,9 +12,12 @@ public class StringUtils {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(StringUtils.class);
 
-    public static Pattern DOUBLE = Pattern.compile("([0-9]*\\.?[0-9]+)");
-    public static Pattern LONGSPLIT = Pattern.compile("([0-9]+/[0-9]+)");
-    public static Pattern LONG = Pattern.compile("([0-9]+)");
+    public static Pattern DOUBLE = Pattern.compile("^([0-9]*\\.?[0-9]+)$");
+    public static Pattern LONGSPLIT = Pattern.compile("^([1-9]+[0-9]*/[1-9]+[0-9]*)$");
+    public static Pattern LONG = Pattern.compile("^([1-9]+[0-9]*)$");
+    public static Pattern ADDPOINT = Pattern.compile("\\s*查\\s*([1-9]+[0-9]*)");
+    public static Pattern SUBPOINT = Pattern.compile("\\s*回\\s*([1-9]+[0-9]*)");
+    
     public static String ANGLEINLINE = "</?[^>]+>";
     
     public static String BETSPLIT = "/";
@@ -57,5 +60,14 @@ public class StringUtils {
     	 
     	return key;
     }
+    
+    public static void main(String[] args) {
+		String test = "20/10";
+		test.trim();
+		Matcher subPointMatcher = LONGSPLIT.matcher(test);
+		while  (subPointMatcher.find()) {
+			System.out.println(subPointMatcher.group());
+		}
+	}
 
 }

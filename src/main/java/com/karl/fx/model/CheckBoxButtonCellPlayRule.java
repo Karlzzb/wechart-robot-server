@@ -6,11 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
 
-public class CheckBoxButtonCell extends TableCell<PlayRule, Boolean> {
+public class CheckBoxButtonCellPlayRule extends TableCell<PlayRule, Boolean> {
 
     private CheckBox checkBox;
 
-    public CheckBoxButtonCell() {
+    public CheckBoxButtonCellPlayRule() {
         createRadioButton();
     }
 

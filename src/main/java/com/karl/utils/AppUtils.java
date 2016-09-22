@@ -33,7 +33,7 @@ public class AppUtils {
 			"wxitil", "userexperience_alarm", "notification_messages");
 
 	public static final long LOGIN_WAITING_TIME = 2000;
-	
+
 	public static final long PLAYER_TAB_FLSH_TERVAL = 1000;
 
 	public static final long WECHAT_LISTEN_INTERVAL = 500;
@@ -49,27 +49,30 @@ public class AppUtils {
 	public static final String BETRESULTLINE = "{0}余:{1}  下:{2}\n";
 
 	public static final String BETRESULTTAIL = "--------------------------\n"
-			+ "有效下注：{0}\n"
-			+ "应发包数：{1}\n"
-			+ "应发金额：{2}\n"
-			+ "--------------------------\n"
-			+ "总下注额：{3}\n"
-			+ "普通下注：{4}\n"
-			+ "自定义梭哈下注：{5}\n"
-			+ "--------------------------\n"
-			+ "请发包手核对无误再发包\n"
-			+ "机器统计    对错勿怪\n";
+			+ "有效下注：{0}\n" + "应发包数：{1}\n" + "应发金额：{2}\n"
+			+ "--------------------------\n" + "总下注额：{3}\n" + "普通下注：{4}\n"
+			+ "自定义梭哈下注：{5}\n" + "--------------------------\n"
+			+ "请发包手核对无误再发包\n" + "机器统计    对错勿怪\n";
 
-	public static final String GAMESTART = "--------[开始下注]--------\n"
-			+ "{0}\n" + "--------[庄家列表]--------\n" + "本局庄家：{1}\n"
-			+ "庄家积分：{2}\n" + "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n"
-			+ "包数量：{5}\n" + "庄家位置：{6}\n" + "当前玩法：八门玩法+梭哈玩法\n";
-	
-	public static final Long DEFAULT_MAXBET = Long.valueOf("1000") ;
-	public static final Long DEFAULT_MINBET = Long.valueOf("10") ;
+	public static final String GAMESTART = "--------[开始下注]--------\n" + "{0}\n"
+			+ "--------[庄家列表]--------\n" + "本局庄家：{1}\n" + "庄家积分：{2}\n"
+			+ "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n" + "包数量：{5}\n" + "庄家位置：{6}\n"
+			+ "当前玩法：八门玩法+梭哈玩法\n";
+
+	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");
+	public static final Long DEFAULT_MINBET = Long.valueOf("10");
 	public static final Integer DEFAULT_PACKAGE_NUM = 8;
 
 	public static final String NONEBET = "未下注";
+
+	public static final int APPLYADDPOINT = 1;
+	public static final int APPLYSUBPOINT = 2;
+	public static final String APPLYADDTEXT = "加";
+	public static final String APPLYSUBTEXT = "减";
+
+	public static final Integer APPROVALNONE = 0;
+	public static final Integer APPROVALYES = 1;
+	public static final Integer APPROVALNO = 2;
 
 	/**
 	 * sort by bet time

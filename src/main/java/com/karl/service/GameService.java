@@ -4,7 +4,9 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import javafx.collections.ObservableList;
 
@@ -14,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.karl.db.domain.ApplyPoints;
 import com.karl.db.domain.Player;
 import com.karl.db.service.PlayerService;
 import com.karl.domain.LotteryRule;
 import com.karl.domain.RuntimeDomain;
+import com.karl.fx.controller.ApprovalTabController;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
 import com.karl.utils.DigitalUtils;
@@ -38,9 +42,59 @@ public class GameService {
 	@Autowired
 	@Lazy
 	private WebWechat webWechat;
+	
+	@Autowired
+	@Lazy
+	private ApprovalTabController approvalTabController;
+
+	public void mainMessageHandle(String webChatId, String remarkName,
+			String content) {
+
+		// Message is the pattern of betting
+		if (runtimeDomain.getGlobalGameSignal()) {
+			Matcher matcher = StringUtils.LONGSPLIT.matcher(content);
+			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
+				matcher = StringUtils.LONG.matcher(content);
+			} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
+					.getCurrentGameKey())) {
+				matcher = StringUtils.LONGSPLIT.matcher(content);
+			}
+
+			if (matcher.find()) {
+				puttingBetInfo(webChatId, remarkName, matcher.group());
+				return;
+			}
+		}
+
+		// Message is the pattern of apply
+		Matcher addPointMatcher = StringUtils.ADDPOINT.matcher(content);
+		if (addPointMatcher.find()) {
+			try {
+				approvalTabController.addApply(addPlayApply(remarkName, AppUtils.APPLYADDPOINT,
+						Long.valueOf(addPointMatcher.group(1))));
+			} catch (Exception e) {
+				LOGGER.error("User{" + remarkName + "} add point{"
+						+ addPointMatcher.group(1) + "failed!", e);
+			}
+			return;
+		}
+
+		Matcher subPointMatcher = StringUtils.SUBPOINT.matcher(content);
+		if (subPointMatcher.find()) {
+			try {
+				approvalTabController.addApply(addPlayApply(remarkName, AppUtils.APPLYADDPOINT,
+						Long.valueOf(subPointMatcher.group(1))));
+			} catch (Exception e) {
+				LOGGER.error("User{" + remarkName + "} sub point{"
+						+ subPointMatcher.group(1) + "failed!", e);
+			}
+			return;
+		}
+
+	}
 
 	/**
-	 * open the lottery
+	 * TODO no use yet open the lottery
 	 */
 	public void openLottery() {
 		Player player = null;
@@ -214,13 +268,17 @@ public class GameService {
 			runningPlayers().put(playerEntity.getRemarkName(), playerEntity);
 		}
 	}
-	
-	public void rsynPlayerEntityToModel(PlayerModel playerModle, Player playerEntity) {
+
+	public void rsynPlayerEntityToModel(PlayerModel playerModle,
+			Player playerEntity) {
 		if (playerEntity != null && playerModle != null) {
 			playerModle.setPlayerName(playerEntity.getRemarkName());
 			playerModle.setWechatId(playerEntity.getWebchatId());
 			playerModle.setPlayerId(playerEntity.getPlayerId());
-			playerModle.setPlayerPoint(String.valueOf(playerEntity.getPoints()==null?0:playerEntity.getPoints()));
+			playerModle
+					.setPlayerPoint(String
+							.valueOf(playerEntity.getPoints() == null ? 0
+									: playerEntity.getPoints()));
 		}
 	}
 
@@ -285,7 +343,9 @@ public class GameService {
 		if (playerMap != null) {
 			for (String remarkName : playerMap.keySet()) {
 				player = playerMap.get(remarkName);
-				if (player.getLatestBet() == null || AppUtils.NONEBET.equals(player.getLatestBet())||player.getLatestBetValue() == null
+				if (player.getLatestBet() == null
+						|| AppUtils.NONEBET.equals(player.getLatestBet())
+						|| player.getLatestBetValue() == null
 						|| player.getLatestBetValue()
 								.compareTo(Long.valueOf(0)) == 0) {
 					continue;
@@ -308,22 +368,15 @@ public class GameService {
 
 	}
 
-	/**
-	 * TODO no using
-	 * 
-	 * @param playerId
-	 * @param remarkName
-	 * @param plusOrMinus
-	 * @param newPointvel
-	 */
-	public void ryncPlayerPoint(String playerId, String remarkName,
+
+	private void ryncPlayerPoint(String playerId,
 			Boolean plusOrMinus, Long newPointvel) {
 		Player playEntity = null;
 		Long oldPointVel = Long.valueOf(0);
 		playEntity = playerService.getPlayerById(playerId);
 		if (playEntity == null) {
 			LOGGER.warn("User[{}] cann't be found, the point option failed!",
-					remarkName);
+					playerId);
 			return;
 		}
 		playEntity.setPoints(plusOrMinus ? oldPointVel + newPointvel
@@ -334,6 +387,42 @@ public class GameService {
 	private void savePlayEntity(Player player) {
 		playerService.save(player);
 		runningPlayers().put(player.getRemarkName(), player);
+	}
+
+	public List<ApplyPoints> getUncheckedApplyList() {
+		return playerService.findByApprovalStatus(AppUtils.APPROVALNONE);
+	}
+
+	public boolean approvalPlayer(Long applyId, String playerId, Integer approvalStatus, Long point) {
+		try {
+			
+			if (Integer.compare(AppUtils.APPLYADDPOINT, approvalStatus) == 0) {
+				ryncPlayerPoint(playerId, Boolean.TRUE, point);
+			}else if (Integer.compare(AppUtils.APPLYSUBPOINT, approvalStatus) == 0) {
+				ryncPlayerPoint(playerId, Boolean.FALSE, point);
+			}
+			playerService.approveRequest(applyId, approvalStatus,
+					(new Date()).getTime());
+			return Boolean.TRUE;
+		} catch (Exception e) {
+			LOGGER.error(
+					"Apply{" + applyId + "} change approvalStatus failed!", e);
+		}
+		return Boolean.FALSE;
+	}
+
+	public ApplyPoints addPlayApply(String remarkName, Integer applyType, Long points) {
+		Player player = playerService.getPlayerByRemarkName(remarkName);
+		if (player != null) {
+			ApplyPoints apply = new ApplyPoints();
+			apply.setPlayerId(player.getPlayerId());
+			apply.setRemarkName(player.getRemarkName());
+			apply.setApplyType(applyType);
+			apply.setPoints(points);
+			apply.setApplyTime((new Date()).getTime());
+			return playerService.save(apply);
+		}
+		return null;
 	}
 
 }

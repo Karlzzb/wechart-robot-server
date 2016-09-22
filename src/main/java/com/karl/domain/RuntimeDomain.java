@@ -19,6 +19,7 @@ import blade.kit.json.JSONObject;
 import com.karl.db.domain.Player;
 import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.PlayRule;
+import com.karl.fx.model.PlayerApply;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
 
@@ -113,6 +114,11 @@ public class RuntimeDomain implements Serializable {
      * current rule List
      */
     private ObservableList<PlayRule> ruleList;
+    
+    /**
+     * current rule List
+     */
+    private ObservableList<PlayerApply> applyList;
 
     /**
      * game start/end signal
@@ -447,5 +453,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBetOrder(Integer betOrder) {
 		this.betOrder = betOrder;
+	}
+
+	public ObservableList<PlayerApply> getApplyList() {
+		return applyList;
+	}
+
+	public void setApplyList(ObservableList<PlayerApply> applyList) {
+		this.applyList = applyList;
 	}
 }

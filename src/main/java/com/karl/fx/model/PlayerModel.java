@@ -37,6 +37,15 @@ public class PlayerModel{
     public SimpleStringProperty playerLatestBetProperty() {
     	return playerLatestBet;
     }
+    
+    
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleStringProperty playerPointProperty() {
+    	return playerPoint;
+    }
 
     public String getPlayerId() {
         return playerId.getValue();

@@ -7,25 +7,39 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.karl.db.domain.ApplyPoints;
 import com.karl.db.domain.Player;
+import com.karl.db.repositories.ApplyRepository;
 import com.karl.db.repositories.PlayerRepository;
+import com.karl.utils.AppUtils;
 
 @Component("playerService")
 @Transactional
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
+    
+    private final ApplyRepository applyRepository;
 
     @Autowired
-    public PlayerServiceImpl(PlayerRepository playerRepository) {
+    public PlayerServiceImpl(PlayerRepository playerRepository, ApplyRepository applyRepository) {
         this.playerRepository = playerRepository;
+        this.applyRepository = applyRepository;
     }
 
     @Override
     public Player save(Player player) {
-        Assert.notNull(player, "remarkName must not be null");
+        Assert.notNull(player, "player must not be null");
         return playerRepository.save(player);
     }
+    
+	@Override
+	public ApplyPoints save(ApplyPoints apply) {
+        Assert.notNull(apply, "remarkName must not be null");
+        apply.setApprovalStatus(AppUtils.APPROVALNONE);
+        return applyRepository.save(apply);
+	}
+
 
     @Override
     public List<Player> getPlayeresLikeRemarkName(String remarkName) {
@@ -67,6 +81,21 @@ public class PlayerServiceImpl implements PlayerService {
         Assert.notNull(latestBetTime, "latestBetTime must not be null");
         Assert.notNull(latestBetValue, "latestBetValue must not be null");
       playerRepository.updateBetInfo(playerId, latestBet, latestBetTime, latestBetValue);
+	}
+
+	@Override
+	public List<ApplyPoints> findByApprovalStatus(Integer approvalStatus) {
+        Assert.notNull(approvalStatus, "approvalStatus must not be null");
+        return applyRepository.findByApprovalStatus(approvalStatus);
+	}
+
+	@Override
+	public void approveRequest(Long applyId, Integer approvalStatus,
+			Long approvalTime) {
+        Assert.notNull(applyId, "applyId must not be null");
+        Assert.notNull(approvalStatus, "approvalStatus must not be null");
+        Assert.notNull(approvalTime, "approvalTime must not be null");
+		applyRepository.updateApprovalStatus(applyId, approvalStatus, approvalTime);
 	}
 
 }

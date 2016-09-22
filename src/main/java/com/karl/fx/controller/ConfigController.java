@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.karl.domain.LotteryRule;
-import com.karl.fx.model.CheckBoxButtonCell;
+import com.karl.fx.model.CheckBoxButtonCellPlayRule;
 import com.karl.fx.model.PlayRule;
 
 @Component
@@ -46,7 +46,7 @@ public class ConfigController extends FxmlController {
 			@Override
 			public TableCell<PlayRule, Boolean> call(
 					TableColumn<PlayRule, Boolean> arg0) {
-				return new CheckBoxButtonCell();
+				return new CheckBoxButtonCellPlayRule();
 			}
     		
 		});

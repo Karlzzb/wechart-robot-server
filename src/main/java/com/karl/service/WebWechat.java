@@ -1,7 +1,5 @@
 package com.karl.service;
 
-import java.util.regex.Matcher;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -686,25 +684,13 @@ public class WebWechat {
 				.equals(jsonMsg.getString("FromUserName"))) {
 			remarkName = runtimeDomain.getUser().getString("NickName");
 			content = jsonMsg.getString("Content");
+			webChatId = runtimeDomain.getUser().getString("UserName");
 		}
 
-		// Message is the pattern of betting
-		if (runtimeDomain.getGlobalGameSignal()) {
-			Matcher matcher = StringUtils.LONGSPLIT.matcher(content);
-			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
-				matcher = StringUtils.LONG.matcher(content);
-			} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
-					.getCurrentGameKey())) {
-				matcher = StringUtils.LONGSPLIT.matcher(content);
-			}
-
-			if (matcher.find()) {
-				gameService.puttingBetInfo(webChatId, remarkName,
-						matcher.group(0));
-			} else {
-				LOGGER.warn("FromUserName{} message's message content {}",
-						jsonMsg.getString("FromUserName"), content);
-			}
+		if (webChatId != null && remarkName != null && content != null
+				&& !webChatId.isEmpty() && !remarkName.isEmpty()
+				&& !content.isEmpty()) {
+			gameService.mainMessageHandle(webChatId, remarkName, content);
 		}
 
 		// switch (content) {
