@@ -12,7 +12,8 @@
 
 <AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
-		<ChoiceBox fx:id="groupBox" layoutX="750.0" layoutY="79.0" prefHeight="26.0" prefWidth="164.0" />
+		<ChoiceBox fx:id="groupBox" layoutX="750.0" layoutY="82.0" prefHeight="26.0" prefWidth="164.0" />
+        <ChoiceBox fx:id="groupBoxM" layoutX="750.0" layoutY="44.0" prefHeight="26.0" prefWidth="164.0" />
 		<Label fx:id="groupSizeLable" layoutX="953.0" layoutY="80.0" prefHeight="26.0" prefWidth="90.0" text="群人数 :0" />
 		<Button fx:id="groupFlush" layoutX="1128.0" layoutY="82.0" mnemonicParsing="false" onAction="#flushGroup" prefHeight="25.0" prefWidth="57.0" text="刷新" />
 		<Button fx:id="syncPlayer" layoutX="1043.0" layoutY="81.0" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" text="同步" />
@@ -25,19 +26,19 @@
             <TableColumn fx:id="colPlayerLatestBet" prefWidth="113.666748046875" resizable="false" text="当前局下注" />
 			</columns>
 		</TableView>
-      <Button fx:id="msgSendBut" layoutX="644.0" layoutY="221.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="11.0" prefWidth="73.0" text="信息发出" />
-      <ToggleButton fx:id="gameStart" layoutX="644.0" layoutY="265.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="73.0" text="开始" />
-      <ToggleButton fx:id="gameEnd" layoutX="644.0" layoutY="312.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="73.0" text="结束" />
-      <Label fx:id="bankerLabel" layoutX="646.0" layoutY="177.0" prefHeight="26.0" prefWidth="90.0" text="主人：" />
-      <ScrollPane prefHeight="409.0" prefWidth="512.0" AnchorPane.bottomAnchor="223.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="693.0" AnchorPane.topAnchor="20.0">
+      <Button fx:id="msgSendBut" layoutX="599.0" layoutY="326.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="11.0" prefWidth="73.0" text="信息发出" />
+      <ToggleButton fx:id="gameStart" layoutX="599.0" layoutY="362.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="73.0" text="开始" />
+      <ToggleButton fx:id="gameEnd" layoutX="599.0" layoutY="401.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="73.0" text="结束" />
+      <Label fx:id="bankerLabel" layoutX="599.0" layoutY="264.0" prefHeight="26.0" prefWidth="90.0" text="主人：" />
+      <TextArea fx:id="messageBoard" layoutX="28.0" layoutY="503.0" prefWidth="493.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="704.0" AnchorPane.topAnchor="503.0" />
+      <ScrollPane layoutX="28.0" layoutY="29.0" prefHeight="439.0" prefWidth="493.0" AnchorPane.bottomAnchor="184.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="704.0" AnchorPane.topAnchor="29.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="410.0" prefWidth="511.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                <children>
                   <fx:include source="ApprovalTab.fxml" />
                </children>
             </AnchorPane>
         </content>
       </ScrollPane>
-      <TextArea fx:id="messageBoard" layoutX="14.0" layoutY="560.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="693.0" AnchorPane.topAnchor="500.0" />
 	</children>
 </AnchorPane>

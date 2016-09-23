@@ -11,7 +11,7 @@ public class PlayerApply {
 	public PlayerApply(Boolean applyCheck,
 			Long applyId, String playerId, String playerName,
 			Integer applyType, Long applyPoint,
-			Integer approvalStatus) {
+			Integer approvalStatus, String webChatId, String wechatName) {
 		super();
 		this.applyCheck = new SimpleBooleanProperty(applyCheck);
 		this.playerId = new SimpleStringProperty(playerId);
@@ -32,6 +32,8 @@ public class PlayerApply {
 			break;
 		}
 		this.applyInfo = new SimpleStringProperty(applyInfo);
+		this.webChatId = new SimpleStringProperty(webChatId);
+		this.wechatName = new SimpleStringProperty(wechatName);
 	}
 	public static final String APPLYCHECKKEY = "applyCheck";
     public static final String PLAYERNAMEKEY = "playerName";
@@ -47,6 +49,8 @@ public class PlayerApply {
     private  SimpleIntegerProperty applyType;
     private  SimpleLongProperty applyPoint;
     private  SimpleIntegerProperty approvalStatus;
+    private SimpleStringProperty webChatId;
+    private SimpleStringProperty wechatName;
     
     public Boolean getApplyCheck() {
 		return applyCheck.getValue();
@@ -96,5 +100,18 @@ public class PlayerApply {
 	public void setApplyInfo(String applyInfo) {
 		this.applyInfo.setValue(applyInfo);
 	}
+	public String getWebChatId() {
+		return webChatId.getValue();
+	}
+	public void setWebChatId(String webChatId) {
+		this.webChatId.set(webChatId);
+	}
 
+	public String getWechatName() {
+		return wechatName.getValue();
+	}
+
+	public void setWechatName(String wechatName) {
+		this.wechatName.set(wechatName);
+	}
 }

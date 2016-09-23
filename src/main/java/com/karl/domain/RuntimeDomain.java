@@ -38,6 +38,7 @@ public class RuntimeDomain implements Serializable {
         groupList = FXCollections.observableArrayList();
         playerList = FXCollections.observableArrayList();
         ruleList = FXCollections.observableArrayList();
+        applyList = FXCollections.observableArrayList();
         globalGameSignal = Boolean.FALSE;
         currentGameKey = AppUtils.PLAYLONGSPLIT;
         minimumBet = AppUtils.DEFAULT_MINBET;
@@ -48,8 +49,12 @@ public class RuntimeDomain implements Serializable {
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
+    
+    private String readyWechatId;
 
     private String currentGroupId;
+    
+    private String currentMGroupId;
     
     private String currentGroupName;
 
@@ -140,11 +145,11 @@ public class RuntimeDomain implements Serializable {
             + DateKit.getCurrentUnixTime();
     
     /**
-     * key=wechatId
+     * key=remarkName
      * @return
      */
-    public Map<String, String> getCurrentPlayersName() {
-    	Map<String, String> playersName = new HashMap<String,String>();
+    public Map<String, PlayerModel> getCurrentPlayers() {
+    	Map<String, PlayerModel> playersName = new HashMap<String,PlayerModel>();
     	if (getCurrentGroupId() == null ||getCurrentGroupId().isEmpty()) {
     		return playersName;
     	}
@@ -159,17 +164,35 @@ public class RuntimeDomain implements Serializable {
         }
         JSONObject contact = null;
         String remarkName = "";
+        String wechatName = "";
+        String wechatId = "";
         for (int i = 0, len = memberList.size(); i < len; i++) {
             contact = memberList.getJSONObject(i);
             remarkName = getUserRemarkName(contact.getString("UserName"));
+            wechatName = getUserNickName(contact.getString("UserName"));
+            wechatId = contact.getString("UserName");
             if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
-            	playersName.put(contact.getString("UserName"), remarkName);
+            	playersName.put(remarkName, new PlayerModel(i,
+    					remarkName, 0, wechatId, wechatName));
             }
         }
     	return playersName;
     }
     
     public String getUserRemarkName(String id) {
+        String name = AppUtils.UNCONTACTUSRNAME;
+        JSONObject member = getAllUsrMap().get(id);
+        if (member != null && member.getString("UserName").equals(id)) {
+            if (StringKit.isNotBlank(member.getString("RemarkName"))) {
+                name = member.getString("RemarkName");
+            } else {
+                name = member.getString("NickName");
+            }
+        }
+        return name;
+    }
+    
+    public String getUserNickName(String id) {
         String name = AppUtils.UNCONTACTUSRNAME;
         JSONObject member = getAllUsrMap().get(id);
         if (member != null && member.getString("UserName").equals(id)) {
@@ -461,5 +484,21 @@ public class RuntimeDomain implements Serializable {
 
 	public void setApplyList(ObservableList<PlayerApply> applyList) {
 		this.applyList = applyList;
+	}
+
+	public String getCurrentMGroupId() {
+		return currentMGroupId;
+	}
+
+	public void setCurrentMGroupId(String currentMGroupId) {
+		this.currentMGroupId = currentMGroupId;
+	}
+
+	public String getReadyWechatId() {
+		return readyWechatId;
+	}
+
+	public void setReadyWechatId(String readyWechatId) {
+		this.readyWechatId = readyWechatId;
 	}
 }

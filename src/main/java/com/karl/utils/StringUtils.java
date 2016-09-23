@@ -17,6 +17,8 @@ public class StringUtils {
     public static Pattern LONG = Pattern.compile("^([1-9]+[0-9]*)$");
     public static Pattern ADDPOINT = Pattern.compile("\\s*查\\s*([1-9]+[0-9]*)");
     public static Pattern SUBPOINT = Pattern.compile("\\s*回\\s*([1-9]+[0-9]*)");
+    public static Pattern PUTPOINT = Pattern.compile("\\s*上\\s*([1-9]+[0-9]*)");
+    public static Pattern DRAWPOINT = Pattern.compile("\\s*下\\s*([1-9]+[0-9]*)");
     
     public static String ANGLEINLINE = "</?[^>]+>";
     

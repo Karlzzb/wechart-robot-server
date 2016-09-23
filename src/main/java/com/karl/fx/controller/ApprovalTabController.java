@@ -6,11 +6,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
 import org.springframework.context.annotation.Lazy;
@@ -40,10 +42,11 @@ public class ApprovalTabController extends FxmlController {
 	private TableColumn<PlayerApply, Long> approvalOption;
 
 	private ObservableList<PlayerApply> applyList;
-	
-	
-	@FXML private Button bulkApproveButton;
-	@FXML private Button bulkRejectButton;
+
+	@FXML
+	private Button bulkApproveButton;
+	@FXML
+	private Button bulkRejectButton;
 
 	@Override
 	public void initialize() {
@@ -60,15 +63,17 @@ public class ApprovalTabController extends FxmlController {
 			}
 
 		});
+		applyInfo.setSortable(Boolean.TRUE);
 
 		approvalOption
 				.setCellFactory(new Callback<TableColumn<PlayerApply, Long>, TableCell<PlayerApply, Long>>() {
 					@Override
 					public TableCell<PlayerApply, Long> call(
-							TableColumn<PlayerApply, Long> arg0) {
+							TableColumn<PlayerApply, Long> applyId) {
 						return new MultiButtonCellApply();
 					}
 				});
+		approvalOption.setSortable(Boolean.FALSE);
 
 		playerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerApply, String>(
@@ -93,55 +98,58 @@ public class ApprovalTabController extends FxmlController {
 						.getApplyId(), applyEntity.getPlayerId(), applyEntity
 						.getRemarkName(), applyEntity.getApplyType(),
 						applyEntity.getPoints(), applyEntity
-								.getApprovalStatus()));
+								.getApprovalStatus(), applyEntity
+								.getWebChatId(), applyEntity.getWebchatName()));
 			}
 		}
 		approvalTab.setItems(applyList);
 	}
-	
-	public void addApply(ApplyPoints applyEntity) {
+
+	public void addApply(String webChatId, ApplyPoints applyEntity) {
 		if (applyEntity == null) {
 			return;
 		}
-		approvalTab.getItems().add(new PlayerApply(Boolean.FALSE, applyEntity
-				.getApplyId(), applyEntity.getPlayerId(), applyEntity
-				.getRemarkName(), applyEntity.getApplyType(),
-				applyEntity.getPoints(), applyEntity
-						.getApprovalStatus()));
+		approvalTab.getItems().add(
+				new PlayerApply(Boolean.FALSE, applyEntity.getApplyId(),
+						applyEntity.getPlayerId(), applyEntity.getRemarkName(),
+						applyEntity.getApplyType(), applyEntity.getPoints(),
+						applyEntity.getApprovalStatus(), applyEntity
+								.getWebChatId(), applyEntity.getWebchatName()));
 	}
-	
-	
+
 	@FXML
 	private void bulkApprove(ActionEvent event) {
 		for (int i = 0; i < approvalTab.getItems().size(); i++) {
-			if(approvalTab.getItems().get(i).getApplyCheck()) {
+			if (approvalTab.getItems().get(i).getApplyCheck()) {
 				changeApply(i, AppUtils.APPROVALYES);
 			}
 		}
-		
+
 	}
-	
+
 	@FXML
 	private void bulkReject(ActionEvent event) {
 		for (int i = 0; i < applyList.size(); i++) {
-			if(applyList.get(i).getApplyCheck()) {
+			if (applyList.get(i).getApplyCheck()) {
 				changeApply(i, AppUtils.APPROVALNO);
 			}
 		}
-		
+
 	}
-	
+
 	private void changeApply(int index, int approvalStatus) {
-		if (gameService.approvalPlayer(applyList.get(index)
-				.getApplyId(), applyList.get(index)
-				.getPlayerId(), approvalStatus, applyList
-				.get(index).getApplyPoint())) {
+		if (gameService.approvalPlayer(applyList.get(index).getApplyId(),
+				applyList.get(index).getPlayerId(), applyList.get(index)
+						.getApplyType(), approvalStatus, applyList.get(index)
+						.getApplyPoint(), applyList.get(index).getWebChatId())) {
 			applyList.remove(index);
-			approvalTab.getSelectionModel().clearSelection();
+			// approvalTab.getSelectionModel().clearSelection();
 		}
 	}
 
 	private class MultiButtonCellApply extends TableCell<PlayerApply, Long> {
+
+		private GridPane gridPane;
 
 		private Button pass;
 		private Button deny;
@@ -151,14 +159,21 @@ public class ApprovalTabController extends FxmlController {
 		}
 
 		private void createButtons() {
+			gridPane = new GridPane();
+			gridPane.setAlignment(Pos.CENTER);
+
 			pass = new Button();
+			pass.setText("通过");
 			deny = new Button();
+			deny.setText("驳回");
 
 			pass.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					int index = approvalTab.getSelectionModel()
 							.getSelectedIndex();
+
+					index = getIndex();
 					if ((index != -1)) {
 						changeApply(index, AppUtils.APPROVALYES);
 					}
@@ -170,11 +185,15 @@ public class ApprovalTabController extends FxmlController {
 				public void handle(ActionEvent event) {
 					int index = approvalTab.getSelectionModel()
 							.getSelectedIndex();
+					index = getIndex();
 					if ((index != -1)) {
 						changeApply(index, AppUtils.APPROVALNO);
 					}
 				}
 			});
+
+			gridPane.add(pass, 0, 0);
+			gridPane.add(deny, 1, 0);
 		}
 
 		@Override
@@ -194,8 +213,7 @@ public class ApprovalTabController extends FxmlController {
 			final ObservableList<PlayerApply> items = getTableView().getItems();
 			if (items != null) {
 				if (getIndex() < items.size()) {
-					setGraphic(pass);
-					setGraphic(deny);
+					setGraphic(gridPane);
 				}
 			}
 		}

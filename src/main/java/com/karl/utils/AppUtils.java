@@ -58,6 +58,12 @@ public class AppUtils {
 			+ "--------[庄家列表]--------\n" + "本局庄家：{1}\n" + "庄家积分：{2}\n"
 			+ "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n" + "包数量：{5}\n" + "庄家位置：{6}\n"
 			+ "当前玩法：八门玩法+梭哈玩法\n";
+	public static final String REPLYPOINTAPPLYPUT ="给{0} 已上[{1}] 剩余积分： {2}";
+	public static final String REPLYPOINTAPPLYDRAW ="给{0} 已下[{1}] 剩余积分： {2}";
+	public static final String REPLYPOINTAPPLYADD ="@{0} 已上[{1}] 剩余积分： {2}";
+	public static final String REPLYPOINTAPPLYSUB ="@{0} 已下[{1}] 剩余积分： {2}";
+	
+	public static final String ASKRECOMMEND ="你要对{0}做点什么呢！";
 
 	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");
 	public static final Long DEFAULT_MINBET = Long.valueOf("10");

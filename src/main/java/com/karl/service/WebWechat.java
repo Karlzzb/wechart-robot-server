@@ -1,5 +1,7 @@
 package com.karl.service;
 
+import java.text.MessageFormat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -503,6 +505,21 @@ public class WebWechat {
 	}
 
 	/**
+	 * Sent message to manage group
+	 * 
+	 * @param content
+	 */
+	public void webwxsendmsgM(String content) {
+		if (runtimeDomain.getCurrentMGroupId() == null
+				|| runtimeDomain.getCurrentMGroupId().isEmpty()) {
+			LOGGER.warn("message({}) not send due to no group selected!",
+					content);
+			return;
+		}
+		webwxsendmsg(content, runtimeDomain.getCurrentMGroupId());
+	}	
+	
+	/**
 	 * Sent message
 	 * 
 	 * @param content
@@ -623,6 +640,7 @@ public class WebWechat {
 				// webwxsendmsg("二蛋还不支持语音呢", msg.getString("FromUserName"));
 				break;
 			case 42:
+				handleRecomendMsg(msg, console);
 				break;
 			default:
 				break;
@@ -630,6 +648,45 @@ public class WebWechat {
 			LOGGER.debug("Message Detail： {}" + msg.toString());
 		}
 		LOGGER.debug("Message Package： {}", data.toString());
+	}
+
+	private void handleRecomendMsg(JSONObject jsonMsg, ConsoleController console) {
+		String recommendWechatId = "";
+		String recommendWechatName = "";
+		JSONObject recommendInfo = null;
+
+		if (jsonMsg.getString("FromUserName").equals(
+				runtimeDomain.getCurrentMGroupId())||runtimeDomain.getUser().getString("UserName")
+				.equals(jsonMsg.getString("FromUserName"))) {
+			LOGGER.debug("FromUserName{} message",
+					jsonMsg.getString("FromUserName"));
+			recommendInfo = jsonMsg.getJSONObject("RecommendInfo");
+			if (recommendInfo !=null) {
+				recommendWechatId = recommendInfo.getString("UserName");
+				recommendWechatName = recommendInfo.getString("NickName");
+
+			} else {
+				LOGGER.debug("FromUserName{} message's recommendInfo is empty!",
+						jsonMsg.getString("FromUserName"));
+			}
+		} else {
+			LOGGER.debug(
+					"FromUserName[{}] message is not come from specific manage group[{}]!",
+					jsonMsg.getString("FromUserName"),
+					runtimeDomain.getCurrentMGroupId());
+		}
+		
+		if (recommendWechatId.isEmpty() || recommendWechatName.isEmpty()) {
+			LOGGER.debug(
+					"FromUserName[{}] recommendInfo cann't be interpet{}",
+					jsonMsg.getString("FromUserName"),
+					recommendInfo==null?"":recommendInfo.toString());
+			return;
+		}
+		
+		runtimeDomain.setReadyWechatId(recommendWechatId);
+		String content = MessageFormat.format(AppUtils.ASKRECOMMEND, recommendWechatName);
+		webwxsendmsgM(content);
 	}
 
 	/**
@@ -646,7 +703,8 @@ public class WebWechat {
 
 		// Message from others
 		if (jsonMsg.getString("FromUserName").equals(
-				runtimeDomain.getCurrentGroupId())) {
+				runtimeDomain.getCurrentGroupId())||jsonMsg.getString("FromUserName").equals(
+						runtimeDomain.getCurrentMGroupId())) {
 			LOGGER.debug("FromUserName{} message",
 					jsonMsg.getString("FromUserName"));
 			String contentStr = jsonMsg.getString("Content");
@@ -664,7 +722,7 @@ public class WebWechat {
 
 				}
 			} else {
-				LOGGER.warn("FromUserName{} message's content is empty!",
+				LOGGER.debug("FromUserName{} message's content is empty!",
 						jsonMsg.getString("FromUserName"));
 
 			}

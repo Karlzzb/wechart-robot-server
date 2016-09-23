@@ -28,15 +28,13 @@ public class CheckBoxButtonCellApply extends TableCell<PlayerApply, Boolean> {
     }
 
     @Override
-    public void commitEdit(Boolean t) {
-        super.commitEdit(t);
+    public void commitEdit(Boolean value) {
+        super.commitEdit(value);
         final ObservableList<PlayerApply> items = getTableView().getItems();
         for (int i = 0; i < items.size(); i++) {
             PlayerApply playerApply = items.get(i);
             if (i == getIndex()) {
-            	playerApply.setApplyCheck(Boolean.TRUE);
-            } else {
-            	playerApply.setApplyCheck(Boolean.FALSE);
+            	playerApply.setApplyCheck(value);
             }
         }
     }
@@ -49,7 +47,6 @@ public class CheckBoxButtonCellApply extends TableCell<PlayerApply, Boolean> {
             if (getIndex() < items.size()) {
                 checkBox.setSelected(items.get(getIndex()).getApplyCheck());
                 setGraphic(checkBox);
-
             }
         }
 

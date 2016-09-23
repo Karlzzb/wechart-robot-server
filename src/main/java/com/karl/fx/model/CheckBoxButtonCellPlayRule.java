@@ -28,15 +28,13 @@ public class CheckBoxButtonCellPlayRule extends TableCell<PlayRule, Boolean> {
     }
 
     @Override
-    public void commitEdit(Boolean t) {
-        super.commitEdit(t);
+    public void commitEdit(Boolean value) {
+        super.commitEdit(value);
         final ObservableList<PlayRule> items = getTableView().getItems();
         for (int i = 0; i < items.size(); i++) {
             PlayRule playRule = items.get(i);
             if (i == getIndex()) {
-            	playRule.setRuleCheck(Boolean.TRUE);
-            } else {
-                playRule.setRuleCheck(Boolean.FALSE);
+            	playRule.setRuleCheck(value);
             }
         }
     }

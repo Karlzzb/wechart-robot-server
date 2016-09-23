@@ -16,6 +16,9 @@ public class Player implements Serializable {
 
     @Column(nullable = true)
     private String webchatId;
+    
+    @Column(nullable = false)
+    private String wechatName;
 
     @Column(nullable = false)
     private String remarkName;
@@ -113,6 +116,14 @@ public class Player implements Serializable {
 
 	public void setLatestBetValue(Long latestBetValue) {
 		this.latestBetValue = latestBetValue;
+	}
+
+	public String getWechatName() {
+		return wechatName;
+	}
+
+	public void setWechatName(String wechatName) {
+		this.wechatName = wechatName;
 	}
 
 }

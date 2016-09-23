@@ -12,6 +12,7 @@ import com.karl.db.domain.Player;
 import com.karl.db.repositories.ApplyRepository;
 import com.karl.db.repositories.PlayerRepository;
 import com.karl.utils.AppUtils;
+import com.karl.utils.StringUtils;
 
 @Component("playerService")
 @Transactional
@@ -29,6 +30,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player save(Player player) {
+    	if(player.getPlayerId() == null || player.getPlayerId().isEmpty()) {
+    		player.setPlayerId(StringUtils.getMD5(player.getRemarkName()));
+    	}
         Assert.notNull(player, "player must not be null");
         return playerRepository.save(player);
     }

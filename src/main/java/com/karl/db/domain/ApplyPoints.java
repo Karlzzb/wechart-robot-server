@@ -19,7 +19,13 @@ public class ApplyPoints implements Serializable {
 
 	@Column(nullable = false)
 	private String playerId;
+	
+	@Column(nullable = false)
+	private String webChatId;
 
+    @Column(nullable = false)
+    private String webchatName;
+	
 	@Column(nullable = false)
 	private String remarkName;
 
@@ -100,6 +106,22 @@ public class ApplyPoints implements Serializable {
 
 	public void setApplyId(Long applyId) {
 		this.applyId = applyId;
+	}
+
+	public String getWebChatId() {
+		return webChatId;
+	}
+
+	public void setWebChatId(String webChatId) {
+		this.webChatId = webChatId;
+	}
+
+	public String getWebchatName() {
+		return webchatName;
+	}
+
+	public void setWebchatName(String webchatName) {
+		this.webchatName = webchatName;
 	}
 
 }

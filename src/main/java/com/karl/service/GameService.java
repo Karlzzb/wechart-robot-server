@@ -42,7 +42,7 @@ public class GameService {
 	@Autowired
 	@Lazy
 	private WebWechat webWechat;
-	
+
 	@Autowired
 	@Lazy
 	private ApprovalTabController approvalTabController;
@@ -70,8 +70,11 @@ public class GameService {
 		Matcher addPointMatcher = StringUtils.ADDPOINT.matcher(content);
 		if (addPointMatcher.find()) {
 			try {
-				approvalTabController.addApply(addPlayApply(remarkName, AppUtils.APPLYADDPOINT,
-						Long.valueOf(addPointMatcher.group(1))));
+				approvalTabController.addApply(
+						webChatId,
+						addPlayApply(webChatId, remarkName,
+								AppUtils.APPLYADDPOINT,
+								Long.valueOf(addPointMatcher.group(1))));
 			} catch (Exception e) {
 				LOGGER.error("User{" + remarkName + "} add point{"
 						+ addPointMatcher.group(1) + "failed!", e);
@@ -82,8 +85,75 @@ public class GameService {
 		Matcher subPointMatcher = StringUtils.SUBPOINT.matcher(content);
 		if (subPointMatcher.find()) {
 			try {
-				approvalTabController.addApply(addPlayApply(remarkName, AppUtils.APPLYADDPOINT,
-						Long.valueOf(subPointMatcher.group(1))));
+				approvalTabController.addApply(
+						webChatId,
+						addPlayApply(webChatId, remarkName,
+								AppUtils.APPLYSUBPOINT,
+								Long.valueOf(subPointMatcher.group(1))));
+			} catch (Exception e) {
+				LOGGER.error("User{" + remarkName + "} sub point{"
+						+ subPointMatcher.group(1) + "failed!", e);
+			}
+			return;
+		}
+
+		// Match put point
+		Matcher putPointMatcher = StringUtils.PUTPOINT.matcher(content);
+		while (putPointMatcher.find()) {
+			try {
+				Long putPoint = Long.valueOf(putPointMatcher.group(1));
+				String readyWechatId = runtimeDomain.getReadyWechatId();
+				if (readyWechatId == null || readyWechatId.isEmpty()) {
+					return;
+				}
+				String readyRemarkName = runtimeDomain
+						.getUserRemarkName(readyWechatId);
+				String readyNickName = runtimeDomain
+						.getUserNickName(readyWechatId);
+				if (readyRemarkName == null || readyRemarkName.isEmpty()) {
+					return;
+				}
+				Player pEntity = putPlayerPoint(readyWechatId, readyRemarkName,
+						readyNickName, putPoint, Boolean.TRUE);
+				// send feedback
+				if (pEntity != null) {
+					String replyTemplate = AppUtils.REPLYPOINTAPPLYPUT;
+					webWechat.webwxsendmsgM(MessageFormat.format(replyTemplate,
+							readyRemarkName, putPoint, pEntity.getPoints()));
+				}
+
+			} catch (Exception e) {
+				LOGGER.error("User{" + remarkName + "} sub point{"
+						+ subPointMatcher.group(1) + "failed!", e);
+			}
+			return;
+		}
+		
+		// Match put point
+		Matcher drawPointMatcher = StringUtils.DRAWPOINT.matcher(content);
+		while (drawPointMatcher.find()) {
+			try {
+				Long drawPoint = Long.valueOf(drawPointMatcher.group(1));
+				String readyWechatId = runtimeDomain.getReadyWechatId();
+				if (readyWechatId == null || readyWechatId.isEmpty()) {
+					return;
+				}
+				String readyRemarkName = runtimeDomain
+						.getUserRemarkName(readyWechatId);
+				String readyNickName = runtimeDomain
+						.getUserNickName(readyWechatId);
+				if (readyRemarkName == null || readyRemarkName.isEmpty()) {
+					return;
+				}
+				Player pEntity = putPlayerPoint(readyWechatId, readyRemarkName,
+						readyNickName, drawPoint, Boolean.FALSE);
+				// send feedback
+				if (pEntity != null) {
+					String replyTemplate = AppUtils.REPLYPOINTAPPLYDRAW;
+					webWechat.webwxsendmsgM(MessageFormat.format(replyTemplate,
+							readyRemarkName, drawPoint, pEntity.getPoints()));
+				}
+
 			} catch (Exception e) {
 				LOGGER.error("User{" + remarkName + "} sub point{"
 						+ subPointMatcher.group(1) + "failed!", e);
@@ -258,7 +328,8 @@ public class GameService {
 		return runtimeDomain.getCurrentRule();
 	}
 
-	public void initialCurrentPlayer(PlayerModel playerModle, String remarkName) {
+	public void initialCurrentPlayer(PlayerModel playerModle) {
+		String remarkName = playerModle.getPlayerName();
 		if (playerModle == null || remarkName == null || remarkName.isEmpty()) {
 			return;
 		}
@@ -286,20 +357,22 @@ public class GameService {
 		PlayerModel playerView = null;
 		for (int i = 0; i < playerList.size(); i++) {
 			playerView = playerList.get(i);
-			ryncPlayerPoint(playerView.getWechatId(), playerView.getPlayerId(),
+			ryncPlayerPoint(playerView.getWechatId(),
+					playerView.getWechatName(), playerView.getPlayerId(),
 					playerView.getPlayerNameRaw(),
 					Long.valueOf(playerView.getPlayerPoint()));
 		}
 	}
 
-	private void ryncPlayerPoint(String webchatId, String playerId,
-			String remarkName, Long newPointvel) {
+	private void ryncPlayerPoint(String webchatId, String wechatName,
+			String playerId, String remarkName, Long newPointvel) {
 		Player playEntity = null;
 		playEntity = playerService.getPlayerById(playerId);
 		if (playEntity == null) {
 			playEntity = new Player();
 			playEntity.setPlayerId(playerId);
 			playEntity.setRemarkName(remarkName);
+			playEntity.setWechatName(wechatName);
 		}
 		playEntity.setWebchatId(webchatId);
 		playEntity.setPoints(newPointvel);
@@ -368,23 +441,45 @@ public class GameService {
 
 	}
 
-
-	private void ryncPlayerPoint(String playerId,
-			Boolean plusOrMinus, Long newPointvel) {
+	private Player ryncPlayerPoint(String playerId, Boolean plusOrMinus,
+			Long newPointvel) {
 		Player playEntity = null;
-		Long oldPointVel = Long.valueOf(0);
 		playEntity = playerService.getPlayerById(playerId);
 		if (playEntity == null) {
 			LOGGER.warn("User[{}] cann't be found, the point option failed!",
 					playerId);
-			return;
+			return null;
 		}
+		Long oldPointVel = playEntity.getPoints();
 		playEntity.setPoints(plusOrMinus ? oldPointVel + newPointvel
 				: oldPointVel - newPointvel);
 		savePlayEntity(playEntity);
+
+		return playEntity;
+	}
+
+	private Player putPlayerPoint(String webchatId, String remarkName,
+			String nickName, Long newPointvel, Boolean plusOrMinus) {
+		Player playEntity = null;
+		playEntity = playerService.getPlayerByRemarkName(remarkName);
+		if (playEntity == null) {
+			playEntity = new Player();
+			playEntity.setRemarkName(remarkName);
+			playEntity.setPoints(Long.valueOf(0));
+		}
+		Long oldPointVel = playEntity.getPoints();
+		playEntity.setWebchatId(webchatId);
+		playEntity.setWechatName(nickName);
+		playEntity.setPoints(plusOrMinus ? oldPointVel + newPointvel
+				: oldPointVel - newPointvel);
+		savePlayEntity(playEntity);
+
+		return playEntity;
 	}
 
 	private void savePlayEntity(Player player) {
+		player.setWechatName(runtimeDomain.getUserNickName(player
+				.getWebchatId()));
 		playerService.save(player);
 		runningPlayers().put(player.getRemarkName(), player);
 	}
@@ -393,13 +488,24 @@ public class GameService {
 		return playerService.findByApprovalStatus(AppUtils.APPROVALNONE);
 	}
 
-	public boolean approvalPlayer(Long applyId, String playerId, Integer approvalStatus, Long point) {
+	public boolean approvalPlayer(Long applyId, String playerId,
+			Integer applyType, Integer approvalStatus, Long point,
+			String wechatId) {
 		try {
-			
-			if (Integer.compare(AppUtils.APPLYADDPOINT, approvalStatus) == 0) {
-				ryncPlayerPoint(playerId, Boolean.TRUE, point);
-			}else if (Integer.compare(AppUtils.APPLYSUBPOINT, approvalStatus) == 0) {
-				ryncPlayerPoint(playerId, Boolean.FALSE, point);
+			String replyTemplate = "";
+			Player pEntity = null;
+			if (Integer.compare(AppUtils.APPROVALYES, approvalStatus) == 0) {
+				if (Integer.compare(AppUtils.APPLYADDPOINT, applyType) == 0) {
+					pEntity = ryncPlayerPoint(playerId, Boolean.TRUE, point);
+					replyTemplate = AppUtils.REPLYPOINTAPPLYADD;
+				} else if (Integer.compare(AppUtils.APPLYSUBPOINT, applyType) == 0) {
+					pEntity = ryncPlayerPoint(playerId, Boolean.FALSE, point);
+					replyTemplate = AppUtils.REPLYPOINTAPPLYSUB;
+				}
+				// send feedback
+				webWechat.webwxsendmsg(MessageFormat.format(replyTemplate,
+						runtimeDomain.getUserNickName(wechatId), point,
+						pEntity.getPoints()));
 			}
 			playerService.approveRequest(applyId, approvalStatus,
 					(new Date()).getTime());
@@ -411,7 +517,8 @@ public class GameService {
 		return Boolean.FALSE;
 	}
 
-	public ApplyPoints addPlayApply(String remarkName, Integer applyType, Long points) {
+	public ApplyPoints addPlayApply(String webChatId, String remarkName,
+			Integer applyType, Long points) {
 		Player player = playerService.getPlayerByRemarkName(remarkName);
 		if (player != null) {
 			ApplyPoints apply = new ApplyPoints();
@@ -420,6 +527,8 @@ public class GameService {
 			apply.setApplyType(applyType);
 			apply.setPoints(points);
 			apply.setApplyTime((new Date()).getTime());
+			apply.setWebChatId(webChatId);
+			apply.setWebchatName(runtimeDomain.getUserNickName(webChatId));
 			return playerService.save(apply);
 		}
 		return null;

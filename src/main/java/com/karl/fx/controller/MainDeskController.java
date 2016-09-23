@@ -53,6 +53,9 @@ public class MainDeskController extends FxmlController {
 	private ChoiceBox<ChatGroupModel> groupBox;
 
 	@FXML
+	private ChoiceBox<ChatGroupModel> groupBoxM;
+
+	@FXML
 	private Label groupSizeLable;
 
 	@FXML
@@ -120,7 +123,7 @@ public class MainDeskController extends FxmlController {
 						// start/end game, the view actions
 						if (runtimeDomain.getGlobalGameSignal()) {
 							startGameViewAction();
-						}else {
+						} else {
 							endGameViewAction();
 						}
 					}
@@ -151,6 +154,21 @@ public class MainDeskController extends FxmlController {
 						}
 					}
 				});
+		groupBoxM.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<ChatGroupModel>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends ChatGroupModel> observable,
+							ChatGroupModel oldValue, ChatGroupModel newValue) {
+						if (newValue != null
+								&& !newValue.getGroupId().equals(
+										String.valueOf(0))) {
+							runtimeDomain.setCurrentMGroupId(newValue
+									.getGroupId());
+						}
+					}
+				});
+
 		fillUpGroupBox();
 	}
 
@@ -212,14 +230,11 @@ public class MainDeskController extends FxmlController {
 		playerList = runtimeDomain.getPlayerList();
 		runtimeDomain.getRunningPlayeres().clear();
 		PlayerModel playerModle = null;
-		Map<String, String> currentPlayersName = runtimeDomain
-				.getCurrentPlayersName();
-		int i = 1;
-		for (String remarkName : currentPlayersName.keySet()) {
-			playerModle = new PlayerModel(i++,
-					currentPlayersName.get(remarkName), 0, remarkName);
-			gameService.initialCurrentPlayer(playerModle,
-					currentPlayersName.get(remarkName));
+		Map<String, PlayerModel> currentPlayers = runtimeDomain
+				.getCurrentPlayers();
+		for (String remarkName : currentPlayers.keySet()) {
+			playerModle = currentPlayers.get(remarkName);
+			gameService.initialCurrentPlayer(playerModle);
 			if (playerModle.getPlayerName().equals(
 					runtimeDomain.getBankerRemarkName())) {
 				playerModle.setIsBanker(Boolean.TRUE);
@@ -236,6 +251,7 @@ public class MainDeskController extends FxmlController {
 		ChatGroupModel groupModel = null;
 		int i = 1;
 		int selected = 0;
+		int selectedM = 0;
 		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择群", 0));
 		for (String groupId : runtimeDomain.getGroupMap().keySet()) {
 			groupModel = new ChatGroupModel(groupId, runtimeDomain
@@ -245,11 +261,16 @@ public class MainDeskController extends FxmlController {
 			if (groupId.equals(runtimeDomain.getCurrentGroupId())) {
 				selected = i;
 			}
+			if (groupId.equals(runtimeDomain.getCurrentMGroupId())) {
+				selectedM = i;
+			}
 			groupList.add(groupModel);
 			i++;
 		}
 		groupBox.setItems(groupList);
+		groupBoxM.setItems(groupList);
 		groupBox.getSelectionModel().select(selected);
+		groupBoxM.getSelectionModel().select(selectedM);
 	}
 
 	@FXML
@@ -295,9 +316,10 @@ public class MainDeskController extends FxmlController {
 										.getPoints() == null ? 0 : pEntity
 										.getPoints()));
 								// Rsync the bet info when game start
-								if (runtimeDomain.getGlobalGameSignal() && pEntity
-										.getLatestBet() != null) {
-									pModel.setPlayerLatestBet(pEntity.getLatestBet());
+								if (runtimeDomain.getGlobalGameSignal()
+										&& pEntity.getLatestBet() != null) {
+									pModel.setPlayerLatestBet(pEntity
+											.getLatestBet());
 								}
 							}
 						}
@@ -312,7 +334,7 @@ public class MainDeskController extends FxmlController {
 		t1.setDaemon(Boolean.TRUE);
 		t1.start();
 	}
-	
+
 	private void startGameViewAction() {
 		PlayerModel pModel = null;
 		for (int i = 0; i < playerList.size(); i++) {
@@ -320,14 +342,15 @@ public class MainDeskController extends FxmlController {
 			pModel.getPlayerName();
 			pModel.setPlayerLatestBet(AppUtils.NONEBET);
 		}
-		for(String remarkName:runtimeDomain.getRunningPlayeres().keySet()) {
-			runtimeDomain.getRunningPlayeres().get(remarkName).setLatestBet(AppUtils.NONEBET);
+		for (String remarkName : runtimeDomain.getRunningPlayeres().keySet()) {
+			runtimeDomain.getRunningPlayeres().get(remarkName)
+					.setLatestBet(AppUtils.NONEBET);
 		}
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
 		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
 	}
-	
+
 	private void endGameViewAction() {
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
@@ -348,7 +371,7 @@ public class MainDeskController extends FxmlController {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> arg0,
 						Boolean before, Boolean now) {
-					//game time no change
+					// game time no change
 					if (runtimeDomain.getGlobalGameSignal()) {
 						radio.setSelected(before);
 						return;

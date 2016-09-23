@@ -19,8 +19,9 @@ public class PlayerModel{
     private  SimpleStringProperty playerName;
     private  SimpleStringProperty playerPoint;
     private SimpleStringProperty playerLatestBet;
+    private SimpleStringProperty wechatName;
 
-    public PlayerModel(Integer autoID, String playerName, Integer playerPoint, String wechatId) {
+    public PlayerModel(Integer autoID, String playerName, Integer playerPoint, String wechatId, String wechatName) {
         this.autoID =  new SimpleIntegerProperty(autoID);;
         this.playerId = new SimpleStringProperty(StringUtils.getMD5(playerName));
         this.playerName = new SimpleStringProperty(playerName);
@@ -28,6 +29,7 @@ public class PlayerModel{
         this.wechatId = new SimpleStringProperty(wechatId);
         this.isBanker = new SimpleBooleanProperty(Boolean.FALSE);
         this.playerLatestBet = new SimpleStringProperty("");
+		this.wechatName = new SimpleStringProperty(wechatName);
     }
     
     /**
@@ -106,6 +108,14 @@ public class PlayerModel{
 
 	public void setPlayerLatestBet(String playerLatestBet) {
 		this.playerLatestBet.set(playerLatestBet==null?"":playerLatestBet);
+	}
+
+	public String getWechatName() {
+		return wechatName.getValue();
+	}
+
+	public void setWechatName(String wechatName) {
+		this.wechatName.set(wechatName);
 	}
 
 }
