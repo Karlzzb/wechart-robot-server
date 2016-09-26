@@ -26,21 +26,6 @@ public class Player implements Serializable {
     @Column(nullable = true)
     private Long points;
 
-    @Column(nullable = true)
-    private Long latestBetValue;
-    
-    @Column(nullable = true)
-    private String latestBet;
-
-    @Column(nullable = true)
-    private Double latestLuck;
-
-    @Column(nullable = true)
-    private Long latestResult;
-
-    @Column(nullable = true)
-    private Long latestBetTime;
-
 
     public String getRemarkName() {
         return remarkName;
@@ -62,38 +47,6 @@ public class Player implements Serializable {
         super();
     }
 
-    public String getLatestBet() {
-        return latestBet;
-    }
-
-    public void setLatestBet(String latestBet) {
-        this.latestBet = latestBet;
-    }
-
-    public Double getLatestLuck() {
-        return latestLuck;
-    }
-
-    public void setLatestLuck(Double latestLuck) {
-        this.latestLuck = latestLuck;
-    }
-
-    public Long getLatestResult() {
-        return latestResult;
-    }
-
-    public void setLatestResult(Long latestResult) {
-        this.latestResult = latestResult;
-    }
-
-    public Long getLatestBetTime() {
-        return latestBetTime;
-    }
-
-    public void setLatestBetTime(Long latestBetTime) {
-        this.latestBetTime = latestBetTime;
-    }
-
 	public String getPlayerId() {
 		return playerId;
 	}
@@ -110,14 +63,6 @@ public class Player implements Serializable {
 		this.webchatId = webchatId;
 	}
 
-	public Long getLatestBetValue() {
-		return latestBetValue;
-	}
-
-	public void setLatestBetValue(Long latestBetValue) {
-		this.latestBetValue = latestBetValue;
-	}
-
 	public String getWechatName() {
 		return wechatName;
 	}
@@ -125,5 +70,7 @@ public class Player implements Serializable {
 	public void setWechatName(String wechatName) {
 		this.wechatName = wechatName;
 	}
+
+
 
 }

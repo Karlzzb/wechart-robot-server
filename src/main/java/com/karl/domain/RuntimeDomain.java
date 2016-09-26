@@ -102,7 +102,7 @@ public class RuntimeDomain implements Serializable {
     public Long minimumBet;
     
     public Long maximumBet;
-
+    
     private EnumSet<LotteryRule> currentRule;
 
     /**
@@ -134,6 +134,11 @@ public class RuntimeDomain implements Serializable {
      * game key for play
      */
     private String currentGameKey;
+    
+    /**
+     * game serial No. for play
+     */
+    public Long currentGameId;
     
     /**
      * 
@@ -500,5 +505,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setReadyWechatId(String readyWechatId) {
 		this.readyWechatId = readyWechatId;
+	}
+
+	public Long getCurrentGameId() {
+		return currentGameId;
+	}
+
+	public void setCurrentGameId(Long currentGameId) {
+		this.currentGameId = currentGameId;
 	}
 }

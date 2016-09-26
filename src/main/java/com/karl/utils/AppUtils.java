@@ -43,6 +43,8 @@ public class AppUtils {
 	public static final String PLAYLONG = "数字下注玩法";
 
 	public static final String PLAYLONGSPLIT = "分数下注玩法";
+	
+	public static final String PLAYLUCKWAY = "拼抢红包玩法";
 
 	public static final String BETRESULTHEAD = "--------[停止下注]--------\n";
 
@@ -97,8 +99,9 @@ public class AppUtils {
 		Collections.sort(list, new Comparator<Map.Entry<String, Player>>() {
 			public int compare(Map.Entry<String, Player> o1,
 					Map.Entry<String, Player> o2) {
-				return (o1.getValue().getLatestBetTime()).compareTo(o2
-						.getValue().getLatestBetTime());
+//				return (o1.getValue().getLatestBetTime()).compareTo(o2
+//						.getValue().getLatestBetTime());
+				return 0;
 			}
 		});
 

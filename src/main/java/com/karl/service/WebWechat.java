@@ -449,6 +449,47 @@ public class WebWechat {
 		}
 		return true;
 	}
+	
+	/**
+	 * 微信修改备注名
+	 */
+	public boolean changeRemarkName(String wechatId, String remarkName) {
+		String url = AppUtils.base_uri
+				+ "/webwxoplog?lang=zh_CN&pass_ticket="
+				+ runtimeDomain.getPassTicket();
+
+		JSONObject body = new JSONObject();
+		body.put("BaseRequest", runtimeDomain.getBaseRequest());
+		body.put("CmdId", 2);
+		body.put("RemarkName", remarkName);
+		body.put("UserName", wechatId);
+		body.put("ClientMsgId", DateKit.getCurrentUnixTime());
+
+		HttpRequest request = HttpRequest.post(url)
+				.header("Content-Type", "application/json;charset=utf-8")
+				.header("Cookie", runtimeDomain.getCookie())
+				.send(body.toString());
+
+		String res = request.body();
+		request.disconnect();
+
+		if (StringKit.isBlank(res)) {
+			return false;
+		}
+
+		try {
+			JSONObject jsonObject = JSON.parse(res).asObject();
+			JSONObject BaseResponse = jsonObject.getJSONObject("BaseResponse");
+			if (null != BaseResponse) {
+				int ret = BaseResponse.getInt("Ret", -1);
+				return ret == 0;
+			}
+		} catch (Exception e) {
+			LOGGER.error("wxStatusNotify failed due to:", e);
+		}
+		return false;
+	}
+
 
 	/**
 	 * 消息检查
