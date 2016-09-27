@@ -1,6 +1,7 @@
 package com.karl.service;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ import com.karl.domain.RuntimeDomain;
 import com.karl.fx.controller.ApprovalTabController;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
-import com.karl.utils.DigitalUtils;
+import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
 
 @Service
@@ -63,7 +64,25 @@ public class GameService {
 			}
 
 			if (matcher.find()) {
-				puttingBetInfo(webChatId, remarkName, matcher.group());
+				puttingBetInfo(webChatId, remarkName, matcher.group(),
+						Boolean.FALSE);
+				return;
+			}
+		}
+
+		// Message is the pattern of betting suoha
+		if (runtimeDomain.getGlobalGameSignal()) {
+			Matcher matcher = StringUtils.SUOHAPERF.matcher(content);
+			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
+				matcher = StringUtils.LONG.matcher(content);
+			} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
+					.getCurrentGameKey())) {
+				matcher = StringUtils.LONGSPLIT.matcher(content);
+			}
+
+			if (matcher.find()) {
+				puttingBetInfo(webChatId, remarkName, matcher.group(1),
+						Boolean.TRUE);
 				return;
 			}
 		}
@@ -168,42 +187,187 @@ public class GameService {
 	/**
 	 * TODO no use yet open the lottery
 	 */
-	public void openLottery() {
+	public String openLottery() {
+
 		Long currentGameId = runtimeDomain.getCurrentGameId();
-		if (currentGameId == null || currentGameId.compareTo(Long.valueOf(1)) < 0) {
-			return;
+		if (currentGameId == null
+				|| currentGameId.compareTo(Long.valueOf(1)) < 0) {
+			return null;
 		}
 		GameInfo gameInfo = playerService.getlatestGame();
 		if (gameInfo == null) {
-			return;
+			return null;
 		}
-		List<PlayerTrace> traceList = playerService.getPlayerTraceListByGameId(currentGameId);
+		List<PlayerTrace> traceList = playerService
+				.getPlayerTraceListByGameId(currentGameId);
 		if (traceList == null) {
-			return;
+			return null;
 		}
-		Long bankerTimes = getResult(gameInfo.getLuckInfo());
-		Long resultTimes = Long.valueOf(0);
-		Long resultPoint = Long.valueOf(0);
+
+		// banker
+		Long bankerTimes = gameInfo.getResultTimes();
 		Long bankerPoint = gameInfo.getBankerPoint();
+		Double bankerLuck = gameInfo.getLuckInfo();
+
+		// pure math divide player to different groups
+		List<PlayerTrace> winnerList = new ArrayList<PlayerTrace>();
+		List<PlayerTrace> loserList = new ArrayList<PlayerTrace>();
+		List<PlayerTrace> paceList = new ArrayList<PlayerTrace>();
+		List<PlayerTrace> allInList = new ArrayList<PlayerTrace>();
 		PlayerTrace trace = null;
+		Player pEntity = null;
 		for (int i = 0; i < traceList.size(); i++) {
 			trace = traceList.get(i);
-			resultTimes = getResult(trace.getLuckInfo());
-			resultPoint = (bankerTimes - resultTimes)*trace.getBetPoint();
-			
-			if (bankerPoint.compareTo(Long.valueOf(0))==0||(bankerPoint - resultPoint)<=0) {
-				resultPoint = bankerPoint;
-				bankerPoint = Long.valueOf(0);
-			}else {
-				bankerPoint = bankerPoint - resultPoint;
-			}
-			
-			playerService.updateResult(bankerTimes - resultTimes, resultPoint, trace.getTraceId());
-			if (Long.valueOf(0).compareTo(resultPoint)==0) {
+			pEntity = runningPlayers().get(trace.getRemarkName());
+			if (pEntity == null) {
+				LOGGER.error("Player{} is not in running Map",
+						trace.getRemarkName());
 				continue;
 			}
-			ryncPlayerPoint(trace.getPlayerId(), resultPoint>0, Math.abs(resultPoint));
+
+			if (bankerTimes > trace.getResultTimes()
+					|| bankerLuck.compareTo(trace.getLuckInfo()) > 0) {// lose
+				if (trace.getIslowRisk()) {// self want low risk
+					trace.setResultPoint(-trace.getBetPoint());
+					allInList.add(trace);
+				} else if (pEntity.getPoints().compareTo(
+						bankerTimes * trace.getBetPoint()) <= 0) {// have to low
+																	// risk
+					trace.setResultPoint(pEntity.getPoints().compareTo(
+							bankerTimes * trace.getBetPoint()) == 0 ? -pEntity
+							.getPoints() : -bankerTimes * trace.getBetPoint());
+					allInList.add(trace);
+				} else {// normal
+					trace.setResultPoint(-bankerTimes * trace.getBetPoint());
+				}
+				loserList.add(trace);
+			} else if (bankerTimes < trace.getResultTimes()
+					|| bankerLuck.compareTo(trace.getLuckInfo()) < 0) {// win
+				if (trace.getIslowRisk()) {// self want low risk
+					trace.setResultPoint(trace.getBetPoint());
+					allInList.add(trace);
+				} else if (pEntity.getPoints().compareTo(
+						trace.getResultTimes() * trace.getBetPoint()) <= 0) {// have
+																				// to
+																				// low
+																				// risk
+					trace.setResultPoint(pEntity.getPoints().compareTo(
+							trace.getResultTimes() * trace.getBetPoint()) == 0 ? pEntity
+							.getPoints() : trace.getResultTimes()
+							* trace.getBetPoint());
+					allInList.add(trace);
+				} else {// normal
+					trace.setResultPoint(trace.getResultTimes()
+							* trace.getBetPoint());
+				}
+				winnerList.add(trace);
+			} else {// pace
+				if (runtimeDomain.getAllowPace()) {
+					trace.setResultPoint(Long.valueOf(0));
+					paceList.add(trace);
+				} else {
+					trace.setResultPoint(-trace.getBetPoint());
+					loserList.add(trace);
+				}
+			}
+			bankerPoint += trace.getResultPoint();
 		}
+
+		if (runtimeDomain.getAllowInvain()
+				&& bankerPoint.compareTo(Long.valueOf(0)) < 0) {
+			for (int i = winnerList.size() - 1; i > -1; i--) {
+				bankerPoint += winnerList.get(i).getResultPoint();
+				winnerList.get(i).setResultPoint(
+						bankerPoint > 0 ? bankerPoint : Long.valueOf(0));
+				if (bankerPoint == 0) {
+					break;
+				}
+			}
+		}
+
+		// write the data to db
+		Long minLuckTime=Long.MAX_VALUE;
+		Long maxLuckTime=Long.MIN_VALUE;
+		for (int i = 0; i < traceList.size(); i++) {
+			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
+				continue;
+			}
+			ryncPlayerPoint(trace.getPlayerId(), traceList.get(i)
+					.getResultPoint() > 0, Math.abs(traceList.get(i)
+					.getResultPoint()));
+			
+			minLuckTime=minLuckTime<traceList.get(i).getLuckTime()?minLuckTime:traceList.get(i).getLuckTime();
+			maxLuckTime=maxLuckTime>traceList.get(i).getLuckTime()?minLuckTime:traceList.get(i).getLuckTime();
+		}
+
+		// config the message
+		String winListStr = "";
+		for (int i = 0; i < winnerList.size(); i++) {
+			if (winnerList.get(i).getResultPoint().compareTo(Long.valueOf(0)) != 0) {
+				winListStr += MessageFormat.format(AppUtils.GAMERESULTWIN,
+						winnerList.get(i).getRemarkName(),
+						winnerList.get(i).getBetPoint(),
+						winnerList.get(i).getResultRuleName(),
+						winnerList.get(i).getResultPoint()).toString();
+			} else {
+				winListStr += MessageFormat.format(AppUtils.GAMERESULTINVAIN,
+						winnerList.get(i).getRemarkName(),
+						winnerList.get(i).getBetPoint(),
+						winnerList.get(i).getResultRuleName()).toString();
+			}
+			winListStr += "\n";
+		}
+		String loseListStr = "";
+		for (int i = 0; i < loserList.size(); i++) {
+			loseListStr += MessageFormat.format(AppUtils.GAMERESULTLOSE,
+					loserList.get(i).getRemarkName(),
+					loserList.get(i).getBetPoint(),
+					loserList.get(i).getResultRuleName(),
+					Math.abs(loserList.get(i).getResultPoint())).toString();
+			loseListStr += "\n";
+		}
+		String allInListStr = "";
+		for (int i = 0; i < allInList.size(); i++) {
+			if (allInList.get(i).getResultPoint().compareTo(Long.valueOf(0)) > 0) {
+				allInListStr += MessageFormat.format(AppUtils.GAMERESULTWIN,
+						allInList.get(i).getRemarkName(),
+						allInList.get(i).getBetPoint(),
+						allInList.get(i).getResultRuleName(),
+						allInList.get(i).getResultPoint()).toString();
+			} else {
+				allInListStr += MessageFormat.format(AppUtils.GAMERESULTLOSE,
+						allInList.get(i).getRemarkName(),
+						allInList.get(i).getBetPoint(),
+						allInList.get(i).getResultRuleName(),
+						Math.abs(allInList.get(i).getResultPoint())).toString();
+			}
+			allInListStr += "\n";
+		}
+
+		String content = MessageFormat.format(
+				AppUtils.GAMERESULT,
+				runtimeDomain.getCurrentGameId(),
+				runtimeDomain.getCurrentGameKey(),
+				runtimeDomain.getCurrentGroupName(),
+				winListStr,
+				loseListStr,
+				allInListStr,
+				DateUtils.timeStamp(maxLuckTime),
+				"",
+				DateUtils.timeStamp(minLuckTime),
+				gameInfo.getBankerRemarkName(),
+				gameInfo.getLuckInfo(),
+				gameInfo.getResultRuleName(),
+				gameInfo.getResultTimes(),
+				loserList.size(),
+				winnerList.size(),
+			    paceList.size(),
+				runtimeDomain.getBankerBetPoint(),
+				traceList.size(),
+				runtimeDomain.getRunningPlayeres()
+				.get(runtimeDomain.getBankerRemarkName()).getPoints());
+		
+		return content;
 	}
 
 	/**
@@ -213,9 +377,9 @@ public class GameService {
 	 * @param betInfo
 	 */
 	public void puttingBetInfo(String webchatId, String remarkName,
-			String betInfo) {
+			String betInfo, Boolean isLowRisk) {
 		Player player = runningPlayers().get(remarkName);
-		if (player == null) {
+		if (player == null || runtimeDomain.getCurrentGameId() == null) {
 			return;
 		}
 		Integer betIndex = Integer.valueOf(0);
@@ -232,7 +396,7 @@ public class GameService {
 		PlayerTrace playerTrace = new PlayerTrace(
 				runtimeDomain.getCurrentGameId(), player.getPlayerId(),
 				player.getWebchatId(), player.getWechatName(), remarkName,
-				betInfo, betPoint, betIndex, (new Date()).getTime());
+				betInfo, betPoint, isLowRisk, betIndex, (new Date()).getTime());
 		playerService.save(playerTrace);
 	}
 
@@ -243,15 +407,15 @@ public class GameService {
 	 * @param luckInfo
 	 */
 	public void puttingLuckInfo(Integer index, String remarkName,
-			Double luckInfo) {
+			Double luckInfo, Date time) {
 		if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
-			puttingLuckInfo(remarkName, luckInfo);
+			puttingLuckInfo(remarkName, luckInfo, time);
 		} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
 				.getCurrentGameKey())) {
-			puttingLuckInfo(index, luckInfo);
+			puttingLuckInfo(index, luckInfo, time);
 		} else if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain
 				.getCurrentGameKey())) {
-			//TODO the luck way
+			// TODO the luck way
 		}
 	}
 
@@ -261,13 +425,18 @@ public class GameService {
 	 * @param remarkName
 	 * @param luckInfo
 	 */
-	private void puttingLuckInfo(Integer index, Double luckInfo) {
+	private void puttingLuckInfo(Integer index, Double luckInfo, Date luckTime) {
+		LotteryRule playerLottery = getResult(luckInfo);
 		if (index.compareTo(runtimeDomain.getBankerIndex()) == 0) {
-			playerService.updateBankerLuckInfo(runtimeDomain.getCurrentGameId(), luckInfo);
+			playerService.updateBankerLuckInfo(
+					runtimeDomain.getCurrentGameId(), luckInfo,
+					luckTime.getTime(), playerLottery.getRuleName(),
+					playerLottery.getTimes());
 			return;
 		}
 		playerService.updateLuckInfo(luckInfo,
-				runtimeDomain.getCurrentGameId(), index);
+				runtimeDomain.getCurrentGameId(), index, luckTime.getTime(),
+				playerLottery.getRuleName(), playerLottery.getTimes());
 	}
 
 	/**
@@ -276,19 +445,25 @@ public class GameService {
 	 * @param remarkName
 	 * @param luckInfo
 	 */
-	private void puttingLuckInfo(String remarkName, Double luckInfo) {
+	private void puttingLuckInfo(String remarkName, Double luckInfo,
+			Date luckTime) {
 		Player player = runningPlayers().get(remarkName);
 		if (player == null) {
 			return;
 		}
+		LotteryRule playerLottery = getResult(luckInfo);
 		if (remarkName.equals(runtimeDomain.getBankerRemarkName())) {
-			playerService.updateBankerLuckInfo(runtimeDomain.getCurrentGameId(), luckInfo);
+			playerService.updateBankerLuckInfo(
+					runtimeDomain.getCurrentGameId(), luckInfo,
+					luckTime.getTime(), playerLottery.getRuleName(),
+					playerLottery.getTimes());
 			return;
 		}
 		playerService.updateLuckInfo(luckInfo,
 				runtimeDomain.getCurrentGameId(), player.getPlayerId(),
-				remarkName);
-		
+				remarkName, luckTime.getTime(), playerLottery.getRuleName(),
+				playerLottery.getTimes());
+
 	}
 
 	/**
@@ -297,21 +472,17 @@ public class GameService {
 	 * @param luckInfo
 	 * @return
 	 */
-	private Long getResult(Double luckInfo) {
-		Long result = Long.valueOf(0);
+	private LotteryRule getResult(Double luckInfo) {
+		LotteryRule lotteryRule = null;
 		EnumSet<LotteryRule> theRule = currentRule();
 		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
 				.hasNext();) {
-			LotteryRule lotteryRule = (LotteryRule) iterator.next();
+			lotteryRule = (LotteryRule) iterator.next();
 			if (lotteryRule.getRuleResult(luckInfo)) {
-				result = lotteryRule.getTimes();
 				break;
 			}
 		}
-		if (result.compareTo(Long.valueOf(0)) == 0) {
-			result = DigitalUtils.getSumFromDouble(luckInfo);
-		}
-		return result;
+		return lotteryRule;
 	}
 
 	public Player findPlayerByRemarkName(String remarkName) {
@@ -321,24 +492,8 @@ public class GameService {
 		return playerService.getPlayerByRemarkName(remarkName);
 	}
 
-	/**
-	 * Calculate player result comparing to banker
-	 * 
-	 * @param luckInfo
-	 * @param bankerResult
-	 * @return
-	 */
-	private Long getResult(Double luckInfo, Long bankerResult) {
-		Long selfResult = getResult(luckInfo);
-		return selfResult - bankerResult;
-	}
-
 	private Map<String, Player> runningPlayers() {
 		return runtimeDomain.getRunningPlayeres();
-	}
-
-	private void resetPlayers(Map<String, Player> players) {
-		runtimeDomain.setRunningPlayeres(players);
 	}
 
 	private EnumSet<LotteryRule> currentRule() {
@@ -410,6 +565,22 @@ public class GameService {
 	}
 
 	private String declareBetStar() {
+
+		Player banker = playerService.getPlayerByRemarkName(runtimeDomain
+				.getBankerRemarkName());
+		if (banker == null) {
+			LOGGER.error("Banker{} is not existed!",
+					runtimeDomain.getBankerRemarkName());
+			return null;
+		}
+		GameInfo gameInfo = new GameInfo();
+		gameInfo.setBankerPoint(runtimeDomain.getBankerBetPoint());
+		gameInfo.setBankerRemarkName(banker.getRemarkName());
+		gameInfo.setBetIndex(runtimeDomain.getBankerIndex());
+		gameInfo.setPlayerId(banker.getPlayerId());
+		playerService.save(gameInfo);
+		runtimeDomain.setCurrentGameId(gameInfo.getGameSerialNo());
+
 		String content = MessageFormat.format(
 				AppUtils.GAMESTART,
 				runtimeDomain.getCurrentGroupName(),
@@ -417,9 +588,8 @@ public class GameService {
 				runtimeDomain.getRunningPlayeres()
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
 				runtimeDomain.getMaximumBet(), runtimeDomain.getMinimumBet(),
-				runtimeDomain.getBankerPackageNum(),
+				runtimeDomain.getPackageNumber(),
 				runtimeDomain.getBankerIndex());
-
 		return content;
 	}
 
@@ -431,22 +601,23 @@ public class GameService {
 		int i = 0;
 		long sumPoints = Long.valueOf(0);
 		long sumPointsAllIN = Long.valueOf(0);
-		
-		List<PlayerTrace> playerTraceList = playerService.getPlayerTraceListByGameId(runtimeDomain.getCurrentGameId());
+
+		List<PlayerTrace> playerTraceList = playerService
+				.getPlayerTraceListByGameId(runtimeDomain.getCurrentGameId());
 		if (playerTraceList != null) {
 			for (int j = 0; j < playerTraceList.size(); j++) {
+				trace = playerTraceList.get(i);
 				player = playerMap.get(trace.getRemarkName());
 				if (player == null) {
 					continue;
 				}
-				trace = playerTraceList.get(i);
 				content += MessageFormat.format(AppUtils.BETRESULTLINE,
 						trace.getRemarkName(),
-						String.valueOf(player.getPoints()),
-						trace.getBetInfo());
+						String.valueOf(player.getPoints()), trace.getBetInfo());
 				i++;
 				sumPoints += trace.getBetPoint();
-				if (trace.getBetPoint().compareTo(player.getPoints()*LotteryRule.MOMO_SAME.getTimes()) >= 0) {
+				if (trace.getBetPoint().compareTo(
+						player.getPoints() * LotteryRule.MOMO_SAME.getTimes()) >= 0) {
 					sumPointsAllIN += trace.getBetPoint();
 				}
 			}
@@ -494,7 +665,7 @@ public class GameService {
 		return playEntity;
 	}
 
-	private void savePlayEntity(Player player) {
+	public void savePlayEntity(Player player) {
 		player.setWechatName(runtimeDomain.getUserNickName(player
 				.getWebchatId()));
 		playerService.save(player);

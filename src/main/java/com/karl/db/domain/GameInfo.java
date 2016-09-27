@@ -34,9 +34,16 @@ public class GameInfo implements Serializable {
     
     @Column(nullable = true)
     private Double luckInfo;
-
+    
+    @Column(nullable = true)
+   private Long luckTime;
+    
+    @Column(nullable = true)
+    private String resultRuleName;
+    
     @Column(nullable = true)
     private Long resultTimes;
+
 
     @Column(nullable = true)
     private Long resultPoint;
@@ -104,6 +111,22 @@ public class GameInfo implements Serializable {
 
 	public void setResultPoint(Long resultPoint) {
 		this.resultPoint = resultPoint;
+	}
+
+	public Long getLuckTime() {
+		return luckTime;
+	}
+
+	public void setLuckTime(Long luckTime) {
+		this.luckTime = luckTime;
+	}
+
+	public String getResultRuleName() {
+		return resultRuleName;
+	}
+
+	public void setResultRuleName(String resultRuleName) {
+		this.resultRuleName = resultRuleName;
 	}
 	
 

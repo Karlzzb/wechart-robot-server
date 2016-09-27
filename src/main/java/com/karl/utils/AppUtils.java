@@ -60,6 +60,36 @@ public class AppUtils {
 			+ "--------[庄家列表]--------\n" + "本局庄家：{1}\n" + "庄家积分：{2}\n"
 			+ "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n" + "包数量：{5}\n" + "庄家位置：{6}\n"
 			+ "当前玩法：八门玩法+梭哈玩法\n";
+	
+	public static final String GAMERESULT ="◆◆◆◆◆[第{0}期]◆◆◆◆◆"
+			+"{1}！{2}"
+			+"-----------[赢]-----------"
+			+"{3}"
+			+"-----------[输]-----------"
+			+"{4}"
+			+"----------[梭哈]----------"
+			+"{5}"
+			+"--------------------------"
+			+"尾包时间：{6}"
+			+"超时时间：{7}"
+			+"首包时间：{8}"
+			+"--------------------------"
+			+"本局庄家：{9}"
+			+"庄家抢包：{10} {11} 赔率：{12}"
+			+"庄家输赢：输{13}家/赢{14}家 /和{15}家"
+			+"庄上积分：{16}"
+			+"本局下注：{17}"
+			+"发包费用：{18}"
+			+"本局基金：0"
+			+"庄家本局：0"
+			+"庄总积分：{19}"
+			+"--------[翱翔出品]--------";
+	
+	public static final String GAMERESULTWIN = "{0} {1} {2} 赢 {3}";
+	public static final String GAMERESULTINVAIN = "{0} {1} {2} 喝水";
+	public static final String GAMERESULTLOSE = "{0} {1} {2} 输 {3}";
+	public static final String GAMERESULTESAME = "{0} {1} {2} 和 {3}";
+	
 	public static final String REPLYPOINTAPPLYPUT ="给{0} 已上[{1}] 剩余积分： {2}";
 	public static final String REPLYPOINTAPPLYDRAW ="给{0} 已下[{1}] 剩余积分： {2}";
 	public static final String REPLYPOINTAPPLYADD ="@{0} 已上[{1}] 剩余积分： {2}";

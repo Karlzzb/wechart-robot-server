@@ -14,6 +14,7 @@ public class StringUtils {
 
     public static Pattern DOUBLE = Pattern.compile("^([0-9]*\\.?[0-9]+)$");
     public static Pattern LONGSPLIT = Pattern.compile("^([1-9]+[0-9]*/[1-9]+[0-9]*)$");
+    public static Pattern SUOHAPERF = Pattern.compile("^(梭哈)+([1-9]+[0-9]*)(梭哈)+$");
     public static Pattern LONG = Pattern.compile("^([1-9]+[0-9]*)$");
     public static Pattern ADDPOINT = Pattern.compile("\\s*查\\s*([1-9]+[0-9]*)");
     public static Pattern SUBPOINT = Pattern.compile("\\s*回\\s*([1-9]+[0-9]*)");

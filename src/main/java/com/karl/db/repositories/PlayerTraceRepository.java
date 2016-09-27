@@ -10,7 +10,7 @@ import com.karl.db.domain.PlayerTrace;
 
 public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, String> {
 
-    @Query("from PlayerTrace p where p.gameSerialNo = ?1 order by betPoint dese, p.betTime desc")
+    @Query("from PlayerTrace p where p.gameSerialNo = ?1 order by resultTimes, p.betTime, betPoint desc")
     List<PlayerTrace> findByGameId(Long gameId);
     
     @Query("from PlayerTrace p where p.remarkName = ?1")
@@ -33,12 +33,12 @@ public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Strin
 	void updateResult(Long resultTimes, Long resultPoint, Long traceId);
 
     @Modifying
-    @Query("update PlayerTrace p set p.luckInfo = ?1  where p.gameSerialNo = ?2 and p.playerId = ?3 and p.remarkName = ?4")
+    @Query("update PlayerTrace p set p.luckInfo = ?1, p.luckTime = ?5, p.resultRuleName = ?6, p.resultTimes = ?7  where p.gameSerialNo = ?2 and p.playerId = ?3 and p.remarkName = ?4")
 	void updateLuckInfo(Double luckInfo, Long gameSerialNo, String playerId,
-			String remarkName);
+			String remarkName, Long luckTime, String resultRuleName, Long resultTimes);
 
     @Modifying
-    @Query("update PlayerTrace p set p.luckInfo = ?1  where p.gameSerialNo = ?2 and p.betIndex = ?3")
-	void updateLuckInfo(Double luckInfo, Long currentGameId, Integer betIndex);    
+    @Query("update PlayerTrace p set p.luckInfo = ?1, p.luckTime = ?4, p.resultRuleName = ?5, p.resultTimes = ?6  where p.gameSerialNo = ?2 and p.betIndex = ?3")
+	void updateLuckInfo(Double luckInfo, Long currentGameId, Integer betIndex, Long luckTime, String resultRuleName, Long resultTimes);    
 
 }

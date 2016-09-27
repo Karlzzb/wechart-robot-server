@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -19,6 +20,7 @@ import blade.kit.json.JSON;
 import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
+import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
 
 @Service
@@ -170,10 +172,13 @@ public class PcClient {
 				jsonLuckOne = jsonLuckPeople.getJSONObject(i);
 				Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne
 						.getString("Money"));
+				
+				Date time = DateUtils.parseDateTime(jsonLuckOne.getString("Time"));
 				if (matcher.find()) {
 					gameService.puttingLuckInfo(i,
 							jsonLuckOne.getString("RemarkName"),
-							Double.valueOf(matcher.group(1)));
+							Double.valueOf(matcher.group(1)),
+							time);
 				} else {
 					LOGGER.warn(
 							"Luck message RemarkUser {} Money{} interpret failed!",

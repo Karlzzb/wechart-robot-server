@@ -10,9 +10,14 @@ import javax.persistence.Id;
 
 @Entity
 public class PlayerTrace implements Serializable {
-    public PlayerTrace(Long gameSerialNo, String playerId,
+
+	public PlayerTrace() {
+		super();
+	}
+
+	public PlayerTrace(Long gameSerialNo, String playerId,
 			String webchatId, String wechatName, String remarkName,
-			String betInfo, Long betPoint, Integer betIndex, Long betTime) {
+			String betInfo, Long betPoint, Boolean islowRisk, Integer betIndex, Long betTime) {
 		super();
 		this.gameSerialNo = gameSerialNo;
 		this.playerId = playerId;
@@ -23,6 +28,7 @@ public class PlayerTrace implements Serializable {
 		this.betPoint = betPoint;
 		this.betIndex = betIndex;
 		this.betTime = betTime;
+		this.islowRisk = islowRisk;
 	}
 
 	private static final long serialVersionUID = -7909930972652408103L;
@@ -57,10 +63,19 @@ public class PlayerTrace implements Serializable {
     
     @Column(nullable = true)
     private Long betTime;
+    
+    @Column(nullable = true)
+    private Boolean islowRisk;
 
     @Column(nullable = true)
     private Double luckInfo;
 
+    @Column(nullable = true)
+    private Long luckTime;
+
+    @Column(nullable = true)
+    private String resultRuleName;
+    
     @Column(nullable = true)
     private Long resultTimes;
 
@@ -140,14 +155,6 @@ public class PlayerTrace implements Serializable {
 		this.luckInfo = luckInfo;
 	}
 
-	public Long getResultTimes() {
-		return resultTimes;
-	}
-
-	public void setResultTimes(Long resultTimes) {
-		this.resultTimes = resultTimes;
-	}
-
 	public Long getResultPoint() {
 		return resultPoint;
 	}
@@ -170,6 +177,38 @@ public class PlayerTrace implements Serializable {
 
 	public void setBetIndex(Integer betIndex) {
 		this.betIndex = betIndex;
+	}
+
+	public Long getLuckTime() {
+		return luckTime;
+	}
+
+	public void setLuckTime(Long luckTime) {
+		this.luckTime = luckTime;
+	}
+
+	public String getResultRuleName() {
+		return resultRuleName;
+	}
+
+	public void setResultRuleName(String resultRuleName) {
+		this.resultRuleName = resultRuleName;
+	}
+
+	public Long getResultTimes() {
+		return resultTimes;
+	}
+
+	public void setResultTimes(Long resultTimes) {
+		this.resultTimes = resultTimes;
+	}
+
+	public Boolean getIslowRisk() {
+		return islowRisk;
+	}
+
+	public void setIslowRisk(Boolean islowRisk) {
+		this.islowRisk = islowRisk;
 	}
 
 }

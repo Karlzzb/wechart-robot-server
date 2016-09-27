@@ -43,9 +43,12 @@ public class RuntimeDomain implements Serializable {
         currentGameKey = AppUtils.PLAYLONGSPLIT;
         minimumBet = AppUtils.DEFAULT_MINBET;
         maximumBet = AppUtils.DEFAULT_MAXBET;
-        bankerPackageNum = AppUtils.DEFAULT_PACKAGE_NUM;
         bankerIndex = 1;
+        packageNumber=8;
         betOrder = 0;
+        allowPace = Boolean.TRUE;
+        allowInvain = Boolean.TRUE;
+        allowAllIn = Boolean.TRUE;
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -92,12 +95,12 @@ public class RuntimeDomain implements Serializable {
     /**
      * The current banker defined 
      */
-    public Integer bankerPackageNum;
+    public Integer bankerIndex;
     
     /**
      * The current banker defined 
      */
-    public Integer bankerIndex;
+    public Long bankerBetPoint;
     
     public Long minimumBet;
     
@@ -131,6 +134,11 @@ public class RuntimeDomain implements Serializable {
     private Boolean globalGameSignal;
     
     /**
+     * game package number defied by banker
+     */
+    private Integer packageNumber;
+    
+    /**
      * game key for play
      */
     private String currentGameKey;
@@ -145,7 +153,23 @@ public class RuntimeDomain implements Serializable {
      */
     private Integer betOrder;
     
+    /**
+     * if allow banker equal to player
+     */
+    private Boolean allowPace;
+    
+    /**
+     * if allow banker equal to player
+     */
+    private Boolean allowAllIn;
 
+    
+    /**
+     * if allow banker 
+     */
+    private Boolean allowInvain;
+
+    
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
     
@@ -459,14 +483,6 @@ public class RuntimeDomain implements Serializable {
 		this.maximumBet = maximumBet;
 	}
 
-	public Integer getBankerPackageNum() {
-		return bankerPackageNum;
-	}
-
-	public void setBankerPackageNum(Integer bankerPackageNum) {
-		this.bankerPackageNum = bankerPackageNum;
-	}
-
 	public Integer getBankerIndex() {
 		return bankerIndex;
 	}
@@ -513,5 +529,45 @@ public class RuntimeDomain implements Serializable {
 
 	public void setCurrentGameId(Long currentGameId) {
 		this.currentGameId = currentGameId;
+	}
+
+	public Long getBankerBetPoint() {
+		return bankerBetPoint;
+	}
+
+	public void setBankerBetPoint(Long bankerBetPoint) {
+		this.bankerBetPoint = bankerBetPoint;
+	}
+
+	public Integer getPackageNumber() {
+		return packageNumber;
+	}
+
+	public void setPackageNumber(Integer packageNumber) {
+		this.packageNumber = packageNumber;
+	}
+
+	public Boolean getAllowPace() {
+		return allowPace;
+	}
+
+	public void setAllowPace(Boolean allowPace) {
+		this.allowPace = allowPace;
+	}
+
+	public Boolean getAllowInvain() {
+		return allowInvain;
+	}
+
+	public void setAllowInvain(Boolean allowInvain) {
+		this.allowInvain = allowInvain;
+	}
+
+	public Boolean getAllowAllIn() {
+		return allowAllIn;
+	}
+
+	public void setAllowAllIn(Boolean allowAllIn) {
+		this.allowAllIn = allowAllIn;
 	}
 }

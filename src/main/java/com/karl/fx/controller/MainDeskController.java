@@ -315,12 +315,6 @@ public class MainDeskController extends FxmlController {
 								pModel.setPlayerPoint(String.valueOf(pEntity
 										.getPoints() == null ? 0 : pEntity
 										.getPoints()));
-								// Rsync the bet info when game start
-								if (runtimeDomain.getGlobalGameSignal()
-										&& pEntity.getLatestBet() != null) {
-									pModel.setPlayerLatestBet(pEntity
-											.getLatestBet());
-								}
 							}
 						}
 					} catch (Exception e) {
@@ -341,10 +335,6 @@ public class MainDeskController extends FxmlController {
 			pModel = playerList.get(i);
 			pModel.getPlayerName();
 			pModel.setPlayerLatestBet(AppUtils.NONEBET);
-		}
-		for (String remarkName : runtimeDomain.getRunningPlayeres().keySet()) {
-			runtimeDomain.getRunningPlayeres().get(remarkName)
-					.setLatestBet(AppUtils.NONEBET);
 		}
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
