@@ -166,14 +166,30 @@ public class PlayerService {
 	}
 
 	public void updateBankerLuckInfo(Long gameId, Double luckInfo, Long luckTime, String resultRuleName, Integer resultTimes) {
-		Assert.notNull(gameId, "luckInfo must not be null");
+		Assert.notNull(gameId, "gameId must not be null");
+		Assert.notNull(luckInfo, "luckInfo must not be null");
+		Assert.notNull(luckTime, "luckTime must not be null");
 		Assert.notNull(luckInfo, "gameSerialNo must not be null");
+		Assert.notNull(resultRuleName, "resultRuleName must not be null");
+		Assert.notNull(resultTimes, "resultTimes must not be null");
 		gameRepository.updateBankerLuckInfo(gameId, luckInfo, luckTime, resultRuleName, resultTimes);
 	}
 
 	public GameInfo save(GameInfo gameInfo) {
 		Assert.notNull(gameInfo, "GameInfo must not be null");
 		return gameRepository.save(gameInfo);
+	}
+
+	public void updateBankerLuckInfoWithBetInfo(Long gameId, Double luckInfo, Long luckTime, String resultRuleName, Integer resultTimes,
+			Integer betIndex) {
+		Assert.notNull(gameId, "gameId must not be null");
+		Assert.notNull(luckInfo, "luckInfo must not be null");
+		Assert.notNull(luckTime, "luckTime must not be null");
+		Assert.notNull(luckInfo, "gameSerialNo must not be null");
+		Assert.notNull(resultRuleName, "resultRuleName must not be null");
+		Assert.notNull(resultTimes, "resultTimes must not be null");
+		Assert.notNull(betIndex, "resultTimes must not be null");
+		gameRepository.updateBankerLuckInfo(gameId, luckInfo, luckTime, resultRuleName, resultTimes, betIndex);
 	}
 
 }

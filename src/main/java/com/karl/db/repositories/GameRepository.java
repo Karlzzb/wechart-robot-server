@@ -17,4 +17,9 @@ public interface GameRepository extends PagingAndSortingRepository<GameInfo, Lon
 
     @Query("from GameInfo order by gameSerialNo desc")
 	List<GameInfo> search(Pageable pageable);
+
+    @Query("update GameInfo g set g.luckInfo = ?2, g.luckTime = ?3, g.resultRuleName = ?4, g.resultTimes = ?5, g.betIndex = ?6 where g.gameSerialNo = ?1")
+    @Modifying
+	void updateBankerLuckInfo(Long gameId, Double luckInfo, Long luckTime,
+			String resultRuleName, Integer resultTimes, Integer betIndex);
 }

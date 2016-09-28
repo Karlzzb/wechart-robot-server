@@ -55,7 +55,7 @@ public class AppTest {
 	@Test
 	public void testGameRound() {
 		Random r = new Random();
-		runtimeDomain.setCurrentGameKey(AppUtils.PLAYLONG);
+		runtimeDomain.setCurrentGameKey(AppUtils.PLAYLONGSPLIT);
 		for (int i = 1; i < 11; i++) {
 			Player pEntity = new Player();
 			pEntity.setRemarkName("test" + i);
@@ -81,9 +81,45 @@ public class AppTest {
 							.getWebchatId(),
 					runtimeDomain.getRunningPlayeres().get(remarkName)
 							.getRemarkName(),
-					String.valueOf(runtimeDomain.getRunningPlayeres()
+					String.valueOf(Math.abs(r.nextInt(20))+"/"+runtimeDomain.getRunningPlayeres()
 							.get(remarkName).getPoints() / 5), Boolean.FALSE);
 		}
+		runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
+		content = gameService.declareGame();
+		System.out.println(content);
+		for (int i = 1; i < 20; i++) {
+			gameService
+					.puttingLuckInfo(
+							i,
+							"test" + i,
+							new BigDecimal(r.nextDouble() * 9).setScale(2,
+									BigDecimal.ROUND_HALF_UP).doubleValue(),
+							new Date());
+		}
+		System.out.println(gameService.openLottery());
+	}
+	
+	@Test
+	public void testGameRoundAuto() {
+		Random r = new Random();
+		runtimeDomain.setCurrentGameKey(AppUtils.PLAYLUCKWAY);
+		for (int i = 1; i < 11; i++) {
+			Player pEntity = new Player();
+			pEntity.setRemarkName("test" + i);
+			pEntity.setPoints(Long.valueOf(Math.abs(r.nextInt(2000))));
+			gameService.savePlayEntity(pEntity);
+			if (i == 5) {
+				runtimeDomain.setBankerRemarkName(pEntity.getRemarkName());
+				runtimeDomain.setBankerBetPoint(pEntity.getPoints());
+			}
+		}
+		runtimeDomain.setBankerIndex(0);
+		runtimeDomain.setPackageNumber(20);
+		String content = gameService.declareBetStar();
+		System.out.println(gameService.publishRanking());
+		System.out.println(content);
+		
+		
 		runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
 		content = gameService.declareGame();
 		System.out.println(content);
@@ -97,6 +133,8 @@ public class AppTest {
 							new Date());
 		}
 		System.out.println(gameService.openLottery());
+		System.out.println(gameService.publishRanking());
+		
 	}
 	
 

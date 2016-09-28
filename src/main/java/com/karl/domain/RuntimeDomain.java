@@ -49,6 +49,7 @@ public class RuntimeDomain implements Serializable {
         allowPace = Boolean.TRUE;
         allowInvain = Boolean.TRUE;
         allowAllIn = Boolean.TRUE;
+        defiendBet = Long.valueOf(50);
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -172,6 +173,11 @@ public class RuntimeDomain implements Serializable {
     
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
             + DateKit.getCurrentUnixTime();
+    
+    /**
+     * pre defied fixed bet
+     */
+	private Long defiendBet;
     
     /**
      * key=remarkName
@@ -569,5 +575,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setAllowAllIn(Boolean allowAllIn) {
 		this.allowAllIn = allowAllIn;
+	}
+
+	public Long getDefiendBet() {
+		return defiendBet;
+	}
+
+	public void setDefiendBet(Long defiendBet) {
+		this.defiendBet = defiendBet;
 	}
 }

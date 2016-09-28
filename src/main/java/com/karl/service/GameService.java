@@ -184,9 +184,6 @@ public class GameService {
 
 	}
 
-	/**
-	 * TODO no use yet open the lottery
-	 */
 	public String openLottery() {
 
 		Long currentGameId = runtimeDomain.getCurrentGameId();
@@ -379,8 +376,8 @@ public class GameService {
 				gameInfo.getLuckInfo(),
 				gameInfo.getResultRuleName(),
 				gameInfo.getResultTimes(),
-				loserList.size(),
 				winnerList.size(),
+				loserList.size(),
 				paceList.size(),
 				runtimeDomain.getBankerBetPoint(),
 				traceList.size(),
@@ -437,8 +434,45 @@ public class GameService {
 			puttingLuckInfo(index, luckInfo, time);
 		} else if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain
 				.getCurrentGameKey())) {
-			// TODO the luck way
+			puttingLuckInfoWithBetInfo(index, remarkName, luckInfo, time);
 		}
+	}
+
+	/**
+	 * put betinfo & luckinfo simultaneously
+	 * @param betIndex
+	 * @param remarkName
+	 * @param luckInfo
+	 * @param time
+	 */
+	private void puttingLuckInfoWithBetInfo(Integer betIndex, String remarkName, Double luckInfo,
+			Date time) {
+		Player player = runningPlayers().get(remarkName);
+		if (player == null || runtimeDomain.getCurrentGameId() == null) {
+			return;
+		}
+		LotteryRule playerLottery = getResult(luckInfo);
+		//benker info
+		if (remarkName.equals(runtimeDomain.getBankerRemarkName())) {
+			playerService.updateBankerLuckInfoWithBetInfo(
+					runtimeDomain.getCurrentGameId(), luckInfo,
+					time.getTime(), playerLottery.getRuleName(),
+					playerLottery.getTimes(), betIndex);
+			return;
+		}
+		
+		Long betPoint = runtimeDomain.getDefiendBet();
+		//betinfo
+		PlayerTrace playerTrace = new PlayerTrace(
+				runtimeDomain.getCurrentGameId(), player.getPlayerId(),
+				player.getWebchatId(), player.getWechatName(), remarkName,
+				betIndex+"/"+Long.valueOf(betPoint), betPoint, Boolean.FALSE, betIndex, time.getTime());
+		//luckinfo
+		playerTrace.setLuckInfo(luckInfo);
+		playerTrace.setLuckTime(time.getTime());
+		playerTrace.setResultRuleName(playerLottery.getRuleName());
+		playerTrace.setResultTimes(playerLottery.getTimes());
+		playerService.save(playerTrace);
 	}
 
 	/**
@@ -586,7 +620,7 @@ public class GameService {
 		}
 	}
 
-	private String declareBetStar() {
+	public String declareBetStar() {
 
 		Player banker = playerService.getPlayerByRemarkName(runtimeDomain
 				.getBankerRemarkName());
@@ -611,7 +645,8 @@ public class GameService {
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
 				runtimeDomain.getMaximumBet(), runtimeDomain.getMinimumBet(),
 				runtimeDomain.getPackageNumber(),
-				runtimeDomain.getBankerIndex());
+				runtimeDomain.getBankerIndex(),
+				runtimeDomain.getCurrentGameKey()+(runtimeDomain.getAllowAllIn()?"+梭哈":""));
 		return content;
 	}
 
@@ -742,5 +777,28 @@ public class GameService {
 			return playerService.save(apply);
 		}
 		return null;
+	}
+	
+	public String publishRanking() {
+		String body = "";
+		Player pEntity = null;
+		Long sumPoint = Long.valueOf(0);
+		int i = 1;
+		for (String remarkName: runningPlayers().keySet()) {
+			pEntity = runningPlayers().get(remarkName);
+			body+=MessageFormat.format(AppUtils.RANKINGLINE, i++, remarkName, pEntity.getPoints());
+		}
+		
+		
+		return MessageFormat.format(
+				AppUtils.RANKINGLAYOUT,
+				runtimeDomain.getBankerRemarkName(),
+				runtimeDomain.getRunningPlayeres()
+						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
+				runtimeDomain.getBankerBetPoint(),
+				runningPlayers().size(),
+				sumPoint,
+				body
+				);
 	}
 }
