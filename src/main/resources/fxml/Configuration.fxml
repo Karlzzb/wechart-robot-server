@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0"
-	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
+<AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
 	<children>
-		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true"
-			layoutX="774.0" layoutY="89.0" prefHeight="585.0" prefWidth="500.0"
-			AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0"
-			AnchorPane.rightAnchor="760.0" AnchorPane.topAnchor="80.0">
+		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true" layoutX="774.0" layoutY="89.0" prefHeight="585.0" prefWidth="500.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="760.0" AnchorPane.topAnchor="80.0">
 			<columns>
-				<TableColumn fx:id="ruleCheck" prefWidth="96" resizable="false"
-					text="选择" />
-				<TableColumn fx:id="ruleName" prefWidth="183" resizable="false"
-					text="名称" />
-				<TableColumn fx:id="ruleDetail" prefWidth="165.0"
-					resizable="false" text="倍数" />
+				<TableColumn fx:id="ruleCheck" prefWidth="96" resizable="false" text="选择" />
+				<TableColumn fx:id="ruleName" prefWidth="183" resizable="false" text="名称" />
+				<TableColumn fx:id="ruleDetail" prefWidth="165.0" resizable="false" text="倍数" />
 			</columns>
 		</TableView>
+      <ChoiceBox fx:id="gamekeyBox" layoutX="613.0" layoutY="84.0" prefWidth="150.0" />
+      <Label layoutX="529.0" layoutY="84.0" prefHeight="25.0" prefWidth="68.0" text="玩法选择：" />
 	</children>
 </AnchorPane>

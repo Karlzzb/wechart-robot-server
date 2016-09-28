@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -17,7 +18,7 @@
 		<Label fx:id="groupSizeLable" layoutX="953.0" layoutY="80.0" prefHeight="26.0" prefWidth="90.0" text="群人数 :0" />
 		<Button fx:id="groupFlush" layoutX="1128.0" layoutY="82.0" mnemonicParsing="false" onAction="#flushGroup" prefHeight="25.0" prefWidth="57.0" text="刷新" />
 		<Button fx:id="syncPlayer" layoutX="1043.0" layoutY="81.0" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" text="同步" />
-		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="774.0" layoutY="132.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="132.0">
+		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="774.0" layoutY="132.0" prefHeight="314.0" prefWidth="455.0" AnchorPane.bottomAnchor="206.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="132.0">
 			<columns>
             <TableColumn fx:id="colBankerSgin" prefWidth="60.0" text="选主" />
 				<TableColumn fx:id="colAutoID" prefWidth="100.0" resizable="false" text="编号" />
@@ -26,19 +27,30 @@
             <TableColumn fx:id="colPlayerLatestBet" prefWidth="113.666748046875" resizable="false" text="当前局下注" />
 			</columns>
 		</TableView>
-      <Button fx:id="msgSendBut" layoutX="599.0" layoutY="326.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="11.0" prefWidth="73.0" text="信息发出" />
-      <ToggleButton fx:id="gameStart" layoutX="599.0" layoutY="362.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="73.0" text="开始" />
-      <ToggleButton fx:id="gameEnd" layoutX="599.0" layoutY="401.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="73.0" text="结束" />
-      <Label fx:id="bankerLabel" layoutX="599.0" layoutY="264.0" prefHeight="26.0" prefWidth="90.0" text="主人：" />
-      <TextArea fx:id="messageBoard" layoutX="28.0" layoutY="503.0" prefWidth="493.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="704.0" AnchorPane.topAnchor="503.0" />
-      <ScrollPane layoutX="28.0" layoutY="29.0" prefHeight="439.0" prefWidth="493.0" AnchorPane.bottomAnchor="184.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="704.0" AnchorPane.topAnchor="29.0">
+      <Button fx:id="msgSendBut" layoutX="647.0" layoutY="326.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="11.0" prefWidth="73.0" text="信息发出" />
+      <ToggleButton fx:id="gameStart" layoutX="647.0" layoutY="366.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="73.0" text="开始" />
+      <ToggleButton fx:id="gameEnd" layoutX="647.0" layoutY="405.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="73.0" text="结束" />
+      <Label fx:id="bankerLabel" layoutX="636.0" layoutY="263.0" prefHeight="26.0" prefWidth="90.0" text="庄家：" />
+      <Label layoutX="636.0" layoutY="300.0" text="锁定积分:" />
+      <TextArea fx:id="messageBoard" layoutX="750.0" layoutY="468.0" prefHeight="124.0" prefWidth="455.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="468.0" />
+      <ScrollPane layoutX="41.0" layoutY="440.0" prefHeight="196.0" prefWidth="493.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="691.0" AnchorPane.topAnchor="440.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="490.0">
                <children>
                   <fx:include source="ApprovalTab.fxml" />
                </children>
             </AnchorPane>
         </content>
       </ScrollPane>
+      <ScrollPane layoutX="41.0" layoutY="14.0" prefHeight="417.0" prefWidth="587.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="583.0">
+               <children>
+                  <fx:include source="GameRunningTab.fxml" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <TextField fx:id="bankerBetPoint" layoutX="690.0" layoutY="296.0" prefHeight="25.0" prefWidth="48.0" />
 	</children>
 </AnchorPane>

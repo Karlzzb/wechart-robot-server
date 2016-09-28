@@ -50,6 +50,7 @@ public class RuntimeDomain implements Serializable {
         allowInvain = Boolean.TRUE;
         allowAllIn = Boolean.TRUE;
         defiendBet = Long.valueOf(50);
+        bankerBetPoint = Long.valueOf(0);
     }
 
     private static final long serialVersionUID = 5720576756640779509L;

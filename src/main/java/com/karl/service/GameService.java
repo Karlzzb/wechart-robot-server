@@ -641,8 +641,7 @@ public class GameService {
 				AppUtils.GAMESTART,
 				runtimeDomain.getCurrentGroupName(),
 				runtimeDomain.getBankerRemarkName(),
-				runtimeDomain.getRunningPlayeres()
-						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
+				runtimeDomain.getBankerBetPoint(),
 				runtimeDomain.getMaximumBet(), runtimeDomain.getMinimumBet(),
 				runtimeDomain.getPackageNumber(),
 				runtimeDomain.getBankerIndex(),
@@ -658,6 +657,9 @@ public class GameService {
 		int i = 0;
 		long sumPoints = Long.valueOf(0);
 		long sumPointsAllIN = Long.valueOf(0);
+		if(runtimeDomain.getCurrentGameId() == null || runtimeDomain.getCurrentGameId() < 1) {
+			return "";
+		}
 
 		List<PlayerTrace> playerTraceList = playerService
 				.getPlayerTraceListByGameId(runtimeDomain.getCurrentGameId());
@@ -800,5 +802,15 @@ public class GameService {
 				sumPoint,
 				body
 				);
+	}
+
+	public List<PlayerTrace> getCurrentPlayTrace() {
+		Long currentGameId = runtimeDomain.getCurrentGameId();
+		if (currentGameId == null
+				|| currentGameId.compareTo(Long.valueOf(1)) < 0) {
+			return null;
+		}
+		return playerService
+				.getPlayerTraceListByGameId(currentGameId);
 	}
 }

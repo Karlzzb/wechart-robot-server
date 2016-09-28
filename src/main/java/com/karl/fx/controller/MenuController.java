@@ -5,7 +5,6 @@
  */
 package com.karl.fx.controller;
 
-import static org.slf4j.LoggerFactory.getLogger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,15 +14,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.karl.fx.FxmlView;
 
 @Component
 public class MenuController extends FxmlController {
-
-	private static final Logger LOGGER = getLogger(MenuController.class);
 
 	@FXML
 	private Label title;

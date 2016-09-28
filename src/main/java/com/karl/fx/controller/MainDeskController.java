@@ -18,6 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -82,6 +83,9 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private TextArea messageBoard;
+	
+	@FXML
+	private TextField bankerBetPoint;
 
 	@FXML
 	private Button msgSendBut;
@@ -108,6 +112,7 @@ public class MainDeskController extends FxmlController {
 		gameStart.setSelected(runtimeDomain.getGlobalGameSignal());
 		gameEnd.setSelected(runtimeDomain.getGlobalGameSignal() ? Boolean.FALSE
 				: Boolean.TRUE);
+		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
 		group.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					public void changed(ObservableValue<? extends Toggle> ov,
@@ -339,12 +344,14 @@ public class MainDeskController extends FxmlController {
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
 		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
+		bankerBetPoint.setEditable(Boolean.FALSE);
 	}
 
 	private void endGameViewAction() {
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
 		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
+		bankerBetPoint.setEditable(Boolean.TRUE);
 	}
 
 	private class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
@@ -385,6 +392,8 @@ public class MainDeskController extends FxmlController {
 					runtimeDomain.setBankerRemarkName(playerModel
 							.getPlayerName());
 					bankerLabel.setText(playerModel.getPlayerName());
+					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel.getPlayerPoint())/2);
+					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
 				} else {
 					playerModel.setIsBanker(Boolean.FALSE);
 				}

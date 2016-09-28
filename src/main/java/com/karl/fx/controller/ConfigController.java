@@ -3,8 +3,12 @@ package com.karl.fx.controller;
 import java.util.EnumSet;
 import java.util.Iterator;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Component;
 import com.karl.domain.LotteryRule;
 import com.karl.fx.model.CheckBoxButtonCellPlayRule;
 import com.karl.fx.model.PlayRule;
+import com.karl.utils.AppUtils;
 
 @Component
 @Lazy
@@ -33,11 +38,28 @@ public class ConfigController extends FxmlController {
     @FXML private TableColumn<PlayRule,String> ruleDetail;
     
     private ObservableList<PlayRule> ruleList;
+    
+	@FXML
+	private ChoiceBox<String> gamekeyBox;
+
 
 
     @Override
     public void initialize() {
     	buidRuleTab();
+    	gamekeyBox.setItems(FXCollections.observableArrayList(
+    			AppUtils.PLAYLONG, AppUtils.PLAYLONGSPLIT, AppUtils.PLAYLUCKWAY));
+		gamekeyBox.getSelectionModel().selectedItemProperty()
+		.addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(
+					ObservableValue<? extends String> paramObservableValue,
+					String paramT1, String newValue) {
+				if (newValue != null && !newValue.isEmpty()) {
+					runtimeDomain.setCurrentGameKey(newValue);
+				}
+			}
+		});
     }
     
     private void buidRuleTab() {
