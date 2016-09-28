@@ -3,10 +3,8 @@ package com.karl.db.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -88,10 +86,11 @@ public class PlayerService {
 	}
 
 	public GameInfo getlatestGame() {
-		Pageable pageable = new PageRequest(1, 1, Direction.ASC, "bankerPoint");
-		Page<GameInfo> misakaPage = gameRepository.search(pageable);
-		List<GameInfo> misakaList = misakaPage.getContent();
-		return misakaList.get(0);
+		
+		Pageable pageable = new PageRequest(0, 1);
+		List<GameInfo> resultList = gameRepository.search(pageable);
+		
+		return resultList.get(0);
 	}
 
 	public List<PlayerTrace> getPlayerTraceListByGameId(Long gameId) {
@@ -143,7 +142,7 @@ public class PlayerService {
 	}
 
 	public void updateLuckInfo(Double luckInfo, Long gameSerialNo,
-			String playerId, String remarkName, Long luckTime, String resultRuleName, Long resultTimes) {
+			String playerId, String remarkName, Long luckTime, String resultRuleName, Integer resultTimes) {
 		Assert.notNull(luckInfo, "luckInfo must not be null");
 		Assert.notNull(gameSerialNo, "gameSerialNo must not be null");
 		Assert.notNull(playerId, "playerId must not be null");
@@ -155,7 +154,7 @@ public class PlayerService {
 	}
 
 	public void updateLuckInfo(Double luckInfo, Long gameSerialNo,
-			Integer betIndex, Long luckTime, String resultRuleName, Long resultTimes) {
+			Integer betIndex, Long luckTime, String resultRuleName, Integer resultTimes) {
 		Assert.notNull(luckInfo, "luckInfo must not be null");
 		Assert.notNull(gameSerialNo, "gameSerialNo must not be null");
 		Assert.notNull(betIndex, "betIndex must not be null");
@@ -166,7 +165,7 @@ public class PlayerService {
 				luckTime,  resultRuleName, resultTimes);
 	}
 
-	public void updateBankerLuckInfo(Long gameId, Double luckInfo, Long luckTime, String resultRuleName, Long resultTimes) {
+	public void updateBankerLuckInfo(Long gameId, Double luckInfo, Long luckTime, String resultRuleName, Integer resultTimes) {
 		Assert.notNull(gameId, "luckInfo must not be null");
 		Assert.notNull(luckInfo, "gameSerialNo must not be null");
 		gameRepository.updateBankerLuckInfo(gameId, luckInfo, luckTime, resultRuleName, resultTimes);

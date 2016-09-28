@@ -77,7 +77,7 @@ public class PlayerTrace implements Serializable {
     private String resultRuleName;
     
     @Column(nullable = true)
-    private Long resultTimes;
+    private Integer resultTimes;
 
     @Column(nullable = true)
     private Long resultPoint;
@@ -195,20 +195,20 @@ public class PlayerTrace implements Serializable {
 		this.resultRuleName = resultRuleName;
 	}
 
-	public Long getResultTimes() {
-		return resultTimes;
-	}
-
-	public void setResultTimes(Long resultTimes) {
-		this.resultTimes = resultTimes;
-	}
-
 	public Boolean getIslowRisk() {
 		return islowRisk;
 	}
 
 	public void setIslowRisk(Boolean islowRisk) {
 		this.islowRisk = islowRisk;
+	}
+
+	public Integer getResultTimes() {
+		return resultTimes;
+	}
+
+	public void setResultTimes(Integer resultTimes) {
+		this.resultTimes = resultTimes;
 	}
 
 }

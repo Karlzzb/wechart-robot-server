@@ -205,7 +205,7 @@ public class GameService {
 		}
 
 		// banker
-		Long bankerTimes = gameInfo.getResultTimes();
+		Integer bankerTimes = gameInfo.getResultTimes();
 		Long bankerPoint = gameInfo.getBankerPoint();
 		Double bankerLuck = gameInfo.getLuckInfo();
 
@@ -226,42 +226,44 @@ public class GameService {
 			}
 
 			if (bankerTimes > trace.getResultTimes()
-					|| bankerLuck.compareTo(trace.getLuckInfo()) > 0) {// lose
-				if (trace.getIslowRisk()) {// self want low risk
+					|| (bankerTimes == trace.getResultTimes() && bankerLuck.compareTo(trace.getLuckInfo()) > 0)) {
+				// lose
+				if (trace.getIslowRisk()) {
+					// self want low risk
 					trace.setResultPoint(-trace.getBetPoint());
 					allInList.add(trace);
 				} else if (pEntity.getPoints().compareTo(
-						bankerTimes * trace.getBetPoint()) <= 0) {// have to low
-																	// risk
-					trace.setResultPoint(pEntity.getPoints().compareTo(
-							bankerTimes * trace.getBetPoint()) == 0 ? -pEntity
-							.getPoints() : -bankerTimes * trace.getBetPoint());
+						Math.abs(bankerTimes * trace.getBetPoint())) <= 0) {
+					// have to low risk
+					trace.setResultPoint(-pEntity.getPoints());
 					allInList.add(trace);
-				} else {// normal
+				} else if(!trace.getIslowRisk() && pEntity.getPoints().compareTo(
+						Math.abs(bankerTimes * trace.getBetPoint())) > 0){
+					// normal
 					trace.setResultPoint(-bankerTimes * trace.getBetPoint());
 				}
 				loserList.add(trace);
 			} else if (bankerTimes < trace.getResultTimes()
-					|| bankerLuck.compareTo(trace.getLuckInfo()) < 0) {// win
-				if (trace.getIslowRisk()) {// self want low risk
+					|| (bankerTimes == trace.getResultTimes() && bankerLuck.compareTo(trace.getLuckInfo()) < 0)) {
+				// win
+				if (trace.getIslowRisk()) {
+					// self want low risk
 					trace.setResultPoint(trace.getBetPoint());
 					allInList.add(trace);
 				} else if (pEntity.getPoints().compareTo(
-						trace.getResultTimes() * trace.getBetPoint()) <= 0) {// have
-																				// to
-																				// low
-																				// risk
-					trace.setResultPoint(pEntity.getPoints().compareTo(
-							trace.getResultTimes() * trace.getBetPoint()) == 0 ? pEntity
-							.getPoints() : trace.getResultTimes()
-							* trace.getBetPoint());
+						trace.getResultTimes() * trace.getBetPoint()) <= 0) {
+					// have to low risk
+					trace.setResultPoint(pEntity.getPoints());
 					allInList.add(trace);
-				} else {// normal
+				} else if(!trace.getIslowRisk() && pEntity.getPoints().compareTo(
+						trace.getResultTimes() * trace.getBetPoint()) > 0){
+					// normal
 					trace.setResultPoint(trace.getResultTimes()
 							* trace.getBetPoint());
 				}
 				winnerList.add(trace);
-			} else {// pace
+			} else {
+				// pace
 				if (runtimeDomain.getAllowPace()) {
 					trace.setResultPoint(Long.valueOf(0));
 					paceList.add(trace);
@@ -270,7 +272,7 @@ public class GameService {
 					loserList.add(trace);
 				}
 			}
-			bankerPoint += trace.getResultPoint();
+			bankerPoint -= trace.getResultPoint();
 		}
 
 		if (runtimeDomain.getAllowInvain()
@@ -286,59 +288,77 @@ public class GameService {
 		}
 
 		// write the data to db
-		Long minLuckTime=Long.MAX_VALUE;
-		Long maxLuckTime=Long.MIN_VALUE;
+		Long minLuckTime = Long.MAX_VALUE;
+		Long maxLuckTime = Long.MIN_VALUE;
 		for (int i = 0; i < traceList.size(); i++) {
 			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
 				continue;
 			}
-			ryncPlayerPoint(trace.getPlayerId(), traceList.get(i)
+			ryncPlayerPoint(traceList.get(i).getPlayerId(), traceList.get(i)
 					.getResultPoint() > 0, Math.abs(traceList.get(i)
 					.getResultPoint()));
-			
-			minLuckTime=minLuckTime<traceList.get(i).getLuckTime()?minLuckTime:traceList.get(i).getLuckTime();
-			maxLuckTime=maxLuckTime>traceList.get(i).getLuckTime()?minLuckTime:traceList.get(i).getLuckTime();
+
+			minLuckTime = minLuckTime < traceList.get(i).getLuckTime() ? minLuckTime
+					: traceList.get(i).getLuckTime();
+			maxLuckTime = maxLuckTime > traceList.get(i).getLuckTime() ? minLuckTime
+					: traceList.get(i).getLuckTime();
+			playerService.save(traceList.get(i));
 		}
+		//banker point consistent
+		ryncPlayerPoint(gameInfo.getPlayerId(), bankerPoint-runtimeDomain.getBankerBetPoint() > 0, Math.abs(bankerPoint-runtimeDomain.getBankerBetPoint()));
+		gameInfo.setResultPoint(bankerPoint);
+		playerService.save(gameInfo);
 
 		// config the message
 		String winListStr = "";
 		for (int i = 0; i < winnerList.size(); i++) {
 			if (winnerList.get(i).getResultPoint().compareTo(Long.valueOf(0)) != 0) {
-				winListStr += MessageFormat.format(AppUtils.GAMERESULTWIN,
+				winListStr += MessageFormat.format(
+						AppUtils.GAMERESULTWIN,
 						winnerList.get(i).getRemarkName(),
 						winnerList.get(i).getBetPoint(),
-						winnerList.get(i).getResultRuleName(),
+						winnerList.get(i).getResultRuleName() + "("
+								+ winnerList.get(i).getLuckInfo() + ")",
 						winnerList.get(i).getResultPoint()).toString();
 			} else {
-				winListStr += MessageFormat.format(AppUtils.GAMERESULTINVAIN,
+				winListStr += MessageFormat.format(
+						AppUtils.GAMERESULTINVAIN,
 						winnerList.get(i).getRemarkName(),
 						winnerList.get(i).getBetPoint(),
-						winnerList.get(i).getResultRuleName()).toString();
+						winnerList.get(i).getResultRuleName() + "("
+								+ winnerList.get(i).getLuckInfo() + ")")
+						.toString();
 			}
 			winListStr += "\n";
 		}
 		String loseListStr = "";
 		for (int i = 0; i < loserList.size(); i++) {
-			loseListStr += MessageFormat.format(AppUtils.GAMERESULTLOSE,
+			loseListStr += MessageFormat.format(
+					AppUtils.GAMERESULTLOSE,
 					loserList.get(i).getRemarkName(),
 					loserList.get(i).getBetPoint(),
-					loserList.get(i).getResultRuleName(),
+					loserList.get(i).getResultRuleName() + "("
+							+ loserList.get(i).getLuckInfo() + ")",
 					Math.abs(loserList.get(i).getResultPoint())).toString();
 			loseListStr += "\n";
 		}
 		String allInListStr = "";
 		for (int i = 0; i < allInList.size(); i++) {
 			if (allInList.get(i).getResultPoint().compareTo(Long.valueOf(0)) > 0) {
-				allInListStr += MessageFormat.format(AppUtils.GAMERESULTWIN,
+				allInListStr += MessageFormat.format(
+						AppUtils.GAMERESULTWIN,
 						allInList.get(i).getRemarkName(),
 						allInList.get(i).getBetPoint(),
-						allInList.get(i).getResultRuleName(),
+						allInList.get(i).getResultRuleName() + "("
+								+ allInList.get(i).getLuckInfo() + ")",
 						allInList.get(i).getResultPoint()).toString();
 			} else {
-				allInListStr += MessageFormat.format(AppUtils.GAMERESULTLOSE,
+				allInListStr += MessageFormat.format(
+						AppUtils.GAMERESULTLOSE,
 						allInList.get(i).getRemarkName(),
 						allInList.get(i).getBetPoint(),
-						allInList.get(i).getResultRuleName(),
+						allInList.get(i).getResultRuleName() + "("
+								+ allInList.get(i).getLuckInfo() + ")",
 						Math.abs(allInList.get(i).getResultPoint())).toString();
 			}
 			allInListStr += "\n";
@@ -361,12 +381,14 @@ public class GameService {
 				gameInfo.getResultTimes(),
 				loserList.size(),
 				winnerList.size(),
-			    paceList.size(),
+				paceList.size(),
 				runtimeDomain.getBankerBetPoint(),
 				traceList.size(),
+				20,
+				bankerPoint,
 				runtimeDomain.getRunningPlayeres()
-				.get(runtimeDomain.getBankerRemarkName()).getPoints());
-		
+						.get(runtimeDomain.getBankerRemarkName()).getPoints());
+
 		return content;
 	}
 
@@ -472,7 +494,7 @@ public class GameService {
 	 * @param luckInfo
 	 * @return
 	 */
-	private LotteryRule getResult(Double luckInfo) {
+	public LotteryRule getResult(Double luckInfo) {
 		LotteryRule lotteryRule = null;
 		EnumSet<LotteryRule> theRule = currentRule();
 		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator

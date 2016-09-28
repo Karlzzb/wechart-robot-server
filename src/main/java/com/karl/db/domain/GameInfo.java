@@ -42,7 +42,7 @@ public class GameInfo implements Serializable {
     private String resultRuleName;
     
     @Column(nullable = true)
-    private Long resultTimes;
+    private Integer resultTimes;
 
 
     @Column(nullable = true)
@@ -97,11 +97,11 @@ public class GameInfo implements Serializable {
 		this.luckInfo = luckInfo;
 	}
 
-	public Long getResultTimes() {
+	public Integer getResultTimes() {
 		return resultTimes;
 	}
 
-	public void setResultTimes(Long resultTimes) {
+	public void setResultTimes(Integer resultTimes) {
 		this.resultTimes = resultTimes;
 	}
 

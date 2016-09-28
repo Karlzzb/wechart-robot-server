@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import blade.kit.json.JSON;
 import blade.kit.json.JSONArray;
@@ -23,7 +22,7 @@ import blade.kit.json.JSONObject;
 import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
 
-@Service
+//@Service
 public class PcClient {
 
 	private static final Logger LOGGER = LoggerFactory
