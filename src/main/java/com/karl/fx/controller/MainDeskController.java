@@ -83,7 +83,7 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private TextArea messageBoard;
-	
+
 	@FXML
 	private TextField bankerBetPoint;
 
@@ -98,6 +98,9 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Label bankerLabel;
+
+	@FXML
+	private Button openLotteryBut;
 
 	final ToggleGroup group = new ToggleGroup();
 
@@ -123,6 +126,12 @@ public class MainDeskController extends FxmlController {
 							runtimeDomain.setGlobalGameSignal((Boolean) group
 									.getSelectedToggle().getUserData());
 							messageBoard.setText(gameService.declareGame());
+							
+							//save current player when game started
+							if ((Boolean) group
+									.getSelectedToggle().getUserData()) {
+								gameService.ryncPlayersPoint(playerList);
+							}
 						}
 
 						// start/end game, the view actions
@@ -296,6 +305,12 @@ public class MainDeskController extends FxmlController {
 		webWechat.webwxsendmsg(messageBoard.getText());
 	}
 
+	@FXML
+	private void openLottery(ActionEvent event) {
+		String content = gameService.openLottery();
+		messageBoard.setText(content);
+	}
+
 	/**
 	 * auto rync player table
 	 */
@@ -392,8 +407,10 @@ public class MainDeskController extends FxmlController {
 					runtimeDomain.setBankerRemarkName(playerModel
 							.getPlayerName());
 					bankerLabel.setText(playerModel.getPlayerName());
-					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel.getPlayerPoint())/2);
-					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
+					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel
+							.getPlayerPoint()) / 2);
+					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
+							.toString());
 				} else {
 					playerModel.setIsBanker(Boolean.FALSE);
 				}

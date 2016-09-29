@@ -447,6 +447,11 @@ public class GameService {
 	 */
 	private void puttingLuckInfoWithBetInfo(Integer betIndex, String remarkName, Double luckInfo,
 			Date time) {
+		if(!runtimeDomain.getGlobalGameSignal()) {
+			// Game is not start. Give up the package!
+			return;
+		}
+		
 		Player player = runningPlayers().get(remarkName);
 		if (player == null || runtimeDomain.getCurrentGameId() == null) {
 			return;

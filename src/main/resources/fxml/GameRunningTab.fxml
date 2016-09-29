@@ -12,7 +12,7 @@
 				<TableColumn fx:id="playerPoint" editable="true" maxWidth="470.66668701171875" prefWidth="87.0" resizable="false" text="积分" />
             <TableColumn fx:id="betInfo" minWidth="0.0" prefWidth="139.0" resizable="false" text="当前局下注" />
             <TableColumn fx:id="resultRuleName" prefWidth="127.3333740234375" text="当前局点数" />
-            <TableColumn fx:id="resultInfo" prefWidth="132.6666259765625" text="当前局结果" />
+            <TableColumn fx:id="resultInfo" prefWidth="132.6666259765625" text="当前局输赢" />
 			</columns>
 		</TableView>
 	</children>

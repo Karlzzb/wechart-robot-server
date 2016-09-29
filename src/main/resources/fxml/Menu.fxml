@@ -2,44 +2,26 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="615.0" prefWidth="1031.0"
-	xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.karl.fx.controller.MenuController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="615.0" prefWidth="1225.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MenuController">
 	<children>
-		<AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0"
-			minHeight="-1.0" minWidth="-1.0" pickOnBounds="false" prefHeight="506.0"
-			prefWidth="738.0" snapToPixel="true"
-			style="-fx-border-color: #2b579a; -fx-background-color: white;"
-			AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pickOnBounds="false" prefHeight="506.0" prefWidth="738.0" snapToPixel="true" style="-fx-border-color: #2b579a; -fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<AnchorPane layoutX="2.0" layoutY="2.0" prefHeight="613.0"
-					prefWidth="136.0" style="-fx-background-color: #2b579a;"
-					AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-					AnchorPane.topAnchor="0.0">
+				<AnchorPane layoutX="2.0" layoutY="2.0" prefHeight="613.0" prefWidth="136.0" style="-fx-background-color: #2b579a;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<children>
-						<ListView fx:id="listMenu" layoutX="-3.0" layoutY="78.0"
-							onMouseClicked="#aksiKlikListMenu" prefHeight="535.0" prefWidth="136.0"
-							AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-							AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
+						<ListView fx:id="listMenu" layoutX="-3.0" layoutY="78.0" onMouseClicked="#aksiKlikListMenu" prefHeight="535.0" prefWidth="136.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
 							<stylesheets>
 								<URL value="@../css/listView.css" />
 							</stylesheets>
 						</ListView>
-						<Button fx:id="loginButton" layoutX="22.0" layoutY="19.0"
-							mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0"
-							onAction="#wechatLogin">
+						<Button fx:id="loginButton" layoutX="22.0" layoutY="19.0" mnemonicParsing="false" onAction="#wechatLogin" prefHeight="40.0" prefWidth="40.0">
 							<graphic>
-								<ImageView fitHeight="16.0" fitWidth="20.0"
-									pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="16.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../img/arrowLeft.png" />
 									</image>
@@ -51,19 +33,11 @@
 						</Button>
 					</children>
 				</AnchorPane>
-				<AnchorPane layoutX="138.0" layoutY="40.0" prefHeight="545.0"
-					prefWidth="1225.0" style="-fx-background-color: white;"
-					AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="137.0"
-					AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
+				<AnchorPane layoutX="138.0" layoutY="40.0" prefHeight="545.0" prefWidth="1225.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="137.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
 					<children>
-						<ScrollPane layoutX="40.0" layoutY="72.0" prefHeight="543.0"
-							prefWidth="1225.0" style="-fx-background-color: white;"
-							AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-							AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<ScrollPane layoutX="40.0" layoutY="72.0" prefHeight="543.0" prefWidth="1225.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<content>
-								<AnchorPane fx:id="paneData" minHeight="0.0"
-									minWidth="0.0" prefHeight="652.0" prefWidth="1225.0"
-									style="-fx-background-color: white;" />
+								<AnchorPane fx:id="paneData" minHeight="0.0" minWidth="0.0" prefHeight="652.0" prefWidth="1225.0" style="-fx-background-color: white;" />
 							</content>
 							<stylesheets>
 								<URL value="@../css/Metro-UI.css" />

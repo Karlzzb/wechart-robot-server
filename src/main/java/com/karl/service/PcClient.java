@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,15 +13,17 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import blade.kit.json.JSON;
 import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
+import blade.kit.json.ParseException;
 
 import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
 
-//@Service
+@Service
 public class PcClient {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -32,7 +33,7 @@ public class PcClient {
 	private static final int socket_port = 12580;
 
 	private Socket socket;
-	
+
 	private Boolean isConnected;
 
 	@Autowired
@@ -66,6 +67,7 @@ public class PcClient {
 							.exec("adb forward tcp:12580 tcp:62001");
 					Runtime.getRuntime().exec(
 							"adb shell am broadcast -a NotifyServiceStart");
+					LOGGER.info("Reconfig adb connnection");
 				} catch (Exception e) {
 					LOGGER.error("PcClient forward failed!", e);
 				}
@@ -91,6 +93,8 @@ public class PcClient {
 						socket.getOutputStream());
 				outputStream.write(order.getBytes("UTF-8"));
 				outputStream.flush();
+				isConnected = Boolean.TRUE;
+				LOGGER.info("host【{}】 port【{}】 sent heartbeat! ", host, port);
 			} catch (Exception e) {
 				LOGGER.error("PcClient send heart beat failed!", e);
 				isConnected = Boolean.FALSE;
@@ -101,12 +105,10 @@ public class PcClient {
 			try {
 				InetAddress serveraddr = null;
 				serveraddr = InetAddress.getByName(host);
-				LOGGER.debug("host【{}】 port【{}】 connecting ", host, port);
 				socket = new Socket(serveraddr, port);
-				LOGGER.debug("host【{}】 port【{}】 connecting ", host, port);
-				startHeartBeatThread();
-				LOGGER.debug("host【{}】 port【{}】 start heartchecking ", host,
-						port);
+				LOGGER.info("host【{}】 port【{}】 connecting...", host, port);
+				sendOrder("\r\n");
+				LOGGER.info("host【{}】 port【{}】 connected! ", host, port);
 				BufferedInputStream in = new BufferedInputStream(
 						socket.getInputStream());
 				while (isConnected) {
@@ -120,11 +122,8 @@ public class PcClient {
 					interpretPackage(strFormsocket);
 					isConnected = Boolean.TRUE;
 				}
-			} catch (UnknownHostException e1) {
-				LOGGER.error("PcClient failed!", e1);
-				isConnected = Boolean.FALSE;
-			} catch (Exception e2) {
-				LOGGER.error("PcClient failed!", e2);
+			} catch (Exception e) {
+				LOGGER.error("PcClient failed!", e);
 				isConnected = Boolean.FALSE;
 			}
 			return isConnected;
@@ -145,7 +144,7 @@ public class PcClient {
 
 			tempbuffer = null;
 		} catch (Exception e) {
-			LOGGER.error("Connection broken!",e);
+			LOGGER.error("Connection broken!", e);
 			isConnected = Boolean.FALSE;
 		}
 		return msg;
@@ -159,25 +158,28 @@ public class PcClient {
 	 */
 	private void interpretPackage(String packageInfo) {
 		try {
+			if (packageInfo == null || packageInfo.isEmpty()) {
+				return;
+			}
+
 			JSONObject jsonObject = JSON.parse(packageInfo).asObject();
 			JSONArray jsonLuckPeople = jsonObject.getJSONArray("LuckPeople");
 			if (jsonLuckPeople == null || jsonLuckPeople.size() < 1) {
 				LOGGER.warn("Luck package is empty! {}", packageInfo);
 				return;
 			}
-
 			JSONObject jsonLuckOne = null;
 			for (int i = 0; i < jsonLuckPeople.size(); i++) {
 				jsonLuckOne = jsonLuckPeople.getJSONObject(i);
 				Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne
 						.getString("Money"));
-				
-				Date time = DateUtils.parseDateTime(jsonLuckOne.getString("Time"));
+
+				Date time = DateUtils.parsePageDateTime(jsonLuckOne
+						.getString("Time"));
 				if (matcher.find()) {
 					gameService.puttingLuckInfo(i,
 							jsonLuckOne.getString("RemarkName"),
-							Double.valueOf(matcher.group(1)),
-							time);
+							Double.valueOf(matcher.group(1)), time);
 				} else {
 					LOGGER.warn(
 							"Luck message RemarkUser {} Money{} interpret failed!",
@@ -185,8 +187,14 @@ public class PcClient {
 							jsonLuckOne.getString("Money"));
 				}
 			}
+			LOGGER.info("Luck package is {}", packageInfo);
+		} catch (ParseException pe) {
+			LOGGER.error("Luck package[{}] interpret failed!", packageInfo, pe);
+			return;
+
 		} catch (Exception e) {
 			LOGGER.error("Luck package[{}] interpret failed!", packageInfo, e);
+			return;
 		}
 	}
 }

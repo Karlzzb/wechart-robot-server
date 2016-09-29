@@ -12,6 +12,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -60,6 +61,14 @@ public class ConfigController extends FxmlController {
 				}
 			}
 		});
+		
+		gamekeyBox.setTooltip(new Tooltip("请选择玩法"));
+		for (int i = 0; i < gamekeyBox.getItems().size(); i++) {
+			if (gamekeyBox.getItems().get(i).equals(runtimeDomain.getCurrentGameKey())) {
+				gamekeyBox.getSelectionModel().select(i);
+				break;
+			}
+		}
     }
     
     private void buidRuleTab() {

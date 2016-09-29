@@ -2,6 +2,7 @@ package com.karl.fx.controller;
 
 import java.util.List;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -61,6 +62,7 @@ public class GameRunningTabController extends FxmlController {
 
 	private void buidApprovalTab() {
 		traceTab.setEditable(false);
+		traceModeList = FXCollections.observableArrayList();
 		playerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerTraceModel, String>(
 						PlayerTraceModel.PLAYERNAMECOLKEY));
@@ -111,6 +113,12 @@ public class GameRunningTabController extends FxmlController {
 						Thread.sleep(AppUtils.TRACE_TAB_FLSH_TERVAL);
 						List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
 						if (traceList != null) {
+							if (traceModeList == null) {
+								return null;
+							}
+							if (traceModeList.size() > 0) {
+								traceModeList.clear();
+							}
 							PlayerTrace trace = null;
 							for (int i = 0; i < traceList.size(); i++) {
 								trace = traceList.get(i);
@@ -118,12 +126,12 @@ public class GameRunningTabController extends FxmlController {
 										trace.getRemarkName(), runtimeDomain
 												.getRunningPlayeres()
 												.get(trace.getRemarkName()).getPoints(), trace
-												.getBetInfo(), trace.getResultRuleName(), trace
+												.getBetInfo(), trace.getResultRuleName()==null?"":trace.getResultRuleName(), trace
+												.getResultPoint()==null?"":trace
 												.getResultPoint() > 0 ? "赢"
 												+ trace.getResultPoint() : "输"
 												+ Math.abs(trace.getResultPoint())));
 							}
-							traceTab.setItems(traceModeList);
 						}
 					} catch (Exception e) {
 						LOGGER.error("player table auto change failed!", e);

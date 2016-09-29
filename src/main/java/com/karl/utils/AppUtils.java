@@ -36,7 +36,7 @@ public class AppUtils {
 
 	public static final long PLAYER_TAB_FLSH_TERVAL = 1000;
 
-	public static final long TRACE_TAB_FLSH_TERVAL = 1000;
+	public static final long TRACE_TAB_FLSH_TERVAL = 1500;
 
 	public static final long WECHAT_LISTEN_INTERVAL = 500;
 

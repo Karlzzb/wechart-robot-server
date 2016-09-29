@@ -169,16 +169,19 @@ public class DateUtils {
 	        }  
 	    }  
 	  
-	    public static java.util.Date parseDateTime(String paramString)  
-	            throws Exception {  
+	    public static java.util.Date parsePageDateTime(String paramString)  
+	            {  
 	        if ((paramString == null) || (paramString.trim().equals("")))  
-	            return null;  
+	            return null;
+	        paramString = dateToString(new Date(), DateUtils.DATE_FORMAT)+" "+paramString;
+	        
 	        SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	        localSimpleDateFormat.setLenient(false);  
 	        try {  
 	            return localSimpleDateFormat.parse(paramString);  
-	        } catch (ParseException localParseException) {  
-	            throw new Exception("时间解析异常！", localParseException);  
+	        } catch (Exception localParseException) {  
+//	            throw new Exception("时间解析异常！", localParseException);
+	        	return new Date();
 	        }  
 	    }  
 	  
@@ -275,7 +278,7 @@ public class DateUtils {
 	     */
 		public static Object timeStamp(Long maxLuckTime) {
 			return dateToString(new Date(maxLuckTime), DATETIME_FORMAT);
-		}  
+		}
 	  
 
 }
