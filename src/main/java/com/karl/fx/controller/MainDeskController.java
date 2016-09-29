@@ -17,7 +17,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -31,6 +30,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.karl.db.domain.Player;
+import com.karl.fx.FxmlView;
 import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
@@ -82,13 +82,7 @@ public class MainDeskController extends FxmlController {
 	private ObservableList<PlayerModel> playerList;
 
 	@FXML
-	private TextArea messageBoard;
-
-	@FXML
 	private TextField bankerBetPoint;
-
-	@FXML
-	private Button msgSendBut;
 
 	@FXML
 	private ToggleButton gameStart;
@@ -125,7 +119,8 @@ public class MainDeskController extends FxmlController {
 						} else {
 							runtimeDomain.setGlobalGameSignal((Boolean) group
 									.getSelectedToggle().getUserData());
-							messageBoard.setText(gameService.declareGame());
+							openMessageBoard(gameService.declareGame());
+
 							
 							//save current player when game started
 							if ((Boolean) group
@@ -266,7 +261,7 @@ public class MainDeskController extends FxmlController {
 		int i = 1;
 		int selected = 0;
 		int selectedM = 0;
-		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择群", 0));
+		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择玩家群", 0));
 		for (String groupId : runtimeDomain.getGroupMap().keySet()) {
 			groupModel = new ChatGroupModel(groupId, runtimeDomain
 					.getGroupMap().get(groupId).getString("NickName")
@@ -301,14 +296,14 @@ public class MainDeskController extends FxmlController {
 	}
 
 	@FXML
-	private void sendMessage(ActionEvent event) {
-		webWechat.webwxsendmsg(messageBoard.getText());
-	}
-
-	@FXML
 	private void openLottery(ActionEvent event) {
 		String content = gameService.openLottery();
-		messageBoard.setText(content);
+		openMessageBoard(content);
+	}
+	
+	private void openMessageBoard(String content) {
+		runtimeDomain.setSentOutMessage(content);
+		stageManager.popupWindow(FxmlView.MESSAGE);
 	}
 
 	/**

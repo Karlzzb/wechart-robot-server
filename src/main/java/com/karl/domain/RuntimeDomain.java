@@ -170,6 +170,8 @@ public class RuntimeDomain implements Serializable {
      * if allow banker 
      */
     private Boolean allowInvain;
+    
+    private String sentOutMessage;
 
     
     private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
@@ -584,5 +586,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setDefiendBet(Long defiendBet) {
 		this.defiendBet = defiendBet;
+	}
+
+	public String getSentOutMessage() {
+		return sentOutMessage;
+	}
+
+	public void setSentOutMessage(String sentOutMessage) {
+		this.sentOutMessage = sentOutMessage;
 	}
 }

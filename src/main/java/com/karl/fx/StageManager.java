@@ -34,7 +34,7 @@ public class StageManager {
     }
     
     private void popup(final Parent rootnode, String title) {
-        Scene scene = prepareScene(rootnode);
+        Scene scene = new Scene(rootnode);
         Stage newStage = new Stage();
         newStage.setTitle(title);
         newStage.initModality(Modality.NONE);
@@ -43,7 +43,7 @@ public class StageManager {
         newStage.sizeToScene();
         newStage.centerOnScreen();
         try {
-        	newStage.showAndWait();
+        	newStage.show();
         } catch (Exception e) {
             LOGGER.error("Uable to show scene for title " + title, e);
         }

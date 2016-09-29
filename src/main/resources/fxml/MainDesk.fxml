@@ -6,33 +6,30 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
-		<ChoiceBox fx:id="groupBox" layoutX="750.0" layoutY="82.0" prefHeight="26.0" prefWidth="164.0" />
+		<ChoiceBox fx:id="groupBox" layoutX="750.0" layoutY="54.0" prefHeight="26.0" prefWidth="164.0" />
         <ChoiceBox fx:id="groupBoxM" layoutX="750.0" layoutY="14.0" prefHeight="26.0" prefWidth="164.0" />
-		<Label fx:id="groupSizeLable" layoutX="953.0" layoutY="80.0" prefHeight="26.0" prefWidth="90.0" text="群人数 :0" />
-		<Button fx:id="groupFlush" layoutX="1128.0" layoutY="82.0" mnemonicParsing="false" onAction="#flushGroup" prefHeight="25.0" prefWidth="57.0" text="刷新" />
-		<Button fx:id="syncPlayer" layoutX="1043.0" layoutY="81.0" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" text="同步" />
-		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="774.0" layoutY="132.0" prefHeight="314.0" prefWidth="455.0" AnchorPane.bottomAnchor="206.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="132.0">
+		<Label fx:id="groupSizeLable" layoutX="933.0" layoutY="54.0" prefHeight="26.0" prefWidth="90.0" text="群人数 :0" />
+		<Button fx:id="groupFlush" layoutX="1111.0" layoutY="55.0" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="73.0" text="刷新" />
+		<Button fx:id="syncPlayer" layoutX="1015.0" layoutY="54.0" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" text="同步" />
+		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="774.0" layoutY="132.0" prefHeight="314.0" prefWidth="455.0" AnchorPane.bottomAnchor="206.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="100.0">
 			<columns>
-            <TableColumn fx:id="colBankerSgin" prefWidth="60.0" text="选主" />
-				<TableColumn fx:id="colAutoID" prefWidth="100.0" resizable="false" text="编号" />
+            <TableColumn fx:id="colBankerSgin" prefWidth="60.0" text="选庄" />
 				<TableColumn fx:id="colPlayerName" editable="true" minWidth="4.33343505859375" prefWidth="90.66656494140625" resizable="false" text="名称" />
 				<TableColumn fx:id="colPlayerPoint" editable="true" maxWidth="316.0" prefWidth="89.333251953125" resizable="false" text="积分" />
             <TableColumn fx:id="colPlayerLatestBet" prefWidth="113.666748046875" resizable="false" text="当前局下注" />
+				<TableColumn fx:id="colAutoID" prefWidth="100.0" resizable="false" text="编号" />
 			</columns>
 		</TableView>
-      <Button fx:id="msgSendBut" layoutX="1062.0" layoutY="601.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="32.0" prefWidth="132.0" text="信息发出" />
-      <ToggleButton fx:id="gameStart" layoutX="548.0" layoutY="576.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="80.0" text="开始" />
-      <ToggleButton fx:id="gameEnd" layoutX="653.0" layoutY="576.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="80.0" text="结束" />
-      <Label fx:id="bankerLabel" layoutX="558.0" layoutY="440.0" prefHeight="26.0" prefWidth="174.0" text="庄家：" />
-      <Label layoutX="557.0" layoutY="468.0" prefHeight="25.0" prefWidth="80.0" text="锁定积分:" />
-      <TextArea fx:id="messageBoard" layoutX="750.0" layoutY="468.0" prefHeight="124.0" prefWidth="455.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="468.0" />
+      <ToggleButton fx:id="gameStart" layoutX="1128.0" layoutY="477.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="80.0" text="开始" />
+      <ToggleButton fx:id="gameEnd" layoutX="1128.0" layoutY="560.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="80.0" text="结束" />
+      <Label fx:id="bankerLabel" layoutX="779.0" layoutY="481.0" prefHeight="26.0" prefWidth="174.0" text="庄家：" />
+      <Label layoutX="779.0" layoutY="548.0" prefHeight="25.0" prefWidth="80.0" text="锁定积分:" />
       <ScrollPane layoutX="41.0" layoutY="440.0" prefHeight="196.0" prefWidth="493.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="691.0" AnchorPane.topAnchor="440.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="490.0">
@@ -51,7 +48,7 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <TextField fx:id="bankerBetPoint" layoutX="648.0" layoutY="468.0" prefHeight="26.0" prefWidth="90.0" />
-      <Button fx:id="openLotteryBut" layoutX="601.0" layoutY="506.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="32.0" prefWidth="73.0" text="计算" />
+      <TextField fx:id="bankerBetPoint" layoutX="888.0" layoutY="548.0" prefHeight="26.0" prefWidth="90.0" />
+      <Button fx:id="openLotteryBut" layoutX="990.0" layoutY="481.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="32.0" prefWidth="73.0" text="计算" />
 	</children>
 </AnchorPane>
