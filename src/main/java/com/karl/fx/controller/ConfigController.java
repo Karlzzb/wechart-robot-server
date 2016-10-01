@@ -2,6 +2,7 @@ package com.karl.fx.controller;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.regex.Matcher;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,7 +13,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -23,6 +24,7 @@ import com.karl.domain.LotteryRule;
 import com.karl.fx.model.CheckBoxButtonCellPlayRule;
 import com.karl.fx.model.PlayRule;
 import com.karl.utils.AppUtils;
+import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
@@ -38,40 +40,88 @@ public class ConfigController extends FxmlController {
     
     @FXML private TableColumn<PlayRule,String> ruleDetail;
     
-    private ObservableList<PlayRule> ruleList;
+    @FXML private ChoiceBox<String> bankerOutTime;
     
-	@FXML
-	private ChoiceBox<String> gamekeyBox;
-
+    @FXML private ChoiceBox<String> playerOutTime;
+    
+    @FXML private TextField timeOut;
+    
+    private ObservableList<PlayRule> ruleList;
 
 
     @Override
     public void initialize() {
     	buidRuleTab();
-    	gamekeyBox.setItems(FXCollections.observableArrayList(
-    			AppUtils.PLAYLONG, AppUtils.PLAYLONGSPLIT, AppUtils.PLAYLUCKWAY));
-		gamekeyBox.getSelectionModel().selectedItemProperty()
+    	buildOutTimeBox();
+    	buildOutTimeBoxBanker();
+    	timeOut.setText(String.valueOf(runtimeDomain.getCurrentTimeOut()));
+    	timeOut.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					timeOut.setText(newValue);
+					runtimeDomain.setCurrentTimeOut(Integer.valueOf(matcher.group()));
+				}else {
+					timeOut.setText(oldValue);
+				}
+				}catch(Exception e) {
+					timeOut.setText(oldValue);
+				}
+			}
+    	});
+    }
+    
+    private void buildOutTimeBox() {
+    	playerOutTime.setItems(FXCollections.observableArrayList(
+    			AppUtils.TIMEOUTPAIDALL, AppUtils.TIMEOUTPAIDONETIME, AppUtils.TIMEOUTPAIDNONE));
+    	playerOutTime.getSelectionModel().selectedItemProperty()
 		.addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(
 					ObservableValue<? extends String> paramObservableValue,
 					String paramT1, String newValue) {
 				if (newValue != null && !newValue.isEmpty()) {
-					runtimeDomain.setCurrentGameKey(newValue);
+					runtimeDomain.setCurrentTimeOutRule(newValue);
 				}
 			}
 		});
 		
-		gamekeyBox.setTooltip(new Tooltip("请选择玩法"));
-		for (int i = 0; i < gamekeyBox.getItems().size(); i++) {
-			if (gamekeyBox.getItems().get(i).equals(runtimeDomain.getCurrentGameKey())) {
-				gamekeyBox.getSelectionModel().select(i);
+		for (int i = 0; i < playerOutTime.getItems().size(); i++) {
+			if (playerOutTime.getItems().get(i).equals(runtimeDomain.getCurrentTimeOutRule())) {
+				playerOutTime.getSelectionModel().select(i);
 				break;
 			}
 		}
-    }
+		
+	}
     
-    private void buidRuleTab() {
+    private void buildOutTimeBoxBanker() {
+    	bankerOutTime.setItems(FXCollections.observableArrayList(
+    			AppUtils.TIMEOUTPAIDALL, AppUtils.TIMEOUTPAIDONETIME, AppUtils.TIMEOUTPAIDNONE));
+    	bankerOutTime.getSelectionModel().selectedItemProperty()
+		.addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(
+					ObservableValue<? extends String> paramObservableValue,
+					String paramT1, String newValue) {
+				if (newValue != null && !newValue.isEmpty()) {
+					runtimeDomain.setCurrentTimeOutRuleBanker(newValue);
+				}
+			}
+		});
+		
+		for (int i = 0; i < bankerOutTime.getItems().size(); i++) {
+			if (bankerOutTime.getItems().get(i).equals(runtimeDomain.getCurrentTimeOutRuleBanker())) {
+				bankerOutTime.getSelectionModel().select(i);
+				break;
+			}
+		}
+	}
+
+	private void buidRuleTab() {
     	ruleTab.setEditable(true);
     	ruleCheck.setCellFactory(new Callback<TableColumn<PlayRule,Boolean>, TableCell<PlayRule,Boolean>>() {
 			@Override

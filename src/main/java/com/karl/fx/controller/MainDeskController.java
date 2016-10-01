@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -21,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -72,12 +74,11 @@ public class MainDeskController extends FxmlController {
 	private TableColumn<PlayerModel, String> colPlayerPoint;
 
 	@FXML
-	private TableColumn<PlayerModel, String> colPlayerLatestBet;
-
-	@FXML
 	private TableView<PlayerModel> playerTab;
 
 	private ObservableList<ChatGroupModel> groupList;
+	
+	private ObservableList<ChatGroupModel> groupListFiniance;
 
 	private ObservableList<PlayerModel> playerList;
 
@@ -99,6 +100,10 @@ public class MainDeskController extends FxmlController {
 	final ToggleGroup group = new ToggleGroup();
 
 	final ToggleGroup playerGroup = new ToggleGroup();
+	
+	@FXML
+	private ChoiceBox<String> gamekeyBox;
+
 
 	@Override
 	public void initialize() {
@@ -120,7 +125,6 @@ public class MainDeskController extends FxmlController {
 							runtimeDomain.setGlobalGameSignal((Boolean) group
 									.getSelectedToggle().getUserData());
 							openMessageBoard(gameService.declareGame());
-
 							
 							//save current player when game started
 							if ((Boolean) group
@@ -141,6 +145,31 @@ public class MainDeskController extends FxmlController {
 		buildGroupBox();
 		buildPlayerTab();
 		playerAutoFlush();
+		buildGameKeyBox();
+	}
+	
+	private void buildGameKeyBox() {
+    	gamekeyBox.setItems(FXCollections.observableArrayList(
+    			AppUtils.PLAYLONG, AppUtils.PLAYLONGSPLIT, AppUtils.PLAYLUCKWAY));
+		gamekeyBox.getSelectionModel().selectedItemProperty()
+		.addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(
+					ObservableValue<? extends String> paramObservableValue,
+					String paramT1, String newValue) {
+				if (newValue != null && !newValue.isEmpty()) {
+					runtimeDomain.setCurrentGameKey(newValue);
+				}
+			}
+		});
+		
+		gamekeyBox.setTooltip(new Tooltip("请选择玩法"));
+		for (int i = 0; i < gamekeyBox.getItems().size(); i++) {
+			if (gamekeyBox.getItems().get(i).equals(runtimeDomain.getCurrentGameKey())) {
+				gamekeyBox.getSelectionModel().select(i);
+				break;
+			}
+		}
 	}
 
 	private void buildGroupBox() {
@@ -222,13 +251,8 @@ public class MainDeskController extends FxmlController {
 						cell.getTableView().getItems()
 								.get(cell.getTablePosition().getRow())
 								.setPlayerPoint(cell.getNewValue());
-						// TODO DATABASE options
 					}
 				});
-		colPlayerLatestBet
-				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
-						PlayerModel.PLAYERBETCOLKEY));
-
 		fillPlayerTab();
 	}
 
@@ -256,12 +280,18 @@ public class MainDeskController extends FxmlController {
 	private void fillUpGroupBox() {
 		if (groupList != null)
 			groupList.clear();
+		if(groupListFiniance != null) {
+			groupListFiniance.clear();
+		}
+		
 		groupList = runtimeDomain.getGroupList();
+		groupListFiniance = runtimeDomain.getGroupListFiniance();
 		ChatGroupModel groupModel = null;
 		int i = 1;
 		int selected = 0;
 		int selectedM = 0;
 		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择玩家群", 0));
+		groupListFiniance.add(new ChatGroupModel(String.valueOf(0), "请选择财务群", 0));
 		for (String groupId : runtimeDomain.getGroupMap().keySet()) {
 			groupModel = new ChatGroupModel(groupId, runtimeDomain
 					.getGroupMap().get(groupId).getString("NickName")
@@ -274,10 +304,11 @@ public class MainDeskController extends FxmlController {
 				selectedM = i;
 			}
 			groupList.add(groupModel);
+			groupListFiniance.add(groupModel);
 			i++;
 		}
 		groupBox.setItems(groupList);
-		groupBoxM.setItems(groupList);
+		groupBoxM.setItems(groupListFiniance);
 		groupBox.getSelectionModel().select(selected);
 		groupBoxM.getSelectionModel().select(selectedM);
 	}

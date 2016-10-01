@@ -5,17 +5,17 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ApprovalTabController">
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="165.0" prefWidth="517.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ApprovalTabController">
 	<children>
-		<TableView fx:id="approvalTab" depthTest="DISABLE" editable="true" layoutX="48.0" layoutY="52.0" prefHeight="153.0" prefWidth="502.0" AnchorPane.bottomAnchor="503.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="281.0" AnchorPane.topAnchor="0.0">
+		<TableView fx:id="approvalTab" depthTest="DISABLE" editable="true" layoutX="48.0" layoutY="52.0" prefHeight="130.0" prefWidth="517.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<columns>
-            <TableColumn fx:id="appCheck" maxWidth="128.0" prefWidth="61.33331298828125" text="选择" />
-				<TableColumn fx:id="playerName" editable="true" prefWidth="101.66668701171875" resizable="false" text="名称" />
-				<TableColumn fx:id="applyInfo" editable="true" maxWidth="470.66668701171875" prefWidth="126.33334350585938" resizable="false" text="申请" />
-            <TableColumn fx:id="approvalOption" minWidth="0.0" prefWidth="210.0" resizable="false" text="操作" />
+            <TableColumn fx:id="appCheck" maxWidth="128.0" prefWidth="105.33334350585938" text="选择" />
+				<TableColumn fx:id="playerName" editable="true" prefWidth="91.66665649414062" resizable="false" text="玩家" />
+				<TableColumn fx:id="applyInfo" editable="true" maxWidth="470.66668701171875" prefWidth="119.3333740234375" resizable="false" text="申请" />
+            <TableColumn fx:id="approvalOption" minWidth="0.0" prefWidth="200.33331298828125" resizable="false" text="操作" />
 			</columns>
 		</TableView>
-      <Button fx:id="bulkApproveButton" layoutX="67.0" layoutY="162.0" mnemonicParsing="false" onAction="#bulkApprove" prefHeight="25.0" prefWidth="114.0" text="批量通过" AnchorPane.bottomAnchor="469.0" AnchorPane.leftAnchor="67.0" AnchorPane.rightAnchor="602.0" AnchorPane.topAnchor="162.0" />
-      <Button fx:id="bulkRejectButton" layoutX="257.0" layoutY="162.0" mnemonicParsing="false" onAction="#bulkReject" prefHeight="25.0" prefWidth="114.0" text="批量驳回" />
+      <Button fx:id="bulkApproveButton" layoutX="90.0" layoutY="130.0" mnemonicParsing="false" onAction="#bulkApprove" prefHeight="25.0" prefWidth="114.0" text="批量通过" />
+      <Button fx:id="bulkRejectButton" layoutX="272.0" layoutY="130.0" mnemonicParsing="false" onAction="#bulkReject" prefHeight="25.0" prefWidth="114.0" text="批量驳回" />
 	</children>
 </AnchorPane>

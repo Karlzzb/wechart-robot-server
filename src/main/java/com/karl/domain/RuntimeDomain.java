@@ -26,7 +26,7 @@ import com.karl.utils.AppUtils;
 @Component
 public class RuntimeDomain implements Serializable {
 
-    public RuntimeDomain() {
+	public RuntimeDomain() {
         groupMap = new HashMap<String, JSONObject>();
         allUsrMap = new HashMap<String, JSONObject>();
         publicUsrMap = new HashMap<String, JSONObject>();
@@ -36,6 +36,7 @@ public class RuntimeDomain implements Serializable {
         bankerRemarkName = "";
         currentRule = EnumSet.allOf(LotteryRule.class);
         groupList = FXCollections.observableArrayList();
+        groupListFiniance = FXCollections.observableArrayList();
         playerList = FXCollections.observableArrayList();
         ruleList = FXCollections.observableArrayList();
         applyList = FXCollections.observableArrayList();
@@ -51,6 +52,9 @@ public class RuntimeDomain implements Serializable {
         allowAllIn = Boolean.TRUE;
         defiendBet = Long.valueOf(50);
         bankerBetPoint = Long.valueOf(0);
+        currentTimeOutRule = AppUtils.TIMEOUTPAIDONETIME;
+        currentTimeOutRuleBanker = AppUtils.TIMEOUTPAIDONETIME;
+        currentTimeOut = 21;
     }
 
     private static final long serialVersionUID = 5720576756640779509L;
@@ -114,6 +118,12 @@ public class RuntimeDomain implements Serializable {
      * current groups
      */
     private ObservableList<ChatGroupModel> groupList;
+
+    /**
+     * current groups
+     */
+    private ObservableList<ChatGroupModel> groupListFiniance;
+
     
     /**
      * current player
@@ -181,6 +191,22 @@ public class RuntimeDomain implements Serializable {
      * pre defied fixed bet
      */
 	private Long defiendBet;
+
+	/**
+	 * for player
+	 */
+	private String currentTimeOutRule;
+	
+	/**
+	 * for banker
+	 */
+    private String currentTimeOutRuleBanker;
+    
+    /**
+     * current timeout limit second
+     */
+    private Integer currentTimeOut;
+
     
     /**
      * key=remarkName
@@ -594,5 +620,38 @@ public class RuntimeDomain implements Serializable {
 
 	public void setSentOutMessage(String sentOutMessage) {
 		this.sentOutMessage = sentOutMessage;
+	}
+
+	public ObservableList<ChatGroupModel> getGroupListFiniance() {
+		return groupListFiniance;
+	}
+
+	public void setGroupListFiniance(
+			ObservableList<ChatGroupModel> groupListFiniance) {
+		this.groupListFiniance = groupListFiniance;
+	}
+
+	public void setCurrentTimeOutRule(String currentTimeOutRule) {
+		this.currentTimeOutRule = currentTimeOutRule;
+	}
+
+	public String getCurrentTimeOutRule() {
+		return currentTimeOutRule;
+	}
+
+	public String getCurrentTimeOutRuleBanker() {
+		return currentTimeOutRuleBanker;
+	}
+
+	public void setCurrentTimeOutRuleBanker(String currentTimeOutRuleBanker) {
+		this.currentTimeOutRuleBanker = currentTimeOutRuleBanker;
+	}
+
+	public Integer getCurrentTimeOut() {
+		return currentTimeOut;
+	}
+
+	public void setCurrentTimeOut(Integer currentTimeOut) {
+		this.currentTimeOut = currentTimeOut;
 	}
 }

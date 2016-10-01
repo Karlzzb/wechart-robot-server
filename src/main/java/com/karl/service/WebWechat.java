@@ -453,7 +453,7 @@ public class WebWechat {
 	/**
 	 * 微信修改备注名
 	 */
-	public boolean changeRemarkName(String wechatId, String remarkName) {
+	public boolean changeRemarkName(String nickName, String wechatId, String remarkName) {
 		String url = AppUtils.base_uri
 				+ "/webwxoplog?lang=zh_CN&pass_ticket="
 				+ runtimeDomain.getPassTicket();
@@ -482,6 +482,7 @@ public class WebWechat {
 			JSONObject BaseResponse = jsonObject.getJSONObject("BaseResponse");
 			if (null != BaseResponse) {
 				int ret = BaseResponse.getInt("Ret", -1);
+				LOGGER.info("User{} remarkName{} refult{}",nickName, remarkName,ret);
 				return ret == 0;
 			}
 		} catch (Exception e) {
@@ -741,10 +742,11 @@ public class WebWechat {
 		String remarkName = "";
 		String content = "";
 		String webChatId = "";
+		String messageFrom = jsonMsg.getString("FromUserName");
 
 		// Message from others
-		if (jsonMsg.getString("FromUserName").equals(
-				runtimeDomain.getCurrentGroupId())||jsonMsg.getString("FromUserName").equals(
+		if (messageFrom.equals(
+				runtimeDomain.getCurrentGroupId())||messageFrom.equals(
 						runtimeDomain.getCurrentMGroupId())) {
 			LOGGER.debug("FromUserName{} message",
 					jsonMsg.getString("FromUserName"));
@@ -780,16 +782,17 @@ public class WebWechat {
 
 		// Message from myself
 		if (runtimeDomain.getUser().getString("UserName")
-				.equals(jsonMsg.getString("FromUserName"))) {
+				.equals(messageFrom)) {
 			remarkName = runtimeDomain.getUser().getString("NickName");
 			content = jsonMsg.getString("Content");
 			webChatId = runtimeDomain.getUser().getString("UserName");
+			return;
 		}
 
 		if (webChatId != null && remarkName != null && content != null
 				&& !webChatId.isEmpty() && !remarkName.isEmpty()
 				&& !content.isEmpty()) {
-			gameService.mainMessageHandle(webChatId, remarkName, content);
+			gameService.mainMessageHandle(messageFrom ,webChatId, remarkName, content);
 		}
 
 		// switch (content) {

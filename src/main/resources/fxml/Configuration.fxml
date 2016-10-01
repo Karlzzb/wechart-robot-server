@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane id="AnchorPane" prefHeight="652.0" prefWidth="1225.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
@@ -15,7 +16,11 @@
 				<TableColumn fx:id="ruleDetail" prefWidth="165.0" resizable="false" text="倍数" />
 			</columns>
 		</TableView>
-      <ChoiceBox fx:id="gamekeyBox" layoutX="613.0" layoutY="84.0" prefWidth="150.0" />
-      <Label layoutX="529.0" layoutY="84.0" prefHeight="25.0" prefWidth="68.0" text="玩法选择：" />
+      <Label layoutX="558.0" layoutY="127.0" prefHeight="25.0" prefWidth="102.0" text="庄家超时赔付：" />
+      <Label layoutX="558.0" layoutY="228.0" prefHeight="25.0" prefWidth="102.0" text="闲家超时赔付：" />
+      <ChoiceBox fx:id="bankerOutTime" layoutX="682.0" layoutY="127.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="playerOutTime" layoutX="682.0" layoutY="228.0" prefWidth="150.0" />
+      <Label layoutX="558.0" layoutY="326.0" prefHeight="25.0" prefWidth="117.0" text="超时时间（秒）：" />
+      <TextField fx:id="timeOut" layoutX="683.0" layoutY="326.0" />
 	</children>
 </AnchorPane>

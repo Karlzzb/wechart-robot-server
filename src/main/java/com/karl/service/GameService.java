@@ -50,11 +50,12 @@ public class GameService {
 	@Lazy
 	private ApprovalTabController approvalTabController;
 
-	public void mainMessageHandle(String webChatId, String remarkName,
-			String content) {
+	public void mainMessageHandle(String messageFrom, String webChatId,
+			String remarkName, String content) {
 
 		// Message is the pattern of betting
-		if (runtimeDomain.getGlobalGameSignal()) {
+		if (runtimeDomain.getGlobalGameSignal()
+				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())) {
 			Matcher matcher = StringUtils.LONGSPLIT.matcher(content);
 			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 				matcher = StringUtils.LONG.matcher(content);
@@ -71,7 +72,8 @@ public class GameService {
 		}
 
 		// Message is the pattern of betting suoha
-		if (runtimeDomain.getGlobalGameSignal()) {
+		if (runtimeDomain.getGlobalGameSignal()
+				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())) {
 			Matcher matcher = StringUtils.SUOHAPERF.matcher(content);
 			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 				matcher = StringUtils.LONG.matcher(content);
@@ -119,67 +121,73 @@ public class GameService {
 		}
 
 		// Match put point
-		Matcher putPointMatcher = StringUtils.PUTPOINT.matcher(content);
-		while (putPointMatcher.find()) {
-			try {
-				Long putPoint = Long.valueOf(putPointMatcher.group(1));
-				String readyWechatId = runtimeDomain.getReadyWechatId();
-				if (readyWechatId == null || readyWechatId.isEmpty()) {
-					return;
-				}
-				String readyRemarkName = runtimeDomain
-						.getUserRemarkName(readyWechatId);
-				String readyNickName = runtimeDomain
-						.getUserNickName(readyWechatId);
-				if (readyRemarkName == null || readyRemarkName.isEmpty()) {
-					return;
-				}
-				Player pEntity = putPlayerPoint(readyWechatId, readyRemarkName,
-						readyNickName, putPoint, Boolean.TRUE);
-				// send feedback
-				if (pEntity != null) {
-					String replyTemplate = AppUtils.REPLYPOINTAPPLYPUT;
-					webWechat.webwxsendmsgM(MessageFormat.format(replyTemplate,
-							readyRemarkName, putPoint, pEntity.getPoints()));
-				}
+		if (messageFrom.equals(runtimeDomain.getCurrentGroupId())) {
+			Matcher putPointMatcher = StringUtils.PUTPOINT.matcher(content);
+			while (putPointMatcher.find()) {
+				try {
+					Long putPoint = Long.valueOf(putPointMatcher.group(1));
+					String readyWechatId = runtimeDomain.getReadyWechatId();
+					if (readyWechatId == null || readyWechatId.isEmpty()) {
+						return;
+					}
+					String readyRemarkName = runtimeDomain
+							.getUserRemarkName(readyWechatId);
+					String readyNickName = runtimeDomain
+							.getUserNickName(readyWechatId);
+					if (readyRemarkName == null || readyRemarkName.isEmpty()) {
+						return;
+					}
+					Player pEntity = putPlayerPoint(readyWechatId,
+							readyRemarkName, readyNickName, putPoint,
+							Boolean.TRUE);
+					// send feedback
+					if (pEntity != null) {
+						String replyTemplate = AppUtils.REPLYPOINTAPPLYPUT;
+						webWechat.webwxsendmsgM(MessageFormat.format(
+								replyTemplate, readyRemarkName, putPoint,
+								pEntity.getPoints()));
+					}
 
-			} catch (Exception e) {
-				LOGGER.error("User{" + remarkName + "} sub point{"
-						+ subPointMatcher.group(1) + "failed!", e);
+				} catch (Exception e) {
+					LOGGER.error("User{" + remarkName + "} sub point{"
+							+ subPointMatcher.group(1) + "failed!", e);
+				}
+				return;
 			}
-			return;
-		}
 
-		// Match put point
-		Matcher drawPointMatcher = StringUtils.DRAWPOINT.matcher(content);
-		while (drawPointMatcher.find()) {
-			try {
-				Long drawPoint = Long.valueOf(drawPointMatcher.group(1));
-				String readyWechatId = runtimeDomain.getReadyWechatId();
-				if (readyWechatId == null || readyWechatId.isEmpty()) {
-					return;
-				}
-				String readyRemarkName = runtimeDomain
-						.getUserRemarkName(readyWechatId);
-				String readyNickName = runtimeDomain
-						.getUserNickName(readyWechatId);
-				if (readyRemarkName == null || readyRemarkName.isEmpty()) {
-					return;
-				}
-				Player pEntity = putPlayerPoint(readyWechatId, readyRemarkName,
-						readyNickName, drawPoint, Boolean.FALSE);
-				// send feedback
-				if (pEntity != null) {
-					String replyTemplate = AppUtils.REPLYPOINTAPPLYDRAW;
-					webWechat.webwxsendmsgM(MessageFormat.format(replyTemplate,
-							readyRemarkName, drawPoint, pEntity.getPoints()));
-				}
+			// Match put point
+			Matcher drawPointMatcher = StringUtils.DRAWPOINT.matcher(content);
+			while (drawPointMatcher.find()) {
+				try {
+					Long drawPoint = Long.valueOf(drawPointMatcher.group(1));
+					String readyWechatId = runtimeDomain.getReadyWechatId();
+					if (readyWechatId == null || readyWechatId.isEmpty()) {
+						return;
+					}
+					String readyRemarkName = runtimeDomain
+							.getUserRemarkName(readyWechatId);
+					String readyNickName = runtimeDomain
+							.getUserNickName(readyWechatId);
+					if (readyRemarkName == null || readyRemarkName.isEmpty()) {
+						return;
+					}
+					Player pEntity = putPlayerPoint(readyWechatId,
+							readyRemarkName, readyNickName, drawPoint,
+							Boolean.FALSE);
+					// send feedback
+					if (pEntity != null) {
+						String replyTemplate = AppUtils.REPLYPOINTAPPLYDRAW;
+						webWechat.webwxsendmsgM(MessageFormat.format(
+								replyTemplate, readyRemarkName, drawPoint,
+								pEntity.getPoints()));
+					}
 
-			} catch (Exception e) {
-				LOGGER.error("User{" + remarkName + "} sub point{"
-						+ subPointMatcher.group(1) + "failed!", e);
+				} catch (Exception e) {
+					LOGGER.error("User{" + remarkName + "} sub point{"
+							+ subPointMatcher.group(1) + "failed!", e);
+				}
+				return;
 			}
-			return;
 		}
 
 	}
@@ -223,7 +231,8 @@ public class GameService {
 			}
 
 			if (bankerTimes > trace.getResultTimes()
-					|| (bankerTimes == trace.getResultTimes() && bankerLuck.compareTo(trace.getLuckInfo()) > 0)) {
+					|| (bankerTimes == trace.getResultTimes() && bankerLuck
+							.compareTo(trace.getLuckInfo()) > 0)) {
 				// lose
 				if (trace.getIslowRisk()) {
 					// self want low risk
@@ -234,14 +243,16 @@ public class GameService {
 					// have to low risk
 					trace.setResultPoint(-pEntity.getPoints());
 					allInList.add(trace);
-				} else if(!trace.getIslowRisk() && pEntity.getPoints().compareTo(
-						Math.abs(bankerTimes * trace.getBetPoint())) > 0){
+				} else if (!trace.getIslowRisk()
+						&& pEntity.getPoints().compareTo(
+								Math.abs(bankerTimes * trace.getBetPoint())) > 0) {
 					// normal
 					trace.setResultPoint(-bankerTimes * trace.getBetPoint());
 				}
 				loserList.add(trace);
 			} else if (bankerTimes < trace.getResultTimes()
-					|| (bankerTimes == trace.getResultTimes() && bankerLuck.compareTo(trace.getLuckInfo()) < 0)) {
+					|| (bankerTimes == trace.getResultTimes() && bankerLuck
+							.compareTo(trace.getLuckInfo()) < 0)) {
 				// win
 				if (trace.getIslowRisk()) {
 					// self want low risk
@@ -252,8 +263,9 @@ public class GameService {
 					// have to low risk
 					trace.setResultPoint(pEntity.getPoints());
 					allInList.add(trace);
-				} else if(!trace.getIslowRisk() && pEntity.getPoints().compareTo(
-						trace.getResultTimes() * trace.getBetPoint()) > 0){
+				} else if (!trace.getIslowRisk()
+						&& pEntity.getPoints().compareTo(
+								trace.getResultTimes() * trace.getBetPoint()) > 0) {
 					// normal
 					trace.setResultPoint(trace.getResultTimes()
 							* trace.getBetPoint());
@@ -301,8 +313,10 @@ public class GameService {
 					: traceList.get(i).getLuckTime();
 			playerService.save(traceList.get(i));
 		}
-		//banker point consistent
-		ryncPlayerPoint(gameInfo.getPlayerId(), bankerPoint-runtimeDomain.getBankerBetPoint() > 0, Math.abs(bankerPoint-runtimeDomain.getBankerBetPoint()));
+		// banker point consistent
+		ryncPlayerPoint(gameInfo.getPlayerId(),
+				bankerPoint - runtimeDomain.getBankerBetPoint() > 0,
+				Math.abs(bankerPoint - runtimeDomain.getBankerBetPoint()));
 		gameInfo.setResultPoint(bankerPoint);
 		playerService.save(gameInfo);
 
@@ -403,6 +417,11 @@ public class GameService {
 		}
 		Integer betIndex = Integer.valueOf(0);
 		Long betPoint = Long.valueOf(0);
+		if(betPoint.compareTo(player.getPoints()) > 0) {
+			webWechat.webwxsendmsg("@"+player.getWechatName()+" 下注有误。余额("+player.getPoints()+")不足支付！");
+			return;
+		}
+		
 		if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 			betPoint = Long.valueOf(betInfo);
 		} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
@@ -440,39 +459,41 @@ public class GameService {
 
 	/**
 	 * put betinfo & luckinfo simultaneously
+	 * 
 	 * @param betIndex
 	 * @param remarkName
 	 * @param luckInfo
 	 * @param time
 	 */
-	private void puttingLuckInfoWithBetInfo(Integer betIndex, String remarkName, Double luckInfo,
-			Date time) {
-		if(!runtimeDomain.getGlobalGameSignal()) {
+	private void puttingLuckInfoWithBetInfo(Integer betIndex,
+			String remarkName, Double luckInfo, Date time) {
+		if (!runtimeDomain.getGlobalGameSignal()) {
 			// Game is not start. Give up the package!
 			return;
 		}
-		
+
 		Player player = runningPlayers().get(remarkName);
 		if (player == null || runtimeDomain.getCurrentGameId() == null) {
 			return;
 		}
 		LotteryRule playerLottery = getResult(luckInfo);
-		//benker info
+		// benker info
 		if (remarkName.equals(runtimeDomain.getBankerRemarkName())) {
 			playerService.updateBankerLuckInfoWithBetInfo(
-					runtimeDomain.getCurrentGameId(), luckInfo,
-					time.getTime(), playerLottery.getRuleName(),
-					playerLottery.getTimes(), betIndex);
+					runtimeDomain.getCurrentGameId(), luckInfo, time.getTime(),
+					playerLottery.getRuleName(), playerLottery.getTimes(),
+					betIndex);
 			return;
 		}
-		
+
 		Long betPoint = runtimeDomain.getDefiendBet();
-		//betinfo
+		// betinfo
 		PlayerTrace playerTrace = new PlayerTrace(
 				runtimeDomain.getCurrentGameId(), player.getPlayerId(),
 				player.getWebchatId(), player.getWechatName(), remarkName,
-				betIndex+"/"+Long.valueOf(betPoint), betPoint, Boolean.FALSE, betIndex, time.getTime());
-		//luckinfo
+				betIndex + "/" + Long.valueOf(betPoint), betPoint,
+				Boolean.FALSE, betIndex, time.getTime());
+		// luckinfo
 		playerTrace.setLuckInfo(luckInfo);
 		playerTrace.setLuckTime(time.getTime());
 		playerTrace.setResultRuleName(playerLottery.getRuleName());
@@ -593,15 +614,23 @@ public class GameService {
 			ryncPlayerPoint(playerView.getWechatId(),
 					playerView.getWechatName(), playerView.getPlayerId(),
 					playerView.getPlayerNameRaw(),
-					Long.valueOf(playerView.getPlayerPoint()));
+					Long.valueOf(playerView.getPlayerPoint()),
+					playerView.getWechatName());
 		}
 	}
 
 	private void ryncPlayerPoint(String webchatId, String wechatName,
-			String playerId, String remarkName, Long newPointvel) {
+			String playerId, String remarkName, Long newPointvel,
+			String nickName) {
 		Player playEntity = null;
 		playEntity = playerService.getPlayerById(playerId);
 		if (playEntity == null) {
+			if (remarkName.equals(nickName)) {
+				if (!webWechat.changeRemarkName(nickName, webchatId, remarkName)) {
+					LOGGER.error("User{} remarkName Failed!", remarkName);
+					return;
+				}
+			}
 			playEntity = new Player();
 			playEntity.setPlayerId(playerId);
 			playEntity.setRemarkName(remarkName);
@@ -647,10 +676,12 @@ public class GameService {
 				runtimeDomain.getCurrentGroupName(),
 				runtimeDomain.getBankerRemarkName(),
 				runtimeDomain.getBankerBetPoint(),
-				runtimeDomain.getMaximumBet(), runtimeDomain.getMinimumBet(),
+				runtimeDomain.getMaximumBet(),
+				runtimeDomain.getMinimumBet(),
 				runtimeDomain.getPackageNumber(),
 				runtimeDomain.getBankerIndex(),
-				runtimeDomain.getCurrentGameKey()+(runtimeDomain.getAllowAllIn()?"+梭哈":""));
+				runtimeDomain.getCurrentGameKey()
+						+ (runtimeDomain.getAllowAllIn() ? "+梭哈" : ""));
 		return content;
 	}
 
@@ -662,7 +693,8 @@ public class GameService {
 		int i = 0;
 		long sumPoints = Long.valueOf(0);
 		long sumPointsAllIN = Long.valueOf(0);
-		if(runtimeDomain.getCurrentGameId() == null || runtimeDomain.getCurrentGameId() < 1) {
+		if (runtimeDomain.getCurrentGameId() == null
+				|| runtimeDomain.getCurrentGameId() < 1) {
 			return "";
 		}
 
@@ -715,6 +747,13 @@ public class GameService {
 		Player playEntity = null;
 		playEntity = playerService.getPlayerByRemarkName(remarkName);
 		if (playEntity == null) {
+			if (remarkName.equals(nickName)) {
+				if (!webWechat.changeRemarkName(nickName, webchatId, remarkName
+						+ "玩玩")) {
+					LOGGER.error("User{} remarkName Failed!", remarkName);
+					return null;
+				}
+			}
 			playEntity = new Player();
 			playEntity.setRemarkName(remarkName);
 			playEntity.setPoints(Long.valueOf(0));
@@ -785,28 +824,25 @@ public class GameService {
 		}
 		return null;
 	}
-	
+
 	public String publishRanking() {
 		String body = "";
 		Player pEntity = null;
 		Long sumPoint = Long.valueOf(0);
 		int i = 1;
-		for (String remarkName: runningPlayers().keySet()) {
+		for (String remarkName : runningPlayers().keySet()) {
 			pEntity = runningPlayers().get(remarkName);
-			body+=MessageFormat.format(AppUtils.RANKINGLINE, i++, remarkName, pEntity.getPoints());
+			body += MessageFormat.format(AppUtils.RANKINGLINE, i++, remarkName,
+					pEntity.getPoints());
 		}
-		
-		
+
 		return MessageFormat.format(
 				AppUtils.RANKINGLAYOUT,
 				runtimeDomain.getBankerRemarkName(),
 				runtimeDomain.getRunningPlayeres()
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
-				runtimeDomain.getBankerBetPoint(),
-				runningPlayers().size(),
-				sumPoint,
-				body
-				);
+				runtimeDomain.getBankerBetPoint(), runningPlayers().size(),
+				sumPoint, body);
 	}
 
 	public List<PlayerTrace> getCurrentPlayTrace() {
@@ -815,7 +851,6 @@ public class GameService {
 				|| currentGameId.compareTo(Long.valueOf(1)) < 0) {
 			return null;
 		}
-		return playerService
-				.getPlayerTraceListByGameId(currentGameId);
+		return playerService.getPlayerTraceListByGameId(currentGameId);
 	}
 }

@@ -67,7 +67,7 @@ public class PlayerService {
 	}
 
 	public Player getPlayerById(String playerId) {
-		Assert.notNull(playerId, "player must not be null");
+		Assert.notNull(playerId, "playerId must not be null");
 		return playerRepository.findOne(playerId);
 	}
 

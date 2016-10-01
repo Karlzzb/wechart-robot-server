@@ -105,6 +105,10 @@ public class AppUtils {
 	public static final Integer APPROVALNONE = 0;
 	public static final Integer APPROVALYES = 1;
 	public static final Integer APPROVALNO = 2;
+	
+	public static final String TIMEOUTPAIDALL = "通赔";
+	public static final String TIMEOUTPAIDONETIME = "平赔";
+	public static final String TIMEOUTPAIDNONE = "无效";
 
 	/**
 	 * sort by bet time
