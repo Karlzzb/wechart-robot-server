@@ -72,7 +72,7 @@ public class StageManager {
         return scene;
     }
 
-    private Parent loadViewNodeHierarchy(String fxmlFile) {
+    public Parent loadViewNodeHierarchy(String fxmlFile) {
         Parent rootNode = null;
         try {
             rootNode = springFXMLLoader.load(fxmlFile);
@@ -91,4 +91,8 @@ public class StageManager {
             LOGGER.error("Load menu failed!", e);
         }
     }
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
 }

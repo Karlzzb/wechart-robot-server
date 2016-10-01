@@ -29,7 +29,12 @@ public class MessageController extends FxmlController {
     private void sentOut(ActionEvent event) {
     	webWechat.webwxsendmsg(messageBoard.getText());
     	Stage stage = (Stage)sentOutBut.getScene().getWindow();
+    	runtimeDomain.setMessageBoardCount(0);
     	stage.close();
+    }
+    
+    public void changeMessage() {
+    	messageBoard.setText(runtimeDomain.getSentOutMessage());
     }
 
 }

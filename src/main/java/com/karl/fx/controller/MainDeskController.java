@@ -10,6 +10,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -24,10 +25,14 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -103,6 +108,10 @@ public class MainDeskController extends FxmlController {
 	
 	@FXML
 	private ChoiceBox<String> gamekeyBox;
+	
+	@Autowired
+	@Lazy
+	private MessageController messageController;
 
 
 	@Override
@@ -124,8 +133,6 @@ public class MainDeskController extends FxmlController {
 						} else {
 							runtimeDomain.setGlobalGameSignal((Boolean) group
 									.getSelectedToggle().getUserData());
-							openMessageBoard(gameService.declareGame());
-							
 							//save current player when game started
 							if ((Boolean) group
 									.getSelectedToggle().getUserData()) {
@@ -136,8 +143,10 @@ public class MainDeskController extends FxmlController {
 						// start/end game, the view actions
 						if (runtimeDomain.getGlobalGameSignal()) {
 							startGameViewAction();
+							openMessageBoard(gameService.declareGame());
 						} else {
 							endGameViewAction();
+							openMessageBoard(gameService.declareGame());
 						}
 					}
 				});
@@ -334,7 +343,34 @@ public class MainDeskController extends FxmlController {
 	
 	private void openMessageBoard(String content) {
 		runtimeDomain.setSentOutMessage(content);
-		stageManager.popupWindow(FxmlView.MESSAGE);
+		if (runtimeDomain.getMessageBoardCount() < 1) {
+			popMessageWindow();
+			runtimeDomain.setMessageBoardCount(1);
+		}else {
+			messageController.changeMessage();
+		}
+	}
+	
+	private void popMessageWindow() {
+        Scene scene = new Scene(stageManager.loadViewNodeHierarchy(FxmlView.MESSAGE.getFxmlFile()));
+        Stage newStage = new Stage();
+        newStage.setTitle(FxmlView.MESSAGE.getTitle());
+        newStage.initModality(Modality.NONE);
+        newStage.initOwner(stageManager.getPrimaryStage());
+        newStage.setScene(scene);
+        newStage.sizeToScene();
+        newStage.centerOnScreen();
+        try {
+        	newStage.show();
+        } catch (Exception e) {
+            LOGGER.error("Uable to show scene for title " + FxmlView.MESSAGE.getTitle(), e);
+        }
+        
+        newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+                runtimeDomain.setMessageBoardCount(0);
+            }
+        });
 	}
 
 	/**

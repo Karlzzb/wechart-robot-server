@@ -208,11 +208,15 @@ public class GameService {
 		if (traceList == null) {
 			return null;
 		}
+		
+		// Get first package time 
+		Long firstPackgeTime = runtimeDomain.getCurrentFirstPackegeTime().getTime();
 
 		// banker
 		Integer bankerTimes = gameInfo.getResultTimes();
 		Long bankerPoint = gameInfo.getBankerPoint();
 		Double bankerLuck = gameInfo.getLuckInfo();
+		Long bankerPackageTime  = gameInfo.getLuckTime();
 
 		// pure math divide player to different groups
 		List<PlayerTrace> winnerList = new ArrayList<PlayerTrace>();
@@ -229,7 +233,39 @@ public class GameService {
 						trace.getRemarkName());
 				continue;
 			}
+			
+			//check banker time out
+			if(!runtimeDomain.getCurrentTimeOutRuleBanker().equals(AppUtils.TIMEOUTPAIDNONE)) {
+				
+				if (bankerPackageTime - firstPackgeTime > runtimeDomain.getCurrentTimeOut()*1000) {
+					if(runtimeDomain.getCurrentTimeOutRuleBanker().equals(AppUtils.TIMEOUTPAIDALL)) {
+						trace.setResultPoint(trace.getResultTimes()
+								* trace.getBetPoint());
+					}else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(AppUtils.TIMEOUTPAIDONETIME)) {
+						trace.setResultPoint(trace.getBetPoint());
+					}
+					winnerList.add(trace);
+					bankerPoint -= trace.getResultPoint();
+					continue;
+				}
+			}
+			
+			//check player time out
+			if(!runtimeDomain.getCurrentTimeOutRule().equals(AppUtils.TIMEOUTPAIDNONE)) {
+				if (trace.getLuckTime() - firstPackgeTime > runtimeDomain.getCurrentTimeOut()*1000) {
+					if(runtimeDomain.getCurrentTimeOutRule().equals(AppUtils.TIMEOUTPAIDALL)) {
+						trace.setResultPoint(-trace.getResultTimes()
+								* trace.getBetPoint());
+					}else if (runtimeDomain.getCurrentTimeOutRule().equals(AppUtils.TIMEOUTPAIDONETIME)) {
+						trace.setResultPoint(-trace.getBetPoint());
+					}
+					loserList.add(trace);
+					bankerPoint -= trace.getResultPoint();
+					continue;
+				}
+			}
 
+			//compare point between banker and player
 			if (bankerTimes > trace.getResultTimes()
 					|| (bankerTimes == trace.getResultTimes() && bankerLuck
 							.compareTo(trace.getLuckInfo()) > 0)) {
@@ -297,8 +333,6 @@ public class GameService {
 		}
 
 		// write the data to db
-		Long minLuckTime = Long.MAX_VALUE;
-		Long maxLuckTime = Long.MIN_VALUE;
 		for (int i = 0; i < traceList.size(); i++) {
 			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
 				continue;
@@ -306,11 +340,6 @@ public class GameService {
 			ryncPlayerPoint(traceList.get(i).getPlayerId(), traceList.get(i)
 					.getResultPoint() > 0, Math.abs(traceList.get(i)
 					.getResultPoint()));
-
-			minLuckTime = minLuckTime < traceList.get(i).getLuckTime() ? minLuckTime
-					: traceList.get(i).getLuckTime();
-			maxLuckTime = maxLuckTime > traceList.get(i).getLuckTime() ? minLuckTime
-					: traceList.get(i).getLuckTime();
 			playerService.save(traceList.get(i));
 		}
 		// banker point consistent
@@ -383,9 +412,9 @@ public class GameService {
 				winListStr,
 				loseListStr,
 				allInListStr,
-				DateUtils.timeStamp(maxLuckTime),
-				"",
-				DateUtils.timeStamp(minLuckTime),
+				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime().getTime()),
+				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime().getTime()+runtimeDomain.getCurrentTimeOut()*1000),
+				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime().getTime()),
 				gameInfo.getBankerRemarkName(),
 				gameInfo.getLuckInfo(),
 				gameInfo.getResultRuleName(),
@@ -670,6 +699,8 @@ public class GameService {
 		gameInfo.setPlayerId(banker.getPlayerId());
 		playerService.save(gameInfo);
 		runtimeDomain.setCurrentGameId(gameInfo.getGameSerialNo());
+		runtimeDomain.removeCurrentFirstPacageTime();
+		runtimeDomain.removeCurrentLastPackegeTime();
 
 		String content = MessageFormat.format(
 				AppUtils.GAMESTART,

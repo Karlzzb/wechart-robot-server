@@ -833,7 +833,7 @@ public class WebWechat {
 
 					if (arr[0] == 1100) {
 						// console.writeLog("[*] 你在手机上登出了微信，债见");
-						break;
+//						break;
 					}
 
 					if (arr[0] == 0) {

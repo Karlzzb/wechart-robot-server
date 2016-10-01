@@ -20,6 +20,7 @@ import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 import blade.kit.json.ParseException;
 
+import com.karl.domain.RuntimeDomain;
 import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
 
@@ -38,6 +39,9 @@ public class PcClient {
 
 	@Autowired
 	private GameService gameService;
+
+	@Autowired
+	private RuntimeDomain runtimeDomain;
 
 	public PcClient() {
 		Thread OpenConnection = new Thread(new OpenConnection(socket_host,
@@ -171,20 +175,26 @@ public class PcClient {
 			JSONObject jsonLuckOne = null;
 			for (int i = 0; i < jsonLuckPeople.size(); i++) {
 				jsonLuckOne = jsonLuckPeople.getJSONObject(i);
-				Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne
-						.getString("Money"));
+				try {
+					Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne
+							.getString("Money"));
 
-				Date time = DateUtils.parsePageDateTime(jsonLuckOne
-						.getString("Time"));
-				if (matcher.find()) {
-					gameService.puttingLuckInfo(i,
-							jsonLuckOne.getString("RemarkName"),
-							Double.valueOf(matcher.group(1)), time);
-				} else {
-					LOGGER.warn(
+					Date time = DateUtils.parsePageDateTime(jsonLuckOne
+							.getString("Time"));
+					
+					if (matcher.find()) {
+						gameService.puttingLuckInfo(i,
+								jsonLuckOne.getString("RemarkName"),
+								Double.valueOf(matcher.group(1)), time);
+					}
+					runtimeDomain.setcurrentFirstPacageTime(time);
+					runtimeDomain.setcurrentLastPacageTime(time);
+				} catch (Exception e) {
+					LOGGER.error(
 							"Luck message RemarkUser {} Money{} interpret failed!",
 							jsonLuckOne.getString("RemarkName"),
 							jsonLuckOne.getString("Money"));
+					continue;
 				}
 			}
 			LOGGER.info("Luck package is {}", packageInfo);
