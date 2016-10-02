@@ -354,6 +354,7 @@ public class MainDeskController extends FxmlController {
 	private void popMessageWindow() {
         Scene scene = new Scene(stageManager.loadViewNodeHierarchy(FxmlView.MESSAGE.getFxmlFile()));
         Stage newStage = new Stage();
+//        newStage.initStyle(StageStyle.UNIFIED);
         newStage.setTitle(FxmlView.MESSAGE.getTitle());
         newStage.initModality(Modality.NONE);
         newStage.initOwner(stageManager.getPrimaryStage());

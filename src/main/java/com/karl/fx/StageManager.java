@@ -3,14 +3,19 @@ package com.karl.fx;
 import java.io.IOException;
 import java.util.Objects;
 
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.karl.service.PcClient;
+import com.karl.service.WebWechat;
 
 public class StageManager {
 
@@ -18,9 +23,17 @@ public class StageManager {
     private final Stage primaryStage;
     private final SpringFXMLLoader springFXMLLoader;
 
-    public StageManager(Stage primaryStage, SpringFXMLLoader springFXMLLoader) {
+    public StageManager(Stage primaryStage, SpringFXMLLoader springFXMLLoader, final WebWechat webWechat, final PcClient pcClient) {
         this.primaryStage = primaryStage;
         this.springFXMLLoader = springFXMLLoader;
+        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+            	webWechat.setStopRequested(Boolean.FALSE);
+            	pcClient.destory();
+            	System.exit(0);
+            }
+        });
     }
 
     public void switchScene(final FxmlView view) {

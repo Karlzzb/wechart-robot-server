@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -28,9 +27,9 @@ public class MessageController extends FxmlController {
     @FXML
     private void sentOut(ActionEvent event) {
     	webWechat.webwxsendmsg(messageBoard.getText());
-    	Stage stage = (Stage)sentOutBut.getScene().getWindow();
-    	runtimeDomain.setMessageBoardCount(0);
-    	stage.close();
+//    	Stage stage = (Stage)sentOutBut.getScene().getWindow();
+//    	runtimeDomain.setMessageBoardCount(0);
+//    	stage.close();
     }
     
     public void changeMessage() {

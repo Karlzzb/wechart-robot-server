@@ -35,7 +35,8 @@ public class RuntimeDomain implements Serializable {
 		publicUsrMap = new HashMap<String, JSONObject>();
 		specialUsrMap = new HashMap<String, JSONObject>();
 		runningPlayeres = new HashMap<String, Player>();
-		qrCodeFile = new File("temp.jpg");
+		qrCodeFile = new File("data/temp.jpg");
+		imagePath = "file:data/temp.jpg";
 		bankerRemarkName = "";
 		currentRule = EnumSet.allOf(LotteryRule.class);
 		groupList = FXCollections.observableArrayList();
@@ -72,6 +73,8 @@ public class RuntimeDomain implements Serializable {
 	private String currentGroupName;
 
 	private final File qrCodeFile;
+	
+	private final String imagePath;
 
 	private String uuid;
 	private int tip = 0;
@@ -211,6 +214,7 @@ public class RuntimeDomain implements Serializable {
 	private Date currentFirstPackegeTime;
 
 	private Date currentLastPackegeTime;
+	
 
 	/**
 	 * key=remarkName
@@ -702,5 +706,9 @@ public class RuntimeDomain implements Serializable {
 
 	public void setMessageBoardCount(int messageBoardCount) {
 		this.messageBoardCount = messageBoardCount;
+	}
+
+	public String getImagePath() {
+		return imagePath;
 	}
 }

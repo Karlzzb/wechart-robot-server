@@ -1,7 +1,6 @@
 package com.karl.fx.controller;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
@@ -49,10 +48,10 @@ public class LoginController extends FxmlController {
         LOGGER.info("[*] 获取到uuid为 [{}]", runtimeDomain.getUuid());
         webWechat.showQrCode();
         String path = runtimeDomain.getQrCodeFile().toURI().toString();
-        LOGGER.debug("Longin image path :{}", path);
-        Image loginImage = new Image(path);
+        LOGGER.info("Longin image path :{}", path);
+        Image loginImage =  new Image(path,true);
         loginImageView.setImage(loginImage);
-        taskBar.setProgress(-1.0f);
+//        taskBar.setProgress(-1.0f);
         waitLoginTask();
     }
 
@@ -60,6 +59,7 @@ public class LoginController extends FxmlController {
         Task<Void> task = new Task<Void>() {
             @Override
             public Void call() throws InterruptedException {
+                Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
                 while (!"200".equals(webWechat.waitForLogin())) {
                     updateProgress(10, 100);
                     Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
@@ -77,7 +77,10 @@ public class LoginController extends FxmlController {
             }
         };
 //        taskBar.progressProperty().bind(task.progressProperty());
-        Platform.setImplicitExit(false);
-        Platform.runLater(task);
+//        Platform.setImplicitExit(false);
+//        Platform.runLater(task);
+		Thread t1 = new Thread(task);
+		t1.setDaemon(Boolean.TRUE);
+		t1.start();
     }
 }

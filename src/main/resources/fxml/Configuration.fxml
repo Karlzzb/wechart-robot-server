@@ -16,11 +16,11 @@
 				<TableColumn fx:id="ruleDetail" prefWidth="165.0" resizable="false" text="倍数" />
 			</columns>
 		</TableView>
-      <Label layoutX="558.0" layoutY="127.0" prefHeight="25.0" prefWidth="102.0" text="庄家超时赔付：" />
-      <Label layoutX="558.0" layoutY="228.0" prefHeight="25.0" prefWidth="102.0" text="闲家超时赔付：" />
-      <ChoiceBox fx:id="bankerOutTime" layoutX="682.0" layoutY="127.0" prefWidth="150.0" />
-      <ChoiceBox fx:id="playerOutTime" layoutX="682.0" layoutY="228.0" prefWidth="150.0" />
-      <Label layoutX="558.0" layoutY="326.0" prefHeight="25.0" prefWidth="117.0" text="超时时间（秒）：" />
-      <TextField fx:id="timeOut" layoutX="683.0" layoutY="326.0" />
+      <Label layoutX="558.0" layoutY="127.0" prefHeight="25.0" prefWidth="131.0" text="庄家超时赔付：" />
+      <Label layoutX="558.0" layoutY="228.0" prefHeight="25.0" prefWidth="131.0" text="闲家超时赔付：" />
+      <ChoiceBox fx:id="bankerOutTime" layoutX="704.0" layoutY="127.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="playerOutTime" layoutX="704.0" layoutY="228.0" prefWidth="150.0" />
+      <Label layoutX="558.0" layoutY="326.0" prefHeight="25.0" prefWidth="131.0" text="超时时间（秒）：" />
+      <TextField fx:id="timeOut" layoutX="704.0" layoutY="326.0" />
 	</children>
 </AnchorPane>

@@ -820,7 +820,6 @@ public class WebWechat {
 						+ " 个群");
 				console.writeLog("[*] 进入消息监听模式 ...");
 				while (!stopRequested) {
-
 					try {
 						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
 					} catch (InterruptedException e) {
@@ -913,15 +912,19 @@ public class WebWechat {
 		}
 	}
 
-	public static void main(String[] args) throws InterruptedException {
-
-	}
-
 	public RuntimeDomain getRuntimeDomain() {
 		return runtimeDomain;
 	}
 
 	public void setRuntimeDomain(RuntimeDomain runtimeDomain) {
 		this.runtimeDomain = runtimeDomain;
+	}
+
+	public boolean isStopRequested() {
+		return stopRequested;
+	}
+
+	public void setStopRequested(boolean stopRequested) {
+		this.stopRequested = stopRequested;
 	}
 }

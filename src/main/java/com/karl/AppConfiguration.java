@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.karl.fx.SpringFXMLLoader;
 import com.karl.fx.StageManager;
+import com.karl.service.PcClient;
+import com.karl.service.WebWechat;
 
 @Configuration
 @EntityScan(basePackages = {"com.karl.db.domain"})
@@ -24,6 +26,13 @@ import com.karl.fx.StageManager;
 public class AppConfiguration {
     @Autowired
     SpringFXMLLoader springFXMLLoader;
+    
+    @Autowired
+    WebWechat webWechat;
+    
+    
+    @Autowired
+    PcClient pcClient;
 
     @Bean
     public ResourceBundle resourceBundle() {
@@ -34,7 +43,7 @@ public class AppConfiguration {
     @Lazy(value = true)
     // stage only created after Spring context bootstrap
     public StageManager stageManager(Stage stage) {
-        return new StageManager(stage, springFXMLLoader);
+        return new StageManager(stage, springFXMLLoader, webWechat, pcClient);
     }
     
     @Bean

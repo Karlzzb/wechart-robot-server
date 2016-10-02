@@ -63,14 +63,5 @@ public class StringUtils {
     	 
     	return key;
     }
-    
-    public static void main(String[] args) {
-		String test = "20/10";
-		test.trim();
-		Matcher subPointMatcher = LONGSPLIT.matcher(test);
-		while  (subPointMatcher.find()) {
-			System.out.println(subPointMatcher.group());
-		}
-	}
 
 }

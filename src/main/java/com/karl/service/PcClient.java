@@ -36,6 +36,10 @@ public class PcClient {
 	private Socket socket;
 
 	private Boolean isConnected;
+	
+	private Boolean destory;
+	
+	private Thread openConnection;
 
 	@Autowired
 	private GameService gameService;
@@ -44,10 +48,11 @@ public class PcClient {
 	private RuntimeDomain runtimeDomain;
 
 	public PcClient() {
-		Thread OpenConnection = new Thread(new OpenConnection(socket_host,
+		destory = Boolean.FALSE;
+		openConnection = new Thread(new OpenConnection(socket_host,
 				socket_port));
-		OpenConnection.setDaemon(Boolean.TRUE);
-		OpenConnection.start();
+		openConnection.setDaemon(Boolean.TRUE);
+		openConnection.start();
 		isConnected = Boolean.FALSE;
 	}
 
@@ -62,7 +67,7 @@ public class PcClient {
 
 		@Override
 		public void run() {
-			while (Boolean.TRUE) {
+			while (!destory) {
 				try {
 					Thread.sleep(5000);
 					Runtime.getRuntime().exec(
@@ -206,5 +211,27 @@ public class PcClient {
 			LOGGER.error("Luck package[{}] interpret failed!", packageInfo, e);
 			return;
 		}
+	}
+
+	public Boolean getIsConnected() {
+		return isConnected;
+	}
+	
+	public void destory() {
+		destory = Boolean.TRUE;
+		openConnection.interrupt();
+		openConnection = null;
+	}
+
+	public void setIsConnected(Boolean isConnected) {
+		this.isConnected = isConnected;
+	}
+
+	public Boolean getDestory() {
+		return destory;
+	}
+
+	public void setDestory(Boolean destory) {
+		this.destory = destory;
 	}
 }
