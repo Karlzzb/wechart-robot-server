@@ -192,4 +192,22 @@ public class PlayerService {
 		gameRepository.updateBankerLuckInfo(gameId, luckInfo, luckTime, resultRuleName, resultTimes, betIndex);
 	}
 
+	public List<Player> getPlayerListDescPoint() {
+		return playerRepository.getPlayerListDescPoint();
+	}
+
+	public Boolean isExistByGameIdRemarkName(String remarkName,
+			Long gameId) {
+		Assert.notNull(remarkName, "remarkName must not be null");
+		Assert.notNull(gameId, "gameId must not be null");
+		
+		List<PlayerTrace> result = playerTraceRepository.getPlayerTraceListByGameIdRemarkName(gameId, remarkName);
+		if (result == null || result.size() <1) {
+			return Boolean.FALSE;
+		}
+		
+		
+		return Boolean.TRUE;
+	}
+
 }

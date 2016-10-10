@@ -78,7 +78,7 @@ public class PcClient {
 							"adb shell am broadcast -a NotifyServiceStart");
 					LOGGER.info("Reconfig adb connnection");
 				} catch (Exception e) {
-					LOGGER.error("PcClient forward failed!", e);
+					LOGGER.error("PcClient forward failed!");
 				}
 				connnectToServer();
 			}
@@ -132,7 +132,7 @@ public class PcClient {
 					isConnected = Boolean.TRUE;
 				}
 			} catch (Exception e) {
-				LOGGER.error("PcClient failed!", e);
+				LOGGER.error("PcClient failed!");
 				isConnected = Boolean.FALSE;
 			}
 			return isConnected;
@@ -188,7 +188,7 @@ public class PcClient {
 							.getString("Time"));
 					
 					if (matcher.find()) {
-						gameService.puttingLuckInfo(i,
+						gameService.puttingLuckInfo(i+1,
 								jsonLuckOne.getString("RemarkName"),
 								Double.valueOf(matcher.group(1)), time);
 					}

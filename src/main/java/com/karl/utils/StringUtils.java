@@ -16,10 +16,10 @@ public class StringUtils {
     public static Pattern LONGSPLIT = Pattern.compile("^([1-9]+[0-9]*/[1-9]+[0-9]*)$");
     public static Pattern SUOHAPERF = Pattern.compile("^(梭哈)+([1-9]+[0-9]*)(梭哈)+$");
     public static Pattern LONG = Pattern.compile("^([1-9]+[0-9]*)$");
-    public static Pattern ADDPOINT = Pattern.compile("\\s*查\\s*([1-9]+[0-9]*)");
-    public static Pattern SUBPOINT = Pattern.compile("\\s*回\\s*([1-9]+[0-9]*)");
-    public static Pattern PUTPOINT = Pattern.compile("\\s*上\\s*([1-9]+[0-9]*)");
-    public static Pattern DRAWPOINT = Pattern.compile("\\s*下\\s*([1-9]+[0-9]*)");
+    public static Pattern ADDPOINT = Pattern.compile("^查\\s*([1-9]+[0-9]*)$");
+    public static Pattern SUBPOINT = Pattern.compile("^回\\s*([1-9]+[0-9]*)$");
+    public static Pattern PUTPOINT = Pattern.compile("^上\\s*([1-9]+[0-9]*)$");
+    public static Pattern DRAWPOINT = Pattern.compile("^下\\s*([1-9]+[0-9]*)$");
     
     public static String ANGLEINLINE = "</?[^>]+>";
     

@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import java.net.URL?>
 
-
-<AnchorPane fx:id="consoleTab" prefHeight="652.0" prefWidth="1225.0"
-	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConsoleController">
+<AnchorPane fx:id="consoleTab" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConsoleController">
 	<children>
-		<TextArea fx:id="logArea" layoutX="-21.0" layoutY="-28.0"
-			prefHeight="578.0" prefWidth="1215.0" AnchorPane.bottomAnchor="64.0"
-			AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0"
-			AnchorPane.topAnchor="10.0" />
-		<Button fx:id="cleanButton" layoutX="14.0" layoutY="600.0"
-			mnemonicParsing="false" onAction="#clearLog" prefHeight="38.0"
-			prefWidth="111.0" text="清除日志" AnchorPane.bottomAnchor="14.0"
-			AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="1100.0"
-			AnchorPane.topAnchor="600.0">
+		<TextArea fx:id="logArea"  prefHeight="578.0" prefWidth="500.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+		<Button fx:id="cleanButton" layoutX="14.0" layoutY="600.0" mnemonicParsing="false" onAction="#clearLog" prefHeight="38.0" prefWidth="101.0" text="清除日志">
 		</Button>
 	</children>
 	<stylesheets>

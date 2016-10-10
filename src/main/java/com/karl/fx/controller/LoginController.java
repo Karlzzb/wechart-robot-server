@@ -49,9 +49,9 @@ public class LoginController extends FxmlController {
         webWechat.showQrCode();
         String path = runtimeDomain.getQrCodeFile().toURI().toString();
         LOGGER.info("Longin image path :{}", path);
-        Image loginImage =  new Image(path,true);
+        Image loginImage =  new Image(path);
         loginImageView.setImage(loginImage);
-//        taskBar.setProgress(-1.0f);
+        taskBar.setProgress(-1.0f);
         waitLoginTask();
     }
 
@@ -70,17 +70,14 @@ public class LoginController extends FxmlController {
                 LOGGER.info("[*] 微信登录成功");
                 webWechat.buildWechat();
                 webWechat.listenMsgMode(consoleController);
-//                Stage stage = (Stage)loginImageView.getScene().getWindow();
-//                stage.close();
                 stageManager.switchScene(FxmlView.MENU);
                 return null;
             }
         };
-//        taskBar.progressProperty().bind(task.progressProperty());
-//        Platform.setImplicitExit(false);
+//        Platform.setImplicitExit(true);
 //        Platform.runLater(task);
-		Thread t1 = new Thread(task);
-		t1.setDaemon(Boolean.TRUE);
-		t1.start();
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
     }
 }

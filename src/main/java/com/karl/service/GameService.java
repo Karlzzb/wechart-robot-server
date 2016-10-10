@@ -55,7 +55,9 @@ public class GameService {
 
 		// Message is the pattern of betting
 		if (runtimeDomain.getGlobalGameSignal()
-				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())) {
+				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())
+				&& !runtimeDomain.getCurrentGameKey().equals(
+						AppUtils.PLAYLUCKWAY)) {
 			Matcher matcher = StringUtils.LONGSPLIT.matcher(content);
 			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 				matcher = StringUtils.LONG.matcher(content);
@@ -73,7 +75,9 @@ public class GameService {
 
 		// Message is the pattern of betting suoha
 		if (runtimeDomain.getGlobalGameSignal()
-				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())) {
+				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())
+				&& !runtimeDomain.getCurrentGameKey().equals(
+						AppUtils.PLAYLUCKWAY)) {
 			Matcher matcher = StringUtils.SUOHAPERF.matcher(content);
 			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 				matcher = StringUtils.LONG.matcher(content);
@@ -89,7 +93,7 @@ public class GameService {
 			}
 		}
 
-		// Message is the pattern of apply
+		// Message is the pattern of apply add point
 		Matcher addPointMatcher = StringUtils.ADDPOINT.matcher(content);
 		if (addPointMatcher.find()) {
 			try {
@@ -105,9 +109,28 @@ public class GameService {
 			return;
 		}
 
+		// Message is the pattern of apply sub point
 		Matcher subPointMatcher = StringUtils.SUBPOINT.matcher(content);
 		if (subPointMatcher.find()) {
 			try {
+				Long subPoint = Long.valueOf(subPointMatcher.group(1));
+
+				// in case of point eq zero
+				Player pEntity = runtimeDomain.getRunningPlayeres().get(
+						remarkName);
+				if (pEntity == null) {
+					webWechat.webwxsendmsgM(MessageFormat.format(
+							AppUtils.REPLYPOINTAPPLYERROR2, remarkName, 0,
+							subPoint, remarkName));
+					return;
+				}
+				if (pEntity.getPoints().compareTo(subPoint) < 0) {
+					webWechat.webwxsendmsgM(MessageFormat.format(
+							AppUtils.REPLYPOINTAPPLYERROR2, remarkName,
+							pEntity.getPoints(), subPoint, remarkName));
+					return;
+				}
+
 				approvalTabController.addApply(
 						webChatId,
 						addPlayApply(webChatId, remarkName,
@@ -155,7 +178,7 @@ public class GameService {
 				return;
 			}
 
-			// Match put point
+			// Match sub point
 			Matcher drawPointMatcher = StringUtils.DRAWPOINT.matcher(content);
 			while (drawPointMatcher.find()) {
 				try {
@@ -171,12 +194,29 @@ public class GameService {
 					if (readyRemarkName == null || readyRemarkName.isEmpty()) {
 						return;
 					}
-					Player pEntity = putPlayerPoint(readyWechatId,
-							readyRemarkName, readyNickName, drawPoint,
-							Boolean.FALSE);
-					// send feedback
+
+					// in case of point eq zero
+					Player pEntity = runtimeDomain.getRunningPlayeres().get(
+							readyRemarkName);
+					if (pEntity == null) {
+						webWechat.webwxsendmsgM(MessageFormat.format(
+								AppUtils.REPLYPOINTAPPLYERROR, readyRemarkName,
+								0, drawPoint));
+						return;
+					}
+					if (pEntity.getPoints().compareTo(drawPoint) < 0) {
+						webWechat.webwxsendmsgM(MessageFormat.format(
+								AppUtils.REPLYPOINTAPPLYERROR, readyRemarkName,
+								pEntity.getPoints(), drawPoint));
+						return;
+					}
+
+					// sub points
+					pEntity = putPlayerPoint(readyWechatId, readyRemarkName,
+							readyNickName, drawPoint, Boolean.FALSE);
 					if (pEntity != null) {
 						String replyTemplate = AppUtils.REPLYPOINTAPPLYDRAW;
+
 						webWechat.webwxsendmsgM(MessageFormat.format(
 								replyTemplate, readyRemarkName, drawPoint,
 								pEntity.getPoints()));
@@ -208,15 +248,16 @@ public class GameService {
 		if (traceList == null) {
 			return null;
 		}
-		
-		// Get first package time 
-		Long firstPackgeTime = runtimeDomain.getCurrentFirstPackegeTime().getTime();
+
+		// Get first package time
+		Long firstPackgeTime = runtimeDomain.getCurrentFirstPackegeTime()
+				.getTime();
 
 		// banker
 		Integer bankerTimes = gameInfo.getResultTimes();
 		Long bankerPoint = gameInfo.getBankerPoint();
 		Double bankerLuck = gameInfo.getLuckInfo();
-		Long bankerPackageTime  = gameInfo.getLuckTime();
+		Long bankerPackageTime = gameInfo.getLuckTime();
 
 		// pure math divide player to different groups
 		List<PlayerTrace> winnerList = new ArrayList<PlayerTrace>();
@@ -233,15 +274,18 @@ public class GameService {
 						trace.getRemarkName());
 				continue;
 			}
-			
-			//check banker time out
-			if(!runtimeDomain.getCurrentTimeOutRuleBanker().equals(AppUtils.TIMEOUTPAIDNONE)) {
-				
-				if (bankerPackageTime - firstPackgeTime > runtimeDomain.getCurrentTimeOut()*1000) {
-					if(runtimeDomain.getCurrentTimeOutRuleBanker().equals(AppUtils.TIMEOUTPAIDALL)) {
+
+			// check banker time out
+			if (!runtimeDomain.getCurrentTimeOutRuleBanker().equals(
+					AppUtils.TIMEOUTPAIDNONE)) {
+				if (bankerPackageTime - firstPackgeTime > runtimeDomain
+						.getCurrentTimeOut() * 1000) {
+					if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
+							AppUtils.TIMEOUTPAIDALL)) {
 						trace.setResultPoint(trace.getResultTimes()
 								* trace.getBetPoint());
-					}else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(AppUtils.TIMEOUTPAIDONETIME)) {
+					} else if (runtimeDomain.getCurrentTimeOutRuleBanker()
+							.equals(AppUtils.TIMEOUTPAIDONETIME)) {
 						trace.setResultPoint(trace.getBetPoint());
 					}
 					winnerList.add(trace);
@@ -249,14 +293,18 @@ public class GameService {
 					continue;
 				}
 			}
-			
-			//check player time out
-			if(!runtimeDomain.getCurrentTimeOutRule().equals(AppUtils.TIMEOUTPAIDNONE)) {
-				if (trace.getLuckTime() - firstPackgeTime > runtimeDomain.getCurrentTimeOut()*1000) {
-					if(runtimeDomain.getCurrentTimeOutRule().equals(AppUtils.TIMEOUTPAIDALL)) {
+
+			// check player time out
+			if (!runtimeDomain.getCurrentTimeOutRule().equals(
+					AppUtils.TIMEOUTPAIDNONE)) {
+				if (trace.getLuckTime() - firstPackgeTime > runtimeDomain
+						.getCurrentTimeOut() * 1000) {
+					if (runtimeDomain.getCurrentTimeOutRule().equals(
+							AppUtils.TIMEOUTPAIDALL)) {
 						trace.setResultPoint(-trace.getResultTimes()
 								* trace.getBetPoint());
-					}else if (runtimeDomain.getCurrentTimeOutRule().equals(AppUtils.TIMEOUTPAIDONETIME)) {
+					} else if (runtimeDomain.getCurrentTimeOutRule().equals(
+							AppUtils.TIMEOUTPAIDONETIME)) {
 						trace.setResultPoint(-trace.getBetPoint());
 					}
 					loserList.add(trace);
@@ -265,7 +313,7 @@ public class GameService {
 				}
 			}
 
-			//compare point between banker and player
+			// compare point between banker and player
 			if (bankerTimes > trace.getResultTimes()
 					|| (bankerTimes == trace.getResultTimes() && bankerLuck
 							.compareTo(trace.getLuckInfo()) > 0)) {
@@ -412,9 +460,12 @@ public class GameService {
 				winListStr,
 				loseListStr,
 				allInListStr,
-				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime().getTime()),
-				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime().getTime()+runtimeDomain.getCurrentTimeOut()*1000),
-				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime().getTime()),
+				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime()
+						.getTime()),
+				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime()
+						.getTime() + runtimeDomain.getCurrentTimeOut() * 1000),
+				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
+						.getTime()),
 				gameInfo.getBankerRemarkName(),
 				gameInfo.getLuckInfo(),
 				gameInfo.getResultRuleName(),
@@ -446,11 +497,12 @@ public class GameService {
 		}
 		Integer betIndex = Integer.valueOf(0);
 		Long betPoint = Long.valueOf(0);
-		if(betPoint.compareTo(player.getPoints()) > 0) {
-			webWechat.webwxsendmsg("@"+player.getWechatName()+" 下注有误。余额("+player.getPoints()+")不足支付！");
+		if (betPoint.compareTo(player.getPoints()) > 0) {
+			webWechat.webwxsendmsg("@" + player.getWechatName() + " 下注有误。余额("
+					+ player.getPoints() + ")不足支付！");
 			return;
 		}
-		
+
 		if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 			betPoint = Long.valueOf(betInfo);
 		} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
@@ -512,6 +564,13 @@ public class GameService {
 					runtimeDomain.getCurrentGameId(), luckInfo, time.getTime(),
 					playerLottery.getRuleName(), playerLottery.getTimes(),
 					betIndex);
+			return;
+		}
+
+		// cannot duplicate bet
+		Boolean isExisted = playerService.isExistByGameIdRemarkName(remarkName,
+				runtimeDomain.getCurrentGameId());
+		if (isExisted) {
 			return;
 		}
 
@@ -655,7 +714,8 @@ public class GameService {
 		playEntity = playerService.getPlayerById(playerId);
 		if (playEntity == null) {
 			if (remarkName.equals(nickName)) {
-				if (!webWechat.changeRemarkName(nickName, webchatId, remarkName)) {
+				if (!webWechat
+						.changeRemarkName(nickName, webchatId, remarkName)) {
 					LOGGER.error("User{} remarkName Failed!", remarkName);
 					return;
 				}
@@ -713,6 +773,11 @@ public class GameService {
 				runtimeDomain.getBankerIndex(),
 				runtimeDomain.getCurrentGameKey()
 						+ (runtimeDomain.getAllowAllIn() ? "+梭哈" : ""));
+
+		if (runtimeDomain.getCurrentGameKey().equals(AppUtils.PLAYLUCKWAY)) {
+			content += "默认下注：" + runtimeDomain.getDefiendBet();
+		}
+
 		return content;
 	}
 
@@ -779,8 +844,8 @@ public class GameService {
 		playEntity = playerService.getPlayerByRemarkName(remarkName);
 		if (playEntity == null) {
 			if (remarkName.equals(nickName)) {
-				if (!webWechat.changeRemarkName(nickName, webchatId, remarkName
-						+ "玩玩")) {
+				if (!webWechat
+						.changeRemarkName(nickName, webchatId, remarkName)) {
 					LOGGER.error("User{} remarkName Failed!", remarkName);
 					return null;
 				}
@@ -883,5 +948,33 @@ public class GameService {
 			return null;
 		}
 		return playerService.getPlayerTraceListByGameId(currentGameId);
+	}
+
+	public String publishPointRanks() {
+		// TODO
+		List<Player> playerList = playerService.getPlayerListDescPoint();
+		if (playerList == null) {
+			return null;
+		}
+
+		String body = "";
+		int order = 1;
+		Long sumPoint = 0L;
+		for (int i = 0; i < playerList.size(); i++) {
+			if (runtimeDomain.getRunningPlayeres().get(
+					playerList.get(i).getRemarkName()) == null) {
+				continue;
+			}
+			body += MessageFormat.format(AppUtils.PUBLICPOINTRANKLINE, order++,
+					playerList.get(i).getRemarkName(), playerList.get(i)
+							.getPoints());
+			sumPoint += playerList.get(i).getPoints();
+		}
+
+		String head = MessageFormat.format(AppUtils.PUBLICPOINTRANKHEAD,
+				order - 1, sumPoint);
+		String tail = MessageFormat.format(AppUtils.PUBLICPOINTRANKTAIL,
+				sumPoint);
+		return head + body + tail;
 	}
 }

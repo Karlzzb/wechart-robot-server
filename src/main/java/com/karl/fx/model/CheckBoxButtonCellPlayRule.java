@@ -44,10 +44,9 @@ public class CheckBoxButtonCellPlayRule extends TableCell<PlayRule, Boolean> {
         super.updateItem(item, empty);
         final ObservableList<PlayRule> items = getTableView().getItems();
         if (items != null) {
-            if (getIndex() < items.size()) {
+            if (getIndex() < items.size() && getIndex() > -1) {
                 checkBox.setSelected(items.get(getIndex()).getRuleCheck());
                 setGraphic(checkBox);
-
             }
         }
 

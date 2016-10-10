@@ -59,7 +59,7 @@ public enum FxmlView {
     }, MESSAGE{
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("config.title");
+            return getStringFromResourceBundle("message.title");
         }
 
         @Override

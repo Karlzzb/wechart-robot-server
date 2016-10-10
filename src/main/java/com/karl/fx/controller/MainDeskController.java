@@ -69,8 +69,8 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private TableColumn<PlayerModel, Boolean> colBankerSgin;
 
-	@FXML
-	private TableColumn<PlayerModel, Integer> colAutoID;
+	// @FXML
+	// private TableColumn<PlayerModel, Integer> colAutoID;
 
 	@FXML
 	private TableColumn<PlayerModel, String> colPlayerName;
@@ -82,13 +82,16 @@ public class MainDeskController extends FxmlController {
 	private TableView<PlayerModel> playerTab;
 
 	private ObservableList<ChatGroupModel> groupList;
-	
+
 	private ObservableList<ChatGroupModel> groupListFiniance;
 
 	private ObservableList<PlayerModel> playerList;
 
 	@FXML
 	private TextField bankerBetPoint;
+	
+	@FXML
+	private TextField definedBet;
 
 	@FXML
 	private ToggleButton gameStart;
@@ -102,17 +105,19 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private Button openLotteryBut;
 
+	@FXML
+	private Button publishBut;
+
 	final ToggleGroup group = new ToggleGroup();
 
 	final ToggleGroup playerGroup = new ToggleGroup();
-	
+
 	@FXML
 	private ChoiceBox<String> gamekeyBox;
-	
+
 	@Autowired
 	@Lazy
 	private MessageController messageController;
-
 
 	@Override
 	public void initialize() {
@@ -133,9 +138,9 @@ public class MainDeskController extends FxmlController {
 						} else {
 							runtimeDomain.setGlobalGameSignal((Boolean) group
 									.getSelectedToggle().getUserData());
-							//save current player when game started
-							if ((Boolean) group
-									.getSelectedToggle().getUserData()) {
+							// save current player when game started
+							if ((Boolean) group.getSelectedToggle()
+									.getUserData()) {
 								gameService.ryncPlayersPoint(playerList);
 							}
 						}
@@ -155,26 +160,40 @@ public class MainDeskController extends FxmlController {
 		buildPlayerTab();
 		playerAutoFlush();
 		buildGameKeyBox();
-	}
-	
-	private void buildGameKeyBox() {
-    	gamekeyBox.setItems(FXCollections.observableArrayList(
-    			AppUtils.PLAYLONG, AppUtils.PLAYLONGSPLIT, AppUtils.PLAYLUCKWAY));
-		gamekeyBox.getSelectionModel().selectedItemProperty()
-		.addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(
-					ObservableValue<? extends String> paramObservableValue,
-					String paramT1, String newValue) {
-				if (newValue != null && !newValue.isEmpty()) {
-					runtimeDomain.setCurrentGameKey(newValue);
-				}
-			}
-		});
 		
+		definedBet.textProperty().addListener(new ChangeListener<String>() {
+		        @Override
+		        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+		            if (!newValue.matches("\\d*")) {
+		            	definedBet.setText(oldValue);
+		            }else {
+		            	definedBet.setText(newValue);
+		            	runtimeDomain.setDefiendBet(Long.valueOf(definedBet.getText()));
+		            }
+		        }
+		    });
+	}
+
+	private void buildGameKeyBox() {
+		gamekeyBox.setItems(FXCollections
+				.observableArrayList(AppUtils.PLAYLONG, AppUtils.PLAYLONGSPLIT,
+						AppUtils.PLAYLUCKWAY));
+		gamekeyBox.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<String>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends String> paramObservableValue,
+							String paramT1, String newValue) {
+						if (newValue != null && !newValue.isEmpty()) {
+							runtimeDomain.setCurrentGameKey(newValue);
+						}
+					}
+				});
+
 		gamekeyBox.setTooltip(new Tooltip("请选择玩法"));
 		for (int i = 0; i < gamekeyBox.getItems().size(); i++) {
-			if (gamekeyBox.getItems().get(i).equals(runtimeDomain.getCurrentGameKey())) {
+			if (gamekeyBox.getItems().get(i)
+					.equals(runtimeDomain.getCurrentGameKey())) {
 				gamekeyBox.getSelectionModel().select(i);
 				break;
 			}
@@ -238,9 +257,9 @@ public class MainDeskController extends FxmlController {
 		};
 		colBankerSgin.setCellFactory(radioFactory);
 
-		colAutoID
-				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Integer>(
-						PlayerModel.AUDOIDCOLKEY));
+		// colAutoID
+		// .setCellValueFactory(new PropertyValueFactory<PlayerModel, Integer>(
+		// PlayerModel.AUDOIDCOLKEY));
 		colPlayerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
 						PlayerModel.PLAYERNAMECOLKEY));
@@ -289,10 +308,10 @@ public class MainDeskController extends FxmlController {
 	private void fillUpGroupBox() {
 		if (groupList != null)
 			groupList.clear();
-		if(groupListFiniance != null) {
+		if (groupListFiniance != null) {
 			groupListFiniance.clear();
 		}
-		
+
 		groupList = runtimeDomain.getGroupList();
 		groupListFiniance = runtimeDomain.getGroupListFiniance();
 		ChatGroupModel groupModel = null;
@@ -300,7 +319,8 @@ public class MainDeskController extends FxmlController {
 		int selected = 0;
 		int selectedM = 0;
 		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择玩家群", 0));
-		groupListFiniance.add(new ChatGroupModel(String.valueOf(0), "请选择财务群", 0));
+		groupListFiniance
+				.add(new ChatGroupModel(String.valueOf(0), "请选择财务群", 0));
 		for (String groupId : runtimeDomain.getGroupMap().keySet()) {
 			groupModel = new ChatGroupModel(groupId, runtimeDomain
 					.getGroupMap().get(groupId).getString("NickName")
@@ -340,38 +360,50 @@ public class MainDeskController extends FxmlController {
 		String content = gameService.openLottery();
 		openMessageBoard(content);
 	}
-	
+
+	@FXML
+	private void publishRanks(ActionEvent event) {
+		String content = gameService.publishPointRanks();
+		if (content != null) {
+			openMessageBoard(content);
+		}
+	}
+
 	private void openMessageBoard(String content) {
 		runtimeDomain.setSentOutMessage(content);
 		if (runtimeDomain.getMessageBoardCount() < 1) {
 			popMessageWindow();
 			runtimeDomain.setMessageBoardCount(1);
-		}else {
+		} else {
 			messageController.changeMessage();
 		}
 	}
-	
+
 	private void popMessageWindow() {
-        Scene scene = new Scene(stageManager.loadViewNodeHierarchy(FxmlView.MESSAGE.getFxmlFile()));
-        Stage newStage = new Stage();
-//        newStage.initStyle(StageStyle.UNIFIED);
-        newStage.setTitle(FxmlView.MESSAGE.getTitle());
-        newStage.initModality(Modality.NONE);
-        newStage.initOwner(stageManager.getPrimaryStage());
-        newStage.setScene(scene);
-        newStage.sizeToScene();
-        newStage.centerOnScreen();
-        try {
-        	newStage.show();
-        } catch (Exception e) {
-            LOGGER.error("Uable to show scene for title " + FxmlView.MESSAGE.getTitle(), e);
-        }
-        
-        newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                runtimeDomain.setMessageBoardCount(0);
-            }
-        });
+		Scene scene = new Scene(
+				stageManager.loadViewNodeHierarchy(FxmlView.MESSAGE
+						.getFxmlFile()));
+		Stage newStage = new Stage();
+		// newStage.initStyle(StageStyle.UNIFIED);
+		newStage.setTitle(FxmlView.MESSAGE.getTitle());
+		newStage.initModality(Modality.NONE);
+		newStage.initOwner(stageManager.getPrimaryStage());
+		newStage.setScene(scene);
+		newStage.sizeToScene();
+		newStage.centerOnScreen();
+		try {
+			newStage.show();
+		} catch (Exception e) {
+			LOGGER.error(
+					"Uable to show scene for title "
+							+ FxmlView.MESSAGE.getTitle(), e);
+		}
+
+		newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				runtimeDomain.setMessageBoardCount(0);
+			}
+		});
 	}
 
 	/**
@@ -423,6 +455,7 @@ public class MainDeskController extends FxmlController {
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
 		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
 		bankerBetPoint.setEditable(Boolean.FALSE);
+		definedBet.setEditable(Boolean.FALSE);
 	}
 
 	private void endGameViewAction() {
@@ -430,6 +463,7 @@ public class MainDeskController extends FxmlController {
 		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
 		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
 		bankerBetPoint.setEditable(Boolean.TRUE);
+		definedBet.setEditable(Boolean.TRUE);
 	}
 
 	private class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
@@ -471,7 +505,7 @@ public class MainDeskController extends FxmlController {
 							.getPlayerName());
 					bankerLabel.setText(playerModel.getPlayerName());
 					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel
-							.getPlayerPoint()) / 2);
+							.getPlayerPoint())*2 / 3);
 					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
 							.toString());
 				} else {
@@ -485,7 +519,7 @@ public class MainDeskController extends FxmlController {
 			super.updateItem(item, empty);
 			final ObservableList<PlayerModel> items = getTableView().getItems();
 			if (items != null) {
-				if (getIndex() < items.size()) {
+				if (getIndex() < items.size() && getIndex() > -1) {
 					radio.setSelected(items.get(getIndex()).getIsBanker());
 					setGraphic(radio);
 				}

@@ -423,7 +423,9 @@ public class RuntimeDomain implements Serializable {
 	}
 
 	public String getDeviceId() {
-		return deviceId;
+		//TODO static
+		return "e083944759865791";
+//		return deviceId;
 	}
 
 	public void setDeviceId(String deviceId) {
@@ -686,7 +688,7 @@ public class RuntimeDomain implements Serializable {
 			this.currentLastPackegeTime = currentLastPackegeTime;
 		} else {
 			this.currentLastPackegeTime = this.currentLastPackegeTime
-					.compareTo(currentLastPackegeTime) > 0 ? currentLastPackegeTime
+					.compareTo(currentLastPackegeTime) < 0 ? currentLastPackegeTime
 					: this.currentLastPackegeTime;
 		}
 	}

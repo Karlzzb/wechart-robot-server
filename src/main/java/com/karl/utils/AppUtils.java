@@ -16,8 +16,9 @@ public class AppUtils {
 	public static String base_uri,
 			redirect_uri = "https://wx.qq.com/cgi-bin/mmwebwx-bin";
 
-	public static String webpush_url = "https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck";
+//	public static String webpush_url = "https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck";
 
+	public static String webpush_url = "https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck";
 	public static String skey, synckey, wxsid, wxuin, pass_ticket,
 			deviceId = "e" + (new Date()).getTime();
 
@@ -86,6 +87,8 @@ public class AppUtils {
 
 	public static final String REPLYPOINTAPPLYPUT = "给{0} 已上[{1}] 剩余积分： {2}";
 	public static final String REPLYPOINTAPPLYDRAW = "给{0} 已下[{1}] 剩余积分： {2}";
+	public static final String REPLYPOINTAPPLYERROR = "{0}剩余积分： {1}, 不足以完成下{2}积分操作!!";
+	public static final String REPLYPOINTAPPLYERROR2 = "@{3} {0}剩余积分： {1}, 不足以完成下{2}积分操作!!";
 	public static final String REPLYPOINTAPPLYADD = "@{0} 已上[{1}] 剩余积分： {2}";
 	public static final String REPLYPOINTAPPLYSUB = "@{0} 已下[{1}] 剩余积分： {2}";
 
@@ -105,10 +108,21 @@ public class AppUtils {
 	public static final Integer APPROVALNONE = 0;
 	public static final Integer APPROVALYES = 1;
 	public static final Integer APPROVALNO = 2;
-	
+
 	public static final String TIMEOUTPAIDALL = "通赔";
 	public static final String TIMEOUTPAIDONETIME = "平赔";
 	public static final String TIMEOUTPAIDNONE = "无效";
+
+	public static final String PUBLICPOINTRANKHEAD = "---------[富豪榜]---------\n"
+			+ "玩家:{0} 总分:{1}\n"
+			+ "--------------------------\n";
+	
+	public static final String PUBLICPOINTRANKLINE = "第{0}　 {1}　　 积分：{2}\n";
+	
+	
+	public static final String PUBLICPOINTRANKTAIL = "--------------------------\n"
+			+ "富豪榜总积分：{0}\n"
+			+ "积分列表仅供参考,如有误请私聊管理员\n";
 
 	/**
 	 * sort by bet time

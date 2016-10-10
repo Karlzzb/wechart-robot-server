@@ -39,6 +39,10 @@ public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Strin
 
     @Modifying
     @Query("update PlayerTrace p set p.luckInfo = ?1, p.luckTime = ?4, p.resultRuleName = ?5, p.resultTimes = ?6  where p.gameSerialNo = ?2 and p.betIndex = ?3")
-	void updateLuckInfo(Double luckInfo, Long currentGameId, Integer betIndex, Long luckTime, String resultRuleName, Integer resultTimes);    
+	void updateLuckInfo(Double luckInfo, Long currentGameId, Integer betIndex, Long luckTime, String resultRuleName, Integer resultTimes);
+
+    @Query("from PlayerTrace p where p.gameSerialNo = ?1 and p.remarkName = ?2")
+	List<PlayerTrace> getPlayerTraceListByGameIdRemarkName(
+			Long gameId, String remarkName);    
 
 }

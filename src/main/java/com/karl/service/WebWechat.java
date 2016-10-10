@@ -203,10 +203,11 @@ public class WebWechat {
 				.header("Cookie", runtimeDomain.getCookie())
 				.send(body.toString());
 
-		LOGGER.debug("[*] " + request);
+		LOGGER.info("[wechat init request] " + request);
 		String res = request.body();
 		request.disconnect();
 
+		LOGGER.info("[wechat init response] " + res);
 		if (StringKit.isBlank(res)) {
 			return false;
 		}

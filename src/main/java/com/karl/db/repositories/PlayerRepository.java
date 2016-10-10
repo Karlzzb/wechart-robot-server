@@ -9,8 +9,11 @@ import com.karl.db.domain.Player;
 
 public interface PlayerRepository extends CrudRepository<Player, String> {
 
-    @Query("select id, remarkName, points from Player p where p.remarkName like ?1")
+    @Query("from Player p where p.remarkName like ?1")
     List<Player> findLikeRemarkName(String remarkName);
 
     Player findByRemarkName(String remarkName);
+
+    @Query("from Player p order by points DESC")
+	List<Player> getPlayerListDescPoint();
 }

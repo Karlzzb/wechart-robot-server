@@ -4,15 +4,15 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="583.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.GameRunningTabController">
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="450.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.GameRunningTabController">
 	<children>
-		<TableView fx:id="traceTab" depthTest="DISABLE" editable="true" layoutX="3.0" prefHeight="421.0" prefWidth="588.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<TableView fx:id="traceTab" depthTest="DISABLE" editable="true" layoutX="3.0" prefHeight="320.0" prefWidth="588.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<columns>
-				<TableColumn fx:id="playerName" editable="true" prefWidth="101.66668701171875" resizable="false" text="玩家" />
-				<TableColumn fx:id="playerPoint" editable="true" maxWidth="470.66668701171875" prefWidth="98.3333740234375" resizable="false" text="现有积分" />
-            <TableColumn fx:id="betInfo" minWidth="0.0" prefWidth="139.6666259765625" resizable="false" text="当前局下注" />
-            <TableColumn fx:id="resultRuleName" prefWidth="119.3333740234375" text="当前局点数" />
-            <TableColumn fx:id="resultInfo" prefWidth="120.6666259765625" text="当前局输赢" />
+				<TableColumn fx:id="playerName" editable="true" prefWidth="98.00003051757812" resizable="false" text="玩家" />
+				<TableColumn fx:id="playerPoint" editable="true" maxWidth="470.66668701171875" prefWidth="73.99996948242188" resizable="false" text="现有积分" />
+            <TableColumn fx:id="betInfo" minWidth="0.0" prefWidth="88.33331298828125" resizable="false" text="当前局下注" />
+            <TableColumn fx:id="resultRuleName" prefWidth="77.66668701171875" text="当前局点数" />
+            <TableColumn fx:id="resultInfo" prefWidth="113.0" text="当前局输赢" />
 			</columns>
 		</TableView>
 	</children>
