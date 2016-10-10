@@ -160,7 +160,7 @@ public class MainDeskController extends FxmlController {
 		buildPlayerTab();
 		playerAutoFlush();
 		buildGameKeyBox();
-		
+		definedBet.setText(runtimeDomain.getDefiendBet().toString());
 		definedBet.textProperty().addListener(new ChangeListener<String>() {
 		        @Override
 		        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

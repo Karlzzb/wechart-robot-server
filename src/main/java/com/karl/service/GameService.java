@@ -264,6 +264,7 @@ public class GameService {
 		List<PlayerTrace> loserList = new ArrayList<PlayerTrace>();
 		List<PlayerTrace> paceList = new ArrayList<PlayerTrace>();
 		List<PlayerTrace> allInList = new ArrayList<PlayerTrace>();
+		
 		PlayerTrace trace = null;
 		Player pEntity = null;
 		for (int i = 0; i < traceList.size(); i++) {
@@ -451,6 +452,21 @@ public class GameService {
 			}
 			allInListStr += "\n";
 		}
+		String timeoutStr = "---------[超时]---------\n";
+		for (int i = 0; i < traceList.size(); i++) {
+			if (traceList.get(i).getLuckTime() - firstPackgeTime <= runtimeDomain
+					.getCurrentTimeOut() * 1000) {
+				continue;
+			}
+			timeoutStr += MessageFormat.format(
+					AppUtils.GAMERESULTTIMEOUT,
+					traceList.get(i).getRemarkName(),
+					traceList.get(i).getResultRuleName() + "("
+							+ traceList.get(i).getLuckInfo() + ")",
+					runtimeDomain.getCurrentTimeOutRule().equals(
+									AppUtils.TIMEOUTPAIDNONE)?"0":Math.abs(traceList.get(i).getResultPoint())).toString();
+		}
+		
 
 		String content = MessageFormat.format(
 				AppUtils.GAMERESULT,
@@ -462,7 +478,7 @@ public class GameService {
 				allInListStr,
 				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime()
 						.getTime()),
-				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime()
+				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
 						.getTime() + runtimeDomain.getCurrentTimeOut() * 1000),
 				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
 						.getTime()),
@@ -478,7 +494,7 @@ public class GameService {
 				20,
 				bankerPoint,
 				runtimeDomain.getRunningPlayeres()
-						.get(runtimeDomain.getBankerRemarkName()).getPoints());
+						.get(runtimeDomain.getBankerRemarkName()).getPoints(), timeoutStr);
 
 		return content;
 	}

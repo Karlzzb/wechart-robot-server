@@ -68,6 +68,7 @@ public class AppUtils {
 			+ "-----------[赢]-----------\n" + "{3}"
 			+ "-----------[输]-----------\n" + "{4}"
 			+ "----------[梭哈]----------\n" + "{5}"
+			+ "{21}"
 			+ "--------------------------\n" + "尾包时间：{6}\n" + "超时时间：{7}\n"
 			+ "首包时间：{8}\n" + "--------------------------\n" + "本局庄家：{9}\n"
 			+ "庄家抢包：{10} {11} 赔率：{12}\n" + "庄家输赢：输{13}家/赢{14}家 /和{15}家\n"
@@ -83,6 +84,7 @@ public class AppUtils {
 	public static final String GAMERESULTWIN = "{0} {1} {2} 赢 {3}";
 	public static final String GAMERESULTINVAIN = "{0} {1} {2} 喝水";
 	public static final String GAMERESULTLOSE = "{0} {1} {2} 输 {3}";
+	public static final String GAMERESULTTIMEOUT = "{0} {1} 超时 输 {2}\n";
 	public static final String GAMERESULTESAME = "{0} {1} {2} 和 {3}";
 
 	public static final String REPLYPOINTAPPLYPUT = "给{0} 已上[{1}] 剩余积分： {2}";
