@@ -43,10 +43,10 @@ public class ApprovalTabController extends FxmlController {
 
 	private ObservableList<PlayerApply> applyList;
 
-	@FXML
+/*	@FXML
 	private Button bulkApproveButton;
 	@FXML
-	private Button bulkRejectButton;
+	private Button bulkRejectButton;*/
 
 	@Override
 	public void initialize() {
@@ -117,14 +117,13 @@ public class ApprovalTabController extends FxmlController {
 								.getWebChatId(), applyEntity.getWebchatName()));
 	}
 
-	@FXML
+/*	@FXML
 	private void bulkApprove(ActionEvent event) {
 		for (int i = 0; i < approvalTab.getItems().size(); i++) {
 			if (approvalTab.getItems().get(i).getApplyCheck()) {
 				changeApply(i, AppUtils.APPROVALYES);
 			}
 		}
-
 	}
 
 	@FXML
@@ -134,8 +133,7 @@ public class ApprovalTabController extends FxmlController {
 				changeApply(i, AppUtils.APPROVALNO);
 			}
 		}
-
-	}
+	}*/
 
 	private void changeApply(int index, int approvalStatus) {
 		if (gameService.approvalPlayer(applyList.get(index).getApplyId(),
@@ -163,9 +161,9 @@ public class ApprovalTabController extends FxmlController {
 			gridPane.setAlignment(Pos.CENTER);
 
 			pass = new Button();
-			pass.setText("通过");
+			pass.setText("通过 ");
 			deny = new Button();
-			deny.setText("驳回");
+			deny.setText("驳回 ");
 
 			pass.setOnAction(new EventHandler<ActionEvent>() {
 				@Override

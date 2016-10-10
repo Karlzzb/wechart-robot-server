@@ -44,7 +44,7 @@ public class CheckBoxButtonCellApply extends TableCell<PlayerApply, Boolean> {
         super.updateItem(item, empty);
         final ObservableList<PlayerApply> items = getTableView().getItems();
         if (items != null) {
-            if (getIndex() < items.size()) {
+            if (getIndex() < items.size() && getIndex() > -1) {
                 checkBox.setSelected(items.get(getIndex()).getApplyCheck());
                 setGraphic(checkBox);
             }

@@ -129,6 +129,7 @@ public class MainDeskController extends FxmlController {
 		gameEnd.setSelected(runtimeDomain.getGlobalGameSignal() ? Boolean.FALSE
 				: Boolean.TRUE);
 		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
+		setCurrentBankSign(runtimeDomain.getBankerRemarkName());
 		group.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					public void changed(ObservableValue<? extends Toggle> ov,
@@ -172,6 +173,10 @@ public class MainDeskController extends FxmlController {
 		            }
 		        }
 		    });
+	}
+	
+	private void setCurrentBankSign(String bankerName) {
+		bankerLabel.setText("当前庄家： 【 "+bankerName+"】");
 	}
 
 	private void buildGameKeyBox() {
@@ -503,7 +508,7 @@ public class MainDeskController extends FxmlController {
 					playerModel.setIsBanker(t);
 					runtimeDomain.setBankerRemarkName(playerModel
 							.getPlayerName());
-					bankerLabel.setText(playerModel.getPlayerName());
+					setCurrentBankSign(playerModel.getPlayerName());
 					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel
 							.getPlayerPoint())*2 / 3);
 					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
