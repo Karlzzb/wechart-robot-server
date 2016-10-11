@@ -52,8 +52,9 @@ public class RuntimeDomain implements Serializable {
 		packageNumber = 8;
 		betOrder = 0;
 		allowPace = Boolean.TRUE;
-		allowInvain = Boolean.TRUE;
 		allowAllIn = Boolean.TRUE;
+		allowInvainBanker = Boolean.FALSE;
+		allowInvainPlayer = Boolean.FALSE;
 		defiendBet = Long.valueOf(50);
 		bankerBetPoint = Long.valueOf(0);
 		currentTimeOutRule = AppUtils.TIMEOUTPAIDONETIME;
@@ -178,14 +179,20 @@ public class RuntimeDomain implements Serializable {
 	private Boolean allowPace;
 
 	/**
-	 * if allow banker equal to player
+	 * if allow player explict soha
 	 */
 	private Boolean allowAllIn;
 
 	/**
-	 * if allow banker
+	 * if allow banker betpoint < 0
 	 */
-	private Boolean allowInvain;
+	private Boolean allowInvainBanker;
+	
+	/**
+	 * if allow player point < 0
+	 */
+	private Boolean allowInvainPlayer;
+
 
 	private String sentOutMessage;
 
@@ -602,14 +609,6 @@ public class RuntimeDomain implements Serializable {
 		this.allowPace = allowPace;
 	}
 
-	public Boolean getAllowInvain() {
-		return allowInvain;
-	}
-
-	public void setAllowInvain(Boolean allowInvain) {
-		this.allowInvain = allowInvain;
-	}
-
 	public Boolean getAllowAllIn() {
 		return allowAllIn;
 	}
@@ -722,5 +721,21 @@ public class RuntimeDomain implements Serializable {
 
 	public String getCurrentLotteryRule() {
 		return currentLotteryRule;
+	}
+
+	public Boolean getAllowInvainPlayer() {
+		return allowInvainPlayer;
+	}
+
+	public void setAllowInvainPlayer(Boolean allowInvainPlayer) {
+		this.allowInvainPlayer = allowInvainPlayer;
+	}
+
+	public Boolean getAllowInvainBanker() {
+		return allowInvainBanker;
+	}
+
+	public void setAllowInvainBanker(Boolean allowInvainBanker) {
+		this.allowInvainBanker = allowInvainBanker;
 	}
 }

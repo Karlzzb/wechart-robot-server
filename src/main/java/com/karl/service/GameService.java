@@ -77,7 +77,7 @@ public class GameService {
 		if (runtimeDomain.getGlobalGameSignal()
 				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())
 				&& !runtimeDomain.getCurrentGameKey().equals(
-						AppUtils.PLAYLUCKWAY)) {
+						AppUtils.PLAYLUCKWAY) && runtimeDomain.getAllowAllIn()) {
 			Matcher matcher = StringUtils.SUOHAPERF.matcher(content);
 			if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 				matcher = StringUtils.LONG.matcher(content);
@@ -255,7 +255,7 @@ public class GameService {
 
 		// banker
 		Integer bankerTimes = gameInfo.getResultTimes();
-		Long bankerPoint = gameInfo.getBankerPoint();
+		Long bankerbetPoint = runtimeDomain.getBankerBetPoint();//gameInfo.getBankerPoint();
 		Double bankerLuck = gameInfo.getLuckInfo();
 		Long bankerPackageTime = gameInfo.getLuckTime();
 
@@ -290,7 +290,7 @@ public class GameService {
 						trace.setResultPoint(trace.getBetPoint());
 					}
 					winnerList.add(trace);
-					bankerPoint -= trace.getResultPoint();
+					bankerbetPoint -= trace.getResultPoint();
 					continue;
 				}
 			}
@@ -302,14 +302,15 @@ public class GameService {
 						.getCurrentTimeOut() * 1000) {
 					if (runtimeDomain.getCurrentTimeOutRule().equals(
 							AppUtils.TIMEOUTPAIDALL)) {
-						trace.setResultPoint(-trace.getResultTimes()
-								* trace.getBetPoint());
+						singleLostHandle(bankerTimes, loserList, allInList, trace, pEntity);
+						continue;
 					} else if (runtimeDomain.getCurrentTimeOutRule().equals(
 							AppUtils.TIMEOUTPAIDONETIME)) {
 						trace.setResultPoint(-trace.getBetPoint());
+						loserList.add(trace);
+						bankerbetPoint -= trace.getResultPoint();
+						continue;
 					}
-					loserList.add(trace);
-					bankerPoint -= trace.getResultPoint();
 					continue;
 				}
 			}
@@ -318,44 +319,12 @@ public class GameService {
 			if (bankerTimes > trace.getResultTimes()
 					|| (bankerTimes == trace.getResultTimes() && bankerLuck
 							.compareTo(trace.getLuckInfo()) > 0)) {
-				// lose
-				if (trace.getIslowRisk()) {
-					// self want low risk
-					trace.setResultPoint(-trace.getBetPoint());
-					allInList.add(trace);
-				} else if (pEntity.getPoints().compareTo(
-						Math.abs(bankerTimes * trace.getBetPoint())) <= 0) {
-					// have to low risk
-					trace.setResultPoint(-pEntity.getPoints());
-					allInList.add(trace);
-				} else if (!trace.getIslowRisk()
-						&& pEntity.getPoints().compareTo(
-								Math.abs(bankerTimes * trace.getBetPoint())) > 0) {
-					// normal
-					trace.setResultPoint(-bankerTimes * trace.getBetPoint());
-				}
-				loserList.add(trace);
+				singleLostHandle(bankerTimes, loserList, allInList, trace,
+						pEntity);
 			} else if (bankerTimes < trace.getResultTimes()
 					|| (bankerTimes == trace.getResultTimes() && bankerLuck
 							.compareTo(trace.getLuckInfo()) < 0)) {
-				// win
-				if (trace.getIslowRisk()) {
-					// self want low risk
-					trace.setResultPoint(trace.getBetPoint());
-					allInList.add(trace);
-				} else if (pEntity.getPoints().compareTo(
-						trace.getResultTimes() * trace.getBetPoint()) <= 0) {
-					// have to low risk
-					trace.setResultPoint(pEntity.getPoints());
-					allInList.add(trace);
-				} else if (!trace.getIslowRisk()
-						&& pEntity.getPoints().compareTo(
-								trace.getResultTimes() * trace.getBetPoint()) > 0) {
-					// normal
-					trace.setResultPoint(trace.getResultTimes()
-							* trace.getBetPoint());
-				}
-				winnerList.add(trace);
+				singleWinHandle(winnerList, allInList, trace, pEntity);
 			} else {
 				// pace
 				if (runtimeDomain.getAllowPace()) {
@@ -366,16 +335,17 @@ public class GameService {
 					loserList.add(trace);
 				}
 			}
-			bankerPoint -= trace.getResultPoint();
+			bankerbetPoint -= trace.getResultPoint();
 		}
 
-		if (runtimeDomain.getAllowInvain()
-				&& bankerPoint.compareTo(Long.valueOf(0)) < 0) {
+		//if allow banker betpoint < 0
+		if (!runtimeDomain.getAllowInvainBanker()
+				&& bankerbetPoint.compareTo(Long.valueOf(0)) < 0) {
 			for (int i = winnerList.size() - 1; i > -1; i--) {
-				bankerPoint += winnerList.get(i).getResultPoint();
+				bankerbetPoint += winnerList.get(i).getResultPoint();
 				winnerList.get(i).setResultPoint(
-						bankerPoint > 0 ? bankerPoint : Long.valueOf(0));
-				if (bankerPoint == 0) {
+						bankerbetPoint > 0 ? bankerbetPoint : Long.valueOf(0));
+				if (bankerbetPoint == 0) {
 					break;
 				}
 			}
@@ -393,9 +363,9 @@ public class GameService {
 		}
 		// banker point consistent
 		ryncPlayerPoint(gameInfo.getPlayerId(),
-				bankerPoint - runtimeDomain.getBankerBetPoint() > 0,
-				Math.abs(bankerPoint - runtimeDomain.getBankerBetPoint()));
-		gameInfo.setResultPoint(bankerPoint);
+				bankerbetPoint - runtimeDomain.getBankerBetPoint() > 0,
+				Math.abs(bankerbetPoint - runtimeDomain.getBankerBetPoint()));
+		gameInfo.setResultPoint(bankerbetPoint);
 		playerService.save(gameInfo);
 
 		// config the message
@@ -492,12 +462,59 @@ public class GameService {
 				runtimeDomain.getBankerBetPoint(),
 				traceList.size(),
 				20,
-				bankerPoint,
+				bankerbetPoint,
 				runtimeDomain.getRunningPlayeres()
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
 				timeoutStr);
 
 		return content;
+	}
+
+	private void singleWinHandle(List<PlayerTrace> winnerList,
+			List<PlayerTrace> allInList, PlayerTrace trace, Player pEntity) {
+		// win
+		if (trace.getIslowRisk()) {
+			// self want low risk
+			trace.setResultPoint(trace.getBetPoint());
+			allInList.add(trace);
+		} else if (pEntity.getPoints().compareTo(
+				trace.getResultTimes() * trace.getBetPoint()) <= 0) {
+			// have to low risk
+			trace.setResultPoint(pEntity.getPoints());
+			allInList.add(trace);
+		} else if (!trace.getIslowRisk()
+				&& pEntity.getPoints().compareTo(
+						trace.getResultTimes() * trace.getBetPoint()) > 0) {
+			// normal
+			trace.setResultPoint(trace.getResultTimes()
+					* trace.getBetPoint());
+		}
+		winnerList.add(trace);
+	}
+
+	private void singleLostHandle(Integer bankerTimes,
+			List<PlayerTrace> loserList, List<PlayerTrace> allInList,
+			PlayerTrace trace, Player pEntity) {
+		// lose
+		if (trace.getIslowRisk()) {
+			// self want low risk
+			trace.setResultPoint(-trace.getBetPoint());
+			allInList.add(trace);
+		} else if (pEntity.getPoints().compareTo(
+				Math.abs(bankerTimes * trace.getBetPoint())) <= 0 && !runtimeDomain.getAllowInvainPlayer()) {
+			// have to low risk
+			trace.setResultPoint(-pEntity.getPoints());
+			allInList.add(trace);
+		} else if (!trace.getIslowRisk()
+				&& pEntity.getPoints().compareTo(
+						Math.abs(bankerTimes * trace.getBetPoint())) > 0) {
+			// normal
+			trace.setResultPoint(-bankerTimes * trace.getBetPoint());
+		} else if (runtimeDomain.getAllowInvainPlayer()) {
+			// normal
+			trace.setResultPoint(-bankerTimes * trace.getBetPoint());
+		}
+		loserList.add(trace);
 	}
 
 	/**
@@ -571,7 +588,9 @@ public class GameService {
 		}
 
 		Player player = runningPlayers().get(remarkName);
-		if (player == null || runtimeDomain.getCurrentGameId() == null) {
+		if (player == null
+				|| runtimeDomain.getCurrentGameId() == null
+				|| player.getPoints().compareTo(runtimeDomain.getDefiendBet()) < 0) {
 			return;
 		}
 		LotteryRule playerLottery = getResult(luckInfo);

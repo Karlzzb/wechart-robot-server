@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -48,6 +49,10 @@ public class ConfigController extends FxmlController {
     
     @FXML private TextField timeOut;
     
+    @FXML private CheckBox invainBanker;
+    
+    @FXML private CheckBox invainPlayer;
+    
     private ObservableList<PlayRule> ruleList;
 
 
@@ -58,6 +63,28 @@ public class ConfigController extends FxmlController {
     	buildOutTimeBoxBanker();
     	buildTimeOutText();
     	buildLotteryRuleChoise();
+    	buildInvainBox();
+    }
+    
+    private void buildInvainBox() {
+    	invainBanker.setSelected(runtimeDomain.getAllowInvainBanker());
+    	
+    	invainBanker.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
+                    Boolean now) {
+            	runtimeDomain.setAllowInvainBanker(now);
+            }
+        });
+    	
+    	invainPlayer.setSelected(runtimeDomain.getAllowInvainPlayer());
+    	invainPlayer.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
+                    Boolean now) {
+            	runtimeDomain.setAllowInvainPlayer(now);
+            }
+        });
     }
     
     private void buildLotteryRuleChoise() {

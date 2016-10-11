@@ -42,7 +42,6 @@ import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
-import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
@@ -89,7 +88,7 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private TextField bankerBetPoint;
-	
+
 	@FXML
 	private TextField definedBet;
 
@@ -129,6 +128,20 @@ public class MainDeskController extends FxmlController {
 		gameEnd.setSelected(runtimeDomain.getGlobalGameSignal() ? Boolean.FALSE
 				: Boolean.TRUE);
 		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
+		bankerBetPoint.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					bankerBetPoint.setText(oldValue);
+				} else {
+					bankerBetPoint.setText(newValue);
+					runtimeDomain.setBankerBetPoint(Long.valueOf(bankerBetPoint
+							.getText()));
+				}
+			}
+		});
+
 		setCurrentBankSign(runtimeDomain.getBankerRemarkName());
 		group.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
@@ -163,20 +176,22 @@ public class MainDeskController extends FxmlController {
 		buildGameKeyBox();
 		definedBet.setText(runtimeDomain.getDefiendBet().toString());
 		definedBet.textProperty().addListener(new ChangeListener<String>() {
-		        @Override
-		        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		            if (!newValue.matches("\\d*")) {
-		            	definedBet.setText(oldValue);
-		            }else {
-		            	definedBet.setText(newValue);
-		            	runtimeDomain.setDefiendBet(Long.valueOf(definedBet.getText()));
-		            }
-		        }
-		    });
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					definedBet.setText(oldValue);
+				} else {
+					definedBet.setText(newValue);
+					runtimeDomain.setDefiendBet(Long.valueOf(definedBet
+							.getText()));
+				}
+			}
+		});
 	}
-	
+
 	private void setCurrentBankSign(String bankerName) {
-		bankerLabel.setText("当前庄家： 【 "+bankerName+"】");
+		bankerLabel.setText("当前庄家： 【 " + bankerName + "】");
 	}
 
 	private void buildGameKeyBox() {
@@ -246,13 +261,6 @@ public class MainDeskController extends FxmlController {
 	private void buildPlayerTab() {
 		playerTab.setEditable(true);
 
-		Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>> cellFactory = new Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>>() {
-			public TableCell<PlayerModel, String> call(
-					TableColumn<PlayerModel, String> p) {
-				return new EditingCell();
-			}
-		};
-
 		Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {
 			@Override
 			public TableCell<PlayerModel, Boolean> call(
@@ -270,6 +278,13 @@ public class MainDeskController extends FxmlController {
 						PlayerModel.PLAYERNAMECOLKEY));
 		colPlayerName.setEditable(Boolean.FALSE);
 
+		Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>> cellFactory = new Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>>() {
+			public TableCell<PlayerModel, String> call(
+					TableColumn<PlayerModel, String> p) {
+				return new EditingCell();
+			}
+		};
+		colPlayerPoint.setEditable(Boolean.TRUE);
 		colPlayerPoint
 				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
 						PlayerModel.PLAYERPOINTCOLKEY));
@@ -278,12 +293,18 @@ public class MainDeskController extends FxmlController {
 				.setOnEditCommit(new EventHandler<CellEditEvent<PlayerModel, String>>() {
 					@Override
 					public void handle(CellEditEvent<PlayerModel, String> cell) {
-						if (!StringUtils.matchLong(cell.getNewValue())) {
-							return;
+						LOGGER.info("your edit value is " + cell.getNewValue());
+						/*
+						 * if (!StringUtils.matchLong(cell.getNewValue())) {
+						 * return; }
+						 */
+
+						if (cell.getNewValue().matches("\\d*")) {
+							((PlayerModel) cell.getTableView().getItems()
+									.get(cell.getTablePosition().getRow()))
+									.setPlayerPoint(cell.getNewValue());
+							gameService.ryncPlayersPoint(playerList);
 						}
-						cell.getTableView().getItems()
-								.get(cell.getTablePosition().getRow())
-								.setPlayerPoint(cell.getNewValue());
 					}
 				});
 		fillPlayerTab();
@@ -510,7 +531,7 @@ public class MainDeskController extends FxmlController {
 							.getPlayerName());
 					setCurrentBankSign(playerModel.getPlayerName());
 					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel
-							.getPlayerPoint())*2 / 3);
+							.getPlayerPoint()) * 2 / 3);
 					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
 							.toString());
 				} else {
