@@ -44,6 +44,8 @@ public class ConfigController extends FxmlController {
     
     @FXML private ChoiceBox<String> playerOutTime;
     
+    @FXML private ChoiceBox<String> lotteryRuleChoice;
+    
     @FXML private TextField timeOut;
     
     private ObservableList<PlayRule> ruleList;
@@ -54,6 +56,34 @@ public class ConfigController extends FxmlController {
     	buidRuleTab();
     	buildOutTimeBox();
     	buildOutTimeBoxBanker();
+    	buildTimeOutText();
+    	buildLotteryRuleChoise();
+    }
+    
+    private void buildLotteryRuleChoise() {
+    	lotteryRuleChoice.setItems(FXCollections.observableArrayList(
+    			AppUtils.LOTTERYRULE3, AppUtils.LOTTERYRULE2));
+    	lotteryRuleChoice.getSelectionModel().selectedItemProperty()
+		.addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(
+					ObservableValue<? extends String> paramObservableValue,
+					String paramT1, String newValue) {
+				if (newValue != null && !newValue.isEmpty()) {
+					runtimeDomain.setCurrentLotteryRule(newValue);
+				}
+			}
+		});
+		
+		for (int i = 0; i < lotteryRuleChoice.getItems().size(); i++) {
+			if (lotteryRuleChoice.getItems().get(i).equals(runtimeDomain.getCurrentLotteryRule())) {
+				lotteryRuleChoice.getSelectionModel().select(i);
+				break;
+			}
+		}
+    }
+    
+    private void buildTimeOutText() {
     	timeOut.setText(String.valueOf(runtimeDomain.getCurrentTimeOut()));
     	timeOut.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -95,7 +125,6 @@ public class ConfigController extends FxmlController {
 				break;
 			}
 		}
-		
 	}
     
     private void buildOutTimeBoxBanker() {

@@ -12,7 +12,7 @@ public class StaticTest {
 		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
 				.hasNext();) {
 			lotteryRule = (LotteryRule) iterator.next();
-			if (lotteryRule.getRuleResult(d)) {
+			if (lotteryRule.getRuleResult3(d)) {
 				break;
 			}
 		}

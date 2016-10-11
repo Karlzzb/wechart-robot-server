@@ -16,6 +16,10 @@ public class DigitalUtils {
         return getSumFromDouble(doubleValue, 3)%10;
     }
     
+    public static Integer getSumFromDoubleTwo(Double doubleValue) {
+        return getSumFromDouble(doubleValue, 2)%10;
+    }
+    
     public static Integer getSumFromDouble(Double doubleValue, int requriedNumber) {
     	Integer result = Integer.valueOf(0);
     	if ( doubleValue == null) {

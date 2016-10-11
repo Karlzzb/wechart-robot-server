@@ -119,12 +119,16 @@ public class AppUtils {
 			+ "玩家:{0} 总分:{1}\n"
 			+ "--------------------------\n";
 	
-	public static final String PUBLICPOINTRANKLINE = "第{0}　 {1}　　 积分：{2}\n";
+	public static final String PUBLICPOINTRANKLINE = "第{0} {1} 积分：{2}\n";
 	
 	
 	public static final String PUBLICPOINTRANKTAIL = "--------------------------\n"
 			+ "富豪榜总积分：{0}\n"
 			+ "积分列表仅供参考,如有误请私聊管理员\n";
+	
+	
+	public static final String LOTTERYRULE3 = "后三位有效";
+	public static final String LOTTERYRULE2 = "后二位有效"; 
 
 	/**
 	 * sort by bet time

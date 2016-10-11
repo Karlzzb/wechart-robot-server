@@ -264,7 +264,7 @@ public class GameService {
 		List<PlayerTrace> loserList = new ArrayList<PlayerTrace>();
 		List<PlayerTrace> paceList = new ArrayList<PlayerTrace>();
 		List<PlayerTrace> allInList = new ArrayList<PlayerTrace>();
-		
+
 		PlayerTrace trace = null;
 		Player pEntity = null;
 		for (int i = 0; i < traceList.size(); i++) {
@@ -464,9 +464,9 @@ public class GameService {
 					traceList.get(i).getResultRuleName() + "("
 							+ traceList.get(i).getLuckInfo() + ")",
 					runtimeDomain.getCurrentTimeOutRule().equals(
-									AppUtils.TIMEOUTPAIDNONE)?"0":Math.abs(traceList.get(i).getResultPoint())).toString();
+							AppUtils.TIMEOUTPAIDNONE) ? "0" : Math
+							.abs(traceList.get(i).getResultPoint())).toString();
 		}
-		
 
 		String content = MessageFormat.format(
 				AppUtils.GAMERESULT,
@@ -494,7 +494,8 @@ public class GameService {
 				20,
 				bankerPoint,
 				runtimeDomain.getRunningPlayeres()
-						.get(runtimeDomain.getBankerRemarkName()).getPoints(), timeoutStr);
+						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
+				timeoutStr);
 
 		return content;
 	}
@@ -664,8 +665,16 @@ public class GameService {
 		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
 				.hasNext();) {
 			lotteryRule = (LotteryRule) iterator.next();
-			if (lotteryRule.getRuleResult(luckInfo)) {
-				break;
+			if (runtimeDomain.getCurrentLotteryRule().equals(
+					AppUtils.LOTTERYRULE3)) {
+				if (lotteryRule.getRuleResult3(luckInfo)) {
+					break;
+				}
+			} else if (runtimeDomain.getCurrentLotteryRule().equals(
+					AppUtils.LOTTERYRULE2)) {
+				if (lotteryRule.getRuleResult2(luckInfo)) {
+					break;
+				}
 			}
 		}
 		return lotteryRule;
@@ -967,12 +976,10 @@ public class GameService {
 	}
 
 	public String publishPointRanks() {
-		// TODO
 		List<Player> playerList = playerService.getPlayerListDescPoint();
 		if (playerList == null) {
 			return null;
 		}
-
 		String body = "";
 		int order = 1;
 		Long sumPoint = 0L;

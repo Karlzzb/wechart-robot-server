@@ -58,6 +58,7 @@ public class RuntimeDomain implements Serializable {
 		bankerBetPoint = Long.valueOf(0);
 		currentTimeOutRule = AppUtils.TIMEOUTPAIDONETIME;
 		currentTimeOutRuleBanker = AppUtils.TIMEOUTPAIDONETIME;
+		currentLotteryRule = AppUtils.LOTTERYRULE3;
 		currentTimeOut = 21;
 		messageBoardCount = 0;
 	}
@@ -214,6 +215,8 @@ public class RuntimeDomain implements Serializable {
 	private Date currentFirstPackegeTime;
 
 	private Date currentLastPackegeTime;
+
+	private String currentLotteryRule;
 	
 
 	/**
@@ -423,9 +426,8 @@ public class RuntimeDomain implements Serializable {
 	}
 
 	public String getDeviceId() {
-		//TODO static
-		return "e083944759865791";
-//		return deviceId;
+//		return "e083944759865791";
+		return deviceId;
 	}
 
 	public void setDeviceId(String deviceId) {
@@ -712,5 +714,13 @@ public class RuntimeDomain implements Serializable {
 
 	public String getImagePath() {
 		return imagePath;
+	}
+
+	public void setCurrentLotteryRule(String currentLotteryRule) {
+		this.currentLotteryRule = currentLotteryRule;
+	}
+
+	public String getCurrentLotteryRule() {
+		return currentLotteryRule;
 	}
 }

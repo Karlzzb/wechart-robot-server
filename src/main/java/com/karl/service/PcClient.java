@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
@@ -82,18 +80,6 @@ public class PcClient {
 				}
 				connnectToServer();
 			}
-		}
-
-		private void startHeartBeatThread() {
-			// 启动心跳线程
-			Timer heartBeatTimer = new Timer();
-			TimerTask heartBeatTask = new TimerTask() {
-				@Override
-				public void run() {
-					sendOrder("\r\n");
-				}
-			};
-			heartBeatTimer.schedule(heartBeatTask, 25000, 25000);
 		}
 
 		private void sendOrder(String order) {

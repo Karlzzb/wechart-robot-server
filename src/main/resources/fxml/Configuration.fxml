@@ -22,5 +22,7 @@
       <ChoiceBox fx:id="playerOutTime" layoutX="704.0" layoutY="228.0" prefWidth="150.0" />
       <Label layoutX="558.0" layoutY="326.0" prefHeight="25.0" prefWidth="131.0" text="超时时间（秒）：" />
       <TextField fx:id="timeOut" layoutX="704.0" layoutY="326.0" />
+      <Label layoutX="558.0" layoutY="418.0" prefHeight="25.0" prefWidth="131.0" text="计算规则：" />
+      <ChoiceBox fx:id="lotteryRuleChoice" layoutX="704.0" layoutY="418.0" prefWidth="150.0" />
 	</children>
 </AnchorPane>
