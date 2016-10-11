@@ -53,7 +53,7 @@ public class WebWechat {
 				"wx782c26e4c19acffb", "fun", "new", "lang", "zh_CN", "_",
 				DateKit.getCurrentUnixTime());
 
-		LOGGER.info("[*] " + request);
+		LOGGER.debug("[*] " + request);
 
 		String res = request.body();
 		request.disconnect();
@@ -67,7 +67,7 @@ public class WebWechat {
 							"window.QRLogin.uuid = \"(.*)\";", res));
 					return runtimeDomain.getUuid();
 				} else {
-					LOGGER.info("[*] 错误的状态码: {}", code);
+					LOGGER.error("[*] 错误的状态码: {}", code);
 				}
 			}
 		}
@@ -110,19 +110,19 @@ public class WebWechat {
 				runtimeDomain.getTip(), "uuid", runtimeDomain.getUuid(), "_",
 				DateKit.getCurrentUnixTime());
 
-		LOGGER.info("[*] " + request.toString());
+		LOGGER.debug("[*] " + request.toString());
 
 		String res = request.body();
 		request.disconnect();
 
 		if (null == res) {
-			LOGGER.info("[*] 扫描二维码验证失败");
+			LOGGER.error("[*] 扫描二维码验证失败");
 			return "";
 		}
 
 		String code = StringUtils.match("window.code=(\\d+);", res);
 		if (null == code) {
-			LOGGER.info("[*] 扫描二维码验证失败");
+			LOGGER.error("[*] 扫描二维码验证失败");
 			return "";
 		} else {
 			if (code.equals("201")) {
@@ -203,11 +203,11 @@ public class WebWechat {
 				.header("Cookie", runtimeDomain.getCookie())
 				.send(body.toString());
 
-		LOGGER.info("[wechat init request] " + request);
+		LOGGER.debug("[wechat init request] " + request);
 		String res = request.body();
 		request.disconnect();
 
-		LOGGER.info("[wechat init response] " + res);
+		LOGGER.debug("[wechat init response] " + res);
 		if (StringKit.isBlank(res)) {
 			return false;
 		}
@@ -483,7 +483,7 @@ public class WebWechat {
 			JSONObject BaseResponse = jsonObject.getJSONObject("BaseResponse");
 			if (null != BaseResponse) {
 				int ret = BaseResponse.getInt("Ret", -1);
-				LOGGER.info("User{} remarkName{} refult{}",nickName, remarkName,ret);
+				LOGGER.debug("User{} remarkName{} refult{}",nickName, remarkName,ret);
 				return ret == 0;
 			}
 		} catch (Exception e) {
@@ -863,7 +863,7 @@ public class WebWechat {
 	public void loginWechat() throws InterruptedException {
 		String uuid = getUUID();
 		if (null == uuid || uuid.isEmpty()) {
-			LOGGER.info("[*] uuid获取失败");
+			LOGGER.error("[*] uuid获取失败");
 		} else {
 			LOGGER.info("[*] 获取到uuid为 [{}]", runtimeDomain.getUuid());
 			showQrCode();
@@ -873,31 +873,31 @@ public class WebWechat {
 			// closeQrWindow();
 
 			if (!login()) {
-				LOGGER.info("微信登录失败");
+				LOGGER.error("微信登录失败");
 				return;
 			}
-			LOGGER.info("[*] 微信登录成功");
+			LOGGER.error("[*] 微信登录成功");
 		}
 	}
 
 	public void buildWechat() {
 
 		if (!wxInit()) {
-			LOGGER.info("[*] 微信初始化失败");
+			LOGGER.error("[*] 微信初始化失败");
 			return;
 		}
 
 		LOGGER.info("[*] 微信初始化成功");
 
 		if (!wxStatusNotify()) {
-			LOGGER.info("[*] 开启状态通知失败");
+			LOGGER.error("[*] 开启状态通知失败");
 			return;
 		}
 
 		LOGGER.info("[*] 开启状态通知成功");
 
 		if (!getContact()) {
-			LOGGER.info("[*] 获取联系人失败");
+			LOGGER.error("[*] 获取联系人失败");
 			return;
 		}
 		// if (!getGroupMembers()) {

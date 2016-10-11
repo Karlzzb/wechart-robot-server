@@ -7,35 +7,20 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0"
-	xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.karl.fx.controller.MenuController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MenuController">
 	<children>
-		<AnchorPane id="AnchorPane" pickOnBounds="false"
-			prefHeight="600.0" prefWidth="800.0" snapToPixel="true"
-			style="-fx-border-color: #2b579a; -fx-background-color: white;"
-			AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" prefHeight="600.0" prefWidth="800.0" snapToPixel="true" style="-fx-border-color: #2b579a; -fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<AnchorPane layoutX="2.0" layoutY="2.0" prefHeight="600.0"
-					prefWidth="136.0" style="-fx-background-color: #2b579a;"
-					AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-					AnchorPane.topAnchor="0.0">
+				<AnchorPane layoutX="2.0" layoutY="2.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="136.0" style="-fx-background-color: #2b579a;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<children>
-						<ListView fx:id="listMenu" layoutY="78.0" onMouseClicked="#aksiKlikListMenu"
-							prefHeight="535.0" prefWidth="136.0" AnchorPane.bottomAnchor="0.0"
-							AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-							AnchorPane.topAnchor="78.0">
+						<ListView fx:id="listMenu" layoutY="78.0" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#aksiKlikListMenu" prefHeight="535.0" prefWidth="136.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
 							<stylesheets>
 								<URL value="@../css/listView.css" />
 							</stylesheets>
 						</ListView>
-						<Button fx:id="loginButton" layoutX="22.0" layoutY="19.0"
-							mnemonicParsing="false" onAction="#wechatLogin" prefHeight="40.0"
-							prefWidth="40.0">
+						<Button fx:id="loginButton" layoutX="22.0" layoutY="19.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#wechatLogin" prefHeight="40.0" prefWidth="40.0">
 							<graphic>
-								<ImageView fitHeight="16.0" fitWidth="20.0"
-									pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="16.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../img/arrowLeft.png" />
 									</image>
@@ -47,10 +32,7 @@
 						</Button>
 					</children>
 				</AnchorPane>
-				<AnchorPane fx:id="paneData" prefHeight="600.0"
-					prefWidth="864.0" style="-fx-background-color: white;"
-					AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="136.0"
-					AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+				<AnchorPane fx:id="paneData" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="136.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 			</children>
 		</AnchorPane>
 	</children>

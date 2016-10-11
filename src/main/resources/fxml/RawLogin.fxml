@@ -5,10 +5,20 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.LoginController">
-   <children>
-      <ImageView fx:id="loginImageView" fitHeight="250.0" fitWidth="250.0" layoutX="25.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-      </ImageView>
-      <ProgressBar fx:id="taskBar" layoutX="25.0" layoutY="277.0" prefHeight="18.0" prefWidth="250.0" progress="0.0" />
-   </children>
+<AnchorPane 
+	prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.60"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.LoginController">
+	<children>
+		<ImageView fx:id="loginImageView" fitHeight="160.0"
+			fitWidth="180.0" pickOnBounds="true"
+			preserveRatio="true" AnchorPane.bottomAnchor="30.0"
+			AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+			AnchorPane.topAnchor="10.0">
+		</ImageView>
+		<ProgressBar fx:id="taskBar"
+			prefHeight="18.0"
+			prefWidth="176.0" progress="0.0" AnchorPane.bottomAnchor="5.0"
+			AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0"
+			AnchorPane.topAnchor="177.0" />
+	</children>
 </AnchorPane>

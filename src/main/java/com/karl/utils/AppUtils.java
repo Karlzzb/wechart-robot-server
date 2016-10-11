@@ -33,7 +33,7 @@ public class AppUtils {
 			"notification_messages", "wxid_novlwrv3lqwv11", "gh_22b87fa7cb3c",
 			"wxitil", "userexperience_alarm", "notification_messages");
 
-	public static final long LOGIN_WAITING_TIME = 2000;
+	public static final long LOGIN_WAITING_TIME = 3000;
 
 	public static final long PLAYER_TAB_FLSH_TERVAL = 2000;
 

@@ -14,6 +14,7 @@
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
 				%msg%n</Pattern>
+			<charset>UTF-8</charset> <!-- 此处设置字符集 -->
 		</layout>
 		<!--日志文件最大的大小 -->
 		<triggeringPolicy
@@ -21,17 +22,17 @@
 			<MaxFileSize>50MB</MaxFileSize>
 		</triggeringPolicy>
 	</appender>
-	
-	<appender name="STDOUT"
-		class="ch.qos.logback.core.ConsoleAppender">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
 				%msg%n</Pattern>
+			<charset>UTF-8</charset> <!-- 此处设置字符集 -->
 		</layout>
 	</appender>
-	
+
 	<root level="INFO">
 		<!-- <appender-ref ref="STDOUT" /> -->
-		 <appender-ref ref="FILE" /> 
+		<appender-ref ref="FILE" />
 	</root>
 </configuration>
