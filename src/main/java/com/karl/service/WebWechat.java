@@ -450,13 +450,13 @@ public class WebWechat {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 微信修改备注名
 	 */
-	public boolean changeRemarkName(String nickName, String wechatId, String remarkName) {
-		String url = AppUtils.base_uri
-				+ "/webwxoplog?lang=zh_CN&pass_ticket="
+	public boolean changeRemarkName(String nickName, String wechatId,
+			String remarkName) {
+		String url = AppUtils.base_uri + "/webwxoplog?lang=zh_CN&pass_ticket="
 				+ runtimeDomain.getPassTicket();
 
 		JSONObject body = new JSONObject();
@@ -483,7 +483,8 @@ public class WebWechat {
 			JSONObject BaseResponse = jsonObject.getJSONObject("BaseResponse");
 			if (null != BaseResponse) {
 				int ret = BaseResponse.getInt("Ret", -1);
-				LOGGER.debug("User{} remarkName{} refult{}",nickName, remarkName,ret);
+				LOGGER.debug("User{} remarkName{} refult{}", nickName,
+						remarkName, ret);
 				return ret == 0;
 			}
 		} catch (Exception e) {
@@ -492,42 +493,47 @@ public class WebWechat {
 		return false;
 	}
 
-
 	/**
 	 * 消息检查
 	 */
 	public int[] syncCheck() {
-
 		int[] arr = new int[2];
 
-		String url = AppUtils.webpush_url;
+		for (int i = 0; i < AppUtils.webpush_url.length; i++) {
+			String url = AppUtils.webpush_url[i];
 
-		JSONObject body = new JSONObject();
-		body.put("BaseRequest", runtimeDomain.getBaseRequest());
 
-		HttpRequest request = HttpRequest.get(url, true, "r",
-				DateKit.getCurrentUnixTime(), "skey", runtimeDomain.getSkey(),
-				"uin", runtimeDomain.getWxuin(), "sid",
-				runtimeDomain.getWxsid(), "deviceid",
-				runtimeDomain.getDeviceId(), "synckey",
-				runtimeDomain.getSynckey(), "_", System.currentTimeMillis())
-				.header("Cookie", runtimeDomain.getCookie());
+			JSONObject body = new JSONObject();
+			body.put("BaseRequest", runtimeDomain.getBaseRequest());
 
-		LOGGER.debug("[syncCheck request ] " + request);
-		String res = request.body();
-		request.disconnect();
+			HttpRequest request = HttpRequest
+					.get(url, true, "r", DateKit.getCurrentUnixTime(), "skey",
+							runtimeDomain.getSkey(), "uin",
+							runtimeDomain.getWxuin(), "sid",
+							runtimeDomain.getWxsid(), "deviceid",
+							runtimeDomain.getDeviceId(), "synckey",
+							runtimeDomain.getSynckey(), "_",
+							System.currentTimeMillis()).header("Cookie",
+							runtimeDomain.getCookie());
 
-		if (StringKit.isBlank(res)) {
-			return arr;
-		}
-		LOGGER.debug("[syncCheck response ] " + res);
+			LOGGER.debug("[syncCheck request ] " + request);
+			String res = request.body();
+			request.disconnect();
 
-		String retcode = StringUtils.match("retcode:\"(\\d+)\",", res);
-		String selector = StringUtils.match("selector:\"(\\d+)\"}", res);
-		if (null != retcode && null != selector) {
-			arr[0] = Integer.parseInt(retcode);
-			arr[1] = Integer.parseInt(selector);
-			return arr;
+			if (StringKit.isBlank(res)) {
+				return arr;
+			}
+			LOGGER.debug("[syncCheck response ] " + res);
+
+			String retcode = StringUtils.match("retcode:\"(\\d+)\",", res);
+			String selector = StringUtils.match("selector:\"(\\d+)\"}", res);
+			if (null != retcode && null != selector) {
+				arr[0] = Integer.parseInt(retcode);
+				arr[1] = Integer.parseInt(selector);
+			}
+			if (arr[0] == 0) {
+				break;
+			}
 		}
 		return arr;
 	}
@@ -560,8 +566,8 @@ public class WebWechat {
 			return;
 		}
 		webwxsendmsg(content, runtimeDomain.getCurrentMGroupId());
-	}	
-	
+	}
+
 	/**
 	 * Sent message
 	 * 
@@ -699,17 +705,19 @@ public class WebWechat {
 		JSONObject recommendInfo = null;
 
 		if (jsonMsg.getString("FromUserName").equals(
-				runtimeDomain.getCurrentMGroupId())||runtimeDomain.getUser().getString("UserName")
-				.equals(jsonMsg.getString("FromUserName"))) {
+				runtimeDomain.getCurrentMGroupId())
+				|| runtimeDomain.getUser().getString("UserName")
+						.equals(jsonMsg.getString("FromUserName"))) {
 			LOGGER.debug("FromUserName{} message",
 					jsonMsg.getString("FromUserName"));
 			recommendInfo = jsonMsg.getJSONObject("RecommendInfo");
-			if (recommendInfo !=null) {
+			if (recommendInfo != null) {
 				recommendWechatId = recommendInfo.getString("UserName");
 				recommendWechatName = recommendInfo.getString("NickName");
 
 			} else {
-				LOGGER.debug("FromUserName{} message's recommendInfo is empty!",
+				LOGGER.debug(
+						"FromUserName{} message's recommendInfo is empty!",
 						jsonMsg.getString("FromUserName"));
 			}
 		} else {
@@ -718,17 +726,17 @@ public class WebWechat {
 					jsonMsg.getString("FromUserName"),
 					runtimeDomain.getCurrentMGroupId());
 		}
-		
+
 		if (recommendWechatId.isEmpty() || recommendWechatName.isEmpty()) {
-			LOGGER.debug(
-					"FromUserName[{}] recommendInfo cann't be interpet{}",
+			LOGGER.debug("FromUserName[{}] recommendInfo cann't be interpet{}",
 					jsonMsg.getString("FromUserName"),
-					recommendInfo==null?"":recommendInfo.toString());
+					recommendInfo == null ? "" : recommendInfo.toString());
 			return;
 		}
-		
+
 		runtimeDomain.setReadyWechatId(recommendWechatId);
-		String content = MessageFormat.format(AppUtils.ASKRECOMMEND, recommendWechatName);
+		String content = MessageFormat.format(AppUtils.ASKRECOMMEND,
+				recommendWechatName);
 		webwxsendmsgM(content);
 	}
 
@@ -746,9 +754,8 @@ public class WebWechat {
 		String messageFrom = jsonMsg.getString("FromUserName");
 
 		// Message from others
-		if (messageFrom.equals(
-				runtimeDomain.getCurrentGroupId())||messageFrom.equals(
-						runtimeDomain.getCurrentMGroupId())) {
+		if (messageFrom.equals(runtimeDomain.getCurrentGroupId())
+				|| messageFrom.equals(runtimeDomain.getCurrentMGroupId())) {
 			LOGGER.debug("FromUserName{} message",
 					jsonMsg.getString("FromUserName"));
 			String contentStr = jsonMsg.getString("Content");
@@ -782,8 +789,7 @@ public class WebWechat {
 		}
 
 		// Message from myself
-		if (runtimeDomain.getUser().getString("UserName")
-				.equals(messageFrom)) {
+		if (runtimeDomain.getUser().getString("UserName").equals(messageFrom)) {
 			remarkName = runtimeDomain.getUser().getString("NickName");
 			content = jsonMsg.getString("Content");
 			webChatId = runtimeDomain.getUser().getString("UserName");
@@ -793,7 +799,8 @@ public class WebWechat {
 		if (webChatId != null && remarkName != null && content != null
 				&& !webChatId.isEmpty() && !remarkName.isEmpty()
 				&& !content.isEmpty()) {
-			gameService.mainMessageHandle(messageFrom ,webChatId, remarkName, content);
+			gameService.mainMessageHandle(messageFrom, webChatId, remarkName,
+					content);
 		}
 
 		// switch (content) {
@@ -832,8 +839,6 @@ public class WebWechat {
 					LOGGER.debug("[*] retcode={},selector={}", arr[0], arr[1]);
 
 					if (arr[0] == 1100) {
-						// console.writeLog("[*] 你在手机上登出了微信，债见");
-//						break;
 					}
 
 					if (arr[0] == 0) {

@@ -16,10 +16,11 @@ public class AppUtils {
 	public static String base_uri,
 			redirect_uri = "https://wx.qq.com/cgi-bin/mmwebwx-bin";
 
-	// public static String webpush_url =
-	// "https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck";
 
-	public static String webpush_url = "https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck";
+	public static String[] webpush_url = {"https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck",
+		"https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
+		"https://webpush2.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
+		"https://webpush1.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck"};
 	public static String skey, synckey, wxsid, wxuin, pass_ticket,
 			deviceId = "e" + (new Date()).getTime();
 
@@ -38,7 +39,7 @@ public class AppUtils {
 
 	public static final long PLAYER_TAB_FLSH_TERVAL = 2000;
 
-	public static final long TRACE_TAB_FLSH_TERVAL = 1500;
+	public static final long TRACE_TAB_FLSH_TERVAL = 2000;
 
 	public static final long WECHAT_LISTEN_INTERVAL = 500;
 
