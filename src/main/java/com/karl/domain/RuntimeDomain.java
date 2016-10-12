@@ -45,7 +45,7 @@ public class RuntimeDomain implements Serializable {
 		ruleList = FXCollections.observableArrayList();
 		applyList = FXCollections.observableArrayList();
 		globalGameSignal = Boolean.FALSE;
-		currentGameKey = AppUtils.PLAYLONGSPLIT;
+		currentGameKey = AppUtils.PLAYLUCKWAY;
 		minimumBet = AppUtils.DEFAULT_MINBET;
 		maximumBet = AppUtils.DEFAULT_MAXBET;
 		bankerIndex = 1;

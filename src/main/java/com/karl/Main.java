@@ -20,7 +20,7 @@ public class Main extends Application {
     private StageManager stageManager;
 
     public static void main(String[] args) {
-        Application.launch(args);
+      Application.launch(args);
     }
 
     @Override
@@ -50,6 +50,7 @@ public class Main extends Application {
 
     private ConfigurableApplicationContext bootstapSpringApplicationContext() {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);
+        builder.web(false);
         String[] args = getParameters().getRaw().toArray(new String[] {});
         builder.headless(false);
         return builder.run(args);
