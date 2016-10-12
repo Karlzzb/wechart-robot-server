@@ -2,9 +2,11 @@ package com.karl.domain;
 
 import java.io.File;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.collections.FXCollections;
@@ -17,7 +19,9 @@ import blade.kit.StringKit;
 import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
+import com.karl.db.domain.GameInfo;
 import com.karl.db.domain.Player;
+import com.karl.db.domain.PlayerTrace;
 import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.PlayRule;
 import com.karl.fx.model.PlayerApply;
@@ -62,6 +66,13 @@ public class RuntimeDomain implements Serializable {
 		currentLotteryRule = AppUtils.LOTTERYRULE3;
 		currentTimeOut = 21;
 		messageBoardCount = 0;
+		manageFee = 130L;
+		showManageFee = Boolean.TRUE;
+		packageFeeModel = AppUtils.FIXEDPACKAGEFEEMODEL;
+		fixedPackageFee = 10L;
+		mathPackageFeeB = 1L;
+		mathPackageFeeC = 1L;
+		bankerWinCutRate = 5L;
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -75,7 +86,7 @@ public class RuntimeDomain implements Serializable {
 	private String currentGroupName;
 
 	private final File qrCodeFile;
-	
+
 	private final String imagePath;
 
 	private String uuid;
@@ -187,12 +198,11 @@ public class RuntimeDomain implements Serializable {
 	 * if allow banker betpoint < 0
 	 */
 	private Boolean allowInvainBanker;
-	
+
 	/**
 	 * if allow player point < 0
 	 */
 	private Boolean allowInvainPlayer;
-
 
 	private String sentOutMessage;
 
@@ -224,7 +234,20 @@ public class RuntimeDomain implements Serializable {
 	private Date currentLastPackegeTime;
 
 	private String currentLotteryRule;
-	
+
+	private Long manageFee;
+
+	private Boolean showManageFee;
+
+	private String packageFeeModel;
+
+	private Long fixedPackageFee;
+
+	private Long mathPackageFeeB;
+
+	private Long mathPackageFeeC;
+
+	private Long bankerWinCutRate;
 
 	/**
 	 * key=remarkName
@@ -433,7 +456,7 @@ public class RuntimeDomain implements Serializable {
 	}
 
 	public String getDeviceId() {
-//		return "e083944759865791";
+		// return "e083944759865791";
 		return deviceId;
 	}
 
@@ -679,7 +702,7 @@ public class RuntimeDomain implements Serializable {
 					: this.currentFirstPackegeTime;
 		}
 	}
-	
+
 	public void removeCurrentFirstPacageTime() {
 		this.currentFirstPackegeTime = null;
 	}
@@ -693,11 +716,10 @@ public class RuntimeDomain implements Serializable {
 					: this.currentLastPackegeTime;
 		}
 	}
-	
+
 	public void removeCurrentLastPackegeTime() {
 		this.currentLastPackegeTime = null;
 	}
-
 
 	public Date getCurrentLastPackegeTime() {
 		return currentLastPackegeTime;
@@ -737,5 +759,78 @@ public class RuntimeDomain implements Serializable {
 
 	public void setAllowInvainBanker(Boolean allowInvainBanker) {
 		this.allowInvainBanker = allowInvainBanker;
+	}
+
+	public Long getManageFee() {
+		return this.manageFee;
+	}
+
+	public void setManageFee(Long manageFee) {
+		this.manageFee = manageFee;
+	}
+
+	public boolean getShowManageFee() {
+		return this.showManageFee;
+	}
+
+	public void setShowManageFee(boolean showManageFee) {
+		this.showManageFee = showManageFee;
+	}
+
+	public void setPackageFeeModel(String packageFeeModel) {
+		this.packageFeeModel = packageFeeModel;
+	}
+
+	public Object getPackageFeeModel() {
+		return packageFeeModel;
+	}
+
+	public Long getCurrentPackageFee(List<PlayerTrace> traceList, GameInfo gameInfo) {
+		if (packageFeeModel.equals(AppUtils.FIXEDPACKAGEFEEMODEL)) {
+			return fixedPackageFee;
+		} else if (packageFeeModel.equals(AppUtils.MATHPACKAGEFEEMODEL)) {
+			return (traceList.size() + 1)* mathPackageFeeB + mathPackageFeeC;
+		} else if (packageFeeModel.equals(AppUtils.REALPACKAGEFEEMODEL)) {
+			BigDecimal sumPackage = new BigDecimal(0);
+			for (int i = 0; i < traceList.size(); i++) {
+				sumPackage = sumPackage.add(new BigDecimal(traceList.get(i)
+						.getLuckInfo()));
+			}
+			sumPackage = sumPackage.add(new BigDecimal(gameInfo.getLuckInfo()));
+			return sumPackage.longValue();
+		}
+		return Long.valueOf(0);
+	}
+
+	public Long getFixedPackageFee() {
+		return fixedPackageFee;
+	}
+
+	public void setFixedPackageFee(Long fixedPackageFee) {
+		this.fixedPackageFee = fixedPackageFee;
+	}
+
+	public void setMathPackageFeeB(Long mathPackageFeeB) {
+		this.mathPackageFeeB = mathPackageFeeB;
+	}
+
+	public void setMathPackageFeeC(Long mathPackageFeeC) {
+		this.mathPackageFeeC = mathPackageFeeC;
+	}
+
+	public Long getMathPackageFeeC() {
+		return mathPackageFeeC;
+	}
+
+	public Long getMathPackageFeeB() {
+		return mathPackageFeeB;
+	}
+
+	public void setBankerWinCutRate(Long bankerWinCutRate) {
+		this.bankerWinCutRate = bankerWinCutRate;
+	}
+
+	public Long getBankerWinCutRate() {
+		return bankerWinCutRate;
 	}
 }

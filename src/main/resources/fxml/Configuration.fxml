@@ -3,6 +3,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -23,9 +24,22 @@
       <ChoiceBox fx:id="playerOutTime" layoutX="704.0" layoutY="181.0" prefWidth="150.0" />
       <Label layoutX="558.0" layoutY="221.0" prefHeight="25.0" prefWidth="131.0" text="超时时间（秒）：" />
       <TextField fx:id="timeOut" layoutX="705.0" layoutY="221.0" />
-      <Label layoutX="558.0" layoutY="294.0" prefHeight="25.0" prefWidth="131.0" text="计算规则：" />
-      <ChoiceBox fx:id="lotteryRuleChoice" layoutX="705.0" layoutY="294.0" prefWidth="150.0" />
-      <CheckBox fx:id="invainBanker" layoutX="558.0" layoutY="348.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="允许庄家负分" />
-      <CheckBox fx:id="invainPlayer" layoutX="558.0" layoutY="396.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="允许玩家负分" />
+      <Label layoutX="558.0" layoutY="264.0" prefHeight="25.0" prefWidth="131.0" text="计算规则：" />
+      <ChoiceBox fx:id="lotteryRuleChoice" layoutX="705.0" layoutY="264.0" prefWidth="150.0" />
+      <CheckBox fx:id="invainBanker" layoutX="558.0" layoutY="305.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="允许庄家负分" />
+      <CheckBox fx:id="invainPlayer" layoutX="705.0" layoutY="305.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="允许玩家负分" />
+      <Label layoutX="558.0" layoutY="343.0" prefHeight="25.0" prefWidth="131.0" text="管理费用：" />
+      <TextField fx:id="manageFee" layoutX="705.0" layoutY="343.0" />
+      <CheckBox fx:id="showManageFee" layoutX="558.0" layoutY="369.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="账单显示管理费" />
+      <RadioButton fx:id="fixedPackageFeeModel" layoutX="558.0" layoutY="413.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="104.0" text="固定包费" />
+      <TextField fx:id="fixedPackageFee" layoutX="704.0" layoutY="410.0" />
+      <RadioButton fx:id="mathPackageFeeModel" layoutX="558.0" layoutY="442.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="104.0" text="公式包费" />
+      <RadioButton fx:id="realPackageFeeModel" layoutX="558.0" layoutY="472.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="97.0" text="实际包费" />
+      <TextField fx:id="mathPackageFeeB" layoutX="704.0" layoutY="439.0" prefHeight="25.0" prefWidth="61.0" />
+      <TextField fx:id="mathPackageFeeC" layoutX="783.0" layoutY="439.0" prefHeight="25.0" prefWidth="72.0" />
+      <Label layoutX="690.0" layoutY="440.0" prefHeight="25.0" prefWidth="12.0" text="*" />
+      <Label layoutX="769.0" layoutY="440.0" prefHeight="25.0" prefWidth="12.0" text="+" />
+      <TextField fx:id="bankerWinCut" layoutX="701.0" layoutY="523.0" />
+      <Label layoutX="558.0" layoutY="523.0" prefHeight="25.0" prefWidth="131.0" text="下庄抽水（%）：" />
 	</children>
 </AnchorPane>

@@ -16,7 +16,8 @@ public class AppUtils {
 	public static String base_uri,
 			redirect_uri = "https://wx.qq.com/cgi-bin/mmwebwx-bin";
 
-//	public static String webpush_url = "https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck";
+	// public static String webpush_url =
+	// "https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck";
 
 	public static String webpush_url = "https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck";
 	public static String skey, synckey, wxsid, wxuin, pass_ticket,
@@ -67,13 +68,13 @@ public class AppUtils {
 	public static final String GAMERESULT = "◆◆◆◆◆[第{0}期]◆◆◆◆◆\n" + "{1}！{2}\n"
 			+ "-----------[赢]-----------\n" + "{3}"
 			+ "-----------[输]-----------\n" + "{4}"
-			+ "----------[梭哈]----------\n" + "{5}"
-			+ "{21}"
+			+ "----------[梭哈]----------\n" + "{5}" + "{21}"
 			+ "--------------------------\n" + "尾包时间：{6}\n" + "超时时间：{7}\n"
 			+ "首包时间：{8}\n" + "--------------------------\n" + "本局庄家：{9}\n"
 			+ "庄家抢包：{10} {11} 赔率：{12}\n" + "庄家输赢：输{13}家/赢{14}家 /和{15}家\n"
-			+ "庄上积分：{16}\n" + "本局下注：{17}\n" + "发包费用：{18}\n" + "本局基金：0\n"
-			+ "庄家本局：{20}\n" + "庄总积分：{20}\n" + "--------[翱翔出品]--------";
+			+ "庄上积分：{16}\n" + "本局下注：{17}\n" + "{22}" + "发包费用：{18}\n"
+			+ "本局基金：{19}\n" + "本局盈亏：{23}\n" + "庄总积分：{20}\n"
+			+ "--------[翱翔出品]--------";
 
 	public static final String RANKINGLAYOUT = "---------[富豪榜]---------\n{0}\n可用积分：{1} 锁定：{2}\n玩家:{3} 总分:{4}\n"
 			+ "--------------------------\n"
@@ -116,19 +117,19 @@ public class AppUtils {
 	public static final String TIMEOUTPAIDNONE = "无效";
 
 	public static final String PUBLICPOINTRANKHEAD = "---------[富豪榜]---------\n"
-			+ "玩家:{0} 总分:{1}\n"
-			+ "--------------------------\n";
-	
+			+ "玩家:{0} 总分:{1}\n" + "--------------------------\n";
+
 	public static final String PUBLICPOINTRANKLINE = "第{0} {1} 积分：{2}\n";
-	
-	
+
 	public static final String PUBLICPOINTRANKTAIL = "--------------------------\n"
-			+ "富豪榜总积分：{0}\n"
-			+ "积分列表仅供参考,如有误请私聊管理员\n";
-	
-	
+			+ "富豪榜总积分：{0}\n" + "积分列表仅供参考,如有误请私聊管理员\n";
+
 	public static final String LOTTERYRULE3 = "后三位有效";
-	public static final String LOTTERYRULE2 = "后二位有效"; 
+	public static final String LOTTERYRULE2 = "后二位有效";
+	
+	public static final String FIXEDPACKAGEFEEMODEL = "固定包费";
+	public static final String MATHPACKAGEFEEMODEL = "公式计算包费";
+	public static final String REALPACKAGEFEEMODEL = "实际包费";
 
 	/**
 	 * sort by bet time

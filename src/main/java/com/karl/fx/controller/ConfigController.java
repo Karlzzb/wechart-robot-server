@@ -11,10 +11,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -49,12 +51,27 @@ public class ConfigController extends FxmlController {
     
     @FXML private TextField timeOut;
     
+    @FXML private TextField manageFee;
+    
+    @FXML private CheckBox showManageFee;
+    
     @FXML private CheckBox invainBanker;
     
     @FXML private CheckBox invainPlayer;
     
+    @FXML private RadioButton fixedPackageFeeModel;
+    @FXML private TextField fixedPackageFee;
+    @FXML private RadioButton mathPackageFeeModel;
+    @FXML private TextField mathPackageFeeB;
+    @FXML private TextField mathPackageFeeC;
+    @FXML private RadioButton realPackageFeeModel;
+    @FXML private TextField bankerWinCut;
+    
+    
     private ObservableList<PlayRule> ruleList;
 
+	
+	private final ToggleGroup packageFeeGroup = new ToggleGroup();
 
     @Override
     public void initialize() {
@@ -64,12 +81,175 @@ public class ConfigController extends FxmlController {
     	buildTimeOutText();
     	buildLotteryRuleChoise();
     	buildInvainBox();
+    	buildAllFee();
+    }
+    
+    private void buildAllFee() {
+    	/*  mamager fee  */ 
+   	    manageFee.setText(String.valueOf(runtimeDomain.getManageFee()));
+    	manageFee.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					manageFee.setText(newValue);
+					runtimeDomain.setManageFee(Long.valueOf(matcher.group()));
+				}else {
+					manageFee.setText(oldValue);
+				}
+				}catch(Exception e) {
+					manageFee.setText(oldValue);
+				}
+			}
+    	});
+    	showManageFee.setSelected(runtimeDomain.getShowManageFee());
+    	showManageFee.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
+                    Boolean now) {
+            	runtimeDomain.setShowManageFee(now);
+            }
+        });
+    	
+    	/* package fee */
+    	//fixed package fee
+    	fixedPackageFee.setText(String.valueOf(runtimeDomain.getFixedPackageFee()));
+    	fixedPackageFee.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					fixedPackageFee.setText(newValue);
+					runtimeDomain.setFixedPackageFee(Long.valueOf(matcher.group()));
+				}else {
+					fixedPackageFee.setText(oldValue);
+				}
+				}catch(Exception e) {
+					fixedPackageFee.setText(oldValue);
+				}
+			}
+    	});
+    	fixedPackageFeeModel.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean before, Boolean now) {
+				if (now) {
+					fixedPackageFee.setDisable(Boolean.FALSE);
+					runtimeDomain.setPackageFeeModel(AppUtils.FIXEDPACKAGEFEEMODEL);
+					runtimeDomain.setFixedPackageFee(Long.valueOf(fixedPackageFee.getText()));
+					mathPackageFeeB.setDisable(Boolean.TRUE);
+					mathPackageFeeC.setDisable(Boolean.TRUE);
+				}
+			}
+		});
+    	fixedPackageFeeModel.setToggleGroup(packageFeeGroup);
+    	
+    	//math package fee
+    	mathPackageFeeB.setText(String.valueOf(runtimeDomain.getMathPackageFeeB()));
+    	mathPackageFeeB.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					mathPackageFeeB.setText(newValue);
+					runtimeDomain.setMathPackageFeeB(Long.valueOf(matcher.group()));
+				}else {
+					mathPackageFeeB.setText(oldValue);
+				}
+				}catch(Exception e) {
+					mathPackageFeeB.setText(oldValue);
+				}
+			}
+    	});
+    	mathPackageFeeC.setText(String.valueOf(runtimeDomain.getMathPackageFeeC()));
+    	mathPackageFeeC.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					mathPackageFeeC.setText(newValue);
+					runtimeDomain.setMathPackageFeeC(Long.valueOf(matcher.group()));
+				}else {
+					mathPackageFeeC.setText(oldValue);
+				}
+				}catch(Exception e) {
+					mathPackageFeeC.setText(oldValue);
+				}
+			}
+    	});
+    	mathPackageFeeModel.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean before, Boolean now) {
+				if (now) {
+					mathPackageFeeB.setDisable(Boolean.FALSE);
+					mathPackageFeeC.setDisable(Boolean.FALSE);
+					runtimeDomain.setPackageFeeModel(AppUtils.MATHPACKAGEFEEMODEL);
+					runtimeDomain.setMathPackageFeeB(Long.valueOf(mathPackageFeeB.getText()));
+					runtimeDomain.setMathPackageFeeC(Long.valueOf(mathPackageFeeC.getText()));
+					fixedPackageFee.setDisable(Boolean.TRUE);
+				}
+			}
+		});
+    	mathPackageFeeModel.setToggleGroup(packageFeeGroup);
+    	//real package fee
+    	realPackageFeeModel.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean before, Boolean now) {
+				if (now) {
+					runtimeDomain.setPackageFeeModel(AppUtils.REALPACKAGEFEEMODEL);
+					fixedPackageFee.setDisable(Boolean.TRUE);
+					mathPackageFeeB.setDisable(Boolean.TRUE);
+					mathPackageFeeC.setDisable(Boolean.TRUE);
+				}
+			}
+		});
+    	realPackageFeeModel.setToggleGroup(packageFeeGroup);
+    	
+    	//SET selected model
+    	if(runtimeDomain.getPackageFeeModel().equals(AppUtils.FIXEDPACKAGEFEEMODEL)) {
+    		fixedPackageFeeModel.setSelected(Boolean.TRUE);
+    	}else if(runtimeDomain.getPackageFeeModel().equals(AppUtils.MATHPACKAGEFEEMODEL)){
+    		mathPackageFeeModel.setSelected(Boolean.TRUE);
+    	}else if(runtimeDomain.getPackageFeeModel().equals(AppUtils.REALPACKAGEFEEMODEL)) {
+    		realPackageFeeModel.setSelected(Boolean.TRUE);
+    	}
+    	
+    	/* banker win cut */
+    	bankerWinCut.setText(String.valueOf(runtimeDomain.getBankerWinCutRate()));
+    	bankerWinCut.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					bankerWinCut.setText(newValue);
+					runtimeDomain.setBankerWinCutRate(Long.valueOf(matcher.group()));
+				}else {
+					bankerWinCut.setText(oldValue);
+				}
+				}catch(Exception e) {
+					bankerWinCut.setText(oldValue);
+				}
+			}
+    	});
+
     }
     
     private void buildInvainBox() {
     	invainBanker.setSelected(runtimeDomain.getAllowInvainBanker());
     	
-    	invainBanker.focusedProperty().addListener(new ChangeListener<Boolean>() {
+    	invainBanker.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
                     Boolean now) {
@@ -78,7 +258,7 @@ public class ConfigController extends FxmlController {
         });
     	
     	invainPlayer.setSelected(runtimeDomain.getAllowInvainPlayer());
-    	invainPlayer.focusedProperty().addListener(new ChangeListener<Boolean>() {
+    	invainPlayer.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean before,
                     Boolean now) {
