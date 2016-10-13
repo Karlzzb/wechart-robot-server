@@ -30,6 +30,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -39,7 +40,13 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.android.tools.ddms</groupId>
+			<artifactId>ddmlib</artifactId>
+			<version>22.0</version>
+		</dependency>
 	</dependencies>
+	
 	<build>
 		<finalName>cyc</finalName>
 		<plugins>
@@ -85,9 +92,14 @@
 				<configuration>
 					<shadedArtifactAttached>true</shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
 					<shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
+					<excludes>
+						<exclude>src/test/java</exclude>
+						<exclude>junit:junit</exclude>
+						<exclude>org.apache.maven:lib:tests</exclude>
+						<exclude>log4j:log4j:jar:</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.bluestemsoftware.open.maven.plugin</groupId>
 				<artifactId>launch4j-plugin</artifactId>

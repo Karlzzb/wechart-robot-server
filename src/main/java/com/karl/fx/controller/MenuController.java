@@ -70,7 +70,7 @@ public class MenuController extends FxmlController {
 
 	@FXML
 	private void wechatLogin(ActionEvent event) {
-		stageManager.popupWindow(FxmlView.LOGIN);
+//		stageManager.popupWindow(FxmlView.LOGIN);
 	}
 
 }

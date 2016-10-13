@@ -19,6 +19,7 @@ import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 import blade.kit.json.ParseException;
 
+import com.android.ddmlib.IDevice;
 import com.karl.domain.RuntimeDomain;
 import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
@@ -30,14 +31,15 @@ public class PcClient {
 			.getLogger(PcClient.class);
 
 	private static final String socket_host = "127.0.0.1";
-	private static final int socket_port = 12580;
+	private static final int PC_LOCAL_PORT  = 12580;
+	private static final int PHONE_PORT  = 62001;
 
 	private Socket socket;
 
 	private Boolean isConnected;
-	
+
 	private Boolean destory;
-	
+
 	private Thread openConnection;
 
 	@Autowired
@@ -45,14 +47,17 @@ public class PcClient {
 
 	@Autowired
 	private RuntimeDomain runtimeDomain;
+	
+	private ADB mADB;
 
 	public PcClient() {
 		destory = Boolean.FALSE;
-		openConnection = new Thread(new OpenConnection(socket_host,
-				socket_port));
+		openConnection = new Thread(
+				new OpenConnection(socket_host, PC_LOCAL_PORT ));
 		openConnection.setDaemon(Boolean.TRUE);
 		openConnection.start();
 		isConnected = Boolean.FALSE;
+		mADB = new ADB();
 	}
 
 	private class OpenConnection extends Thread {
@@ -69,15 +74,25 @@ public class PcClient {
 			while (!destory) {
 				try {
 					Thread.sleep(5000);
-					Runtime.getRuntime().exec(
-							"adb shell am broadcast -a NotifyServiceStop");
-					Runtime.getRuntime()
-							.exec("adb forward tcp:12580 tcp:62001");
-					Runtime.getRuntime().exec(
-							"adb shell am broadcast -a NotifyServiceStart");
-					LOGGER.info("Reconfig adb connnection");
+					mADB.initialize();
+					IDevice[] mDevices = mADB.getDevices();
+					if (mDevices == null ||mDevices.length < 1) {
+						LOGGER.error("No devices found!");
+						continue;
+					}
+					IDevice mDevice = mDevices[0];
+					mDevice.createForward(PC_LOCAL_PORT, PHONE_PORT);
+					// String adbPath =
+					// getClass().getResource("/adbtools/adb.exe").toString();
+					// LOGGER.info("adbPath【"+adbPath+"】");
+					// Runtime.getRuntime().exec(
+					// adbPath+" shell am broadcast -a NotifyServiceStop");
+					// Runtime.getRuntime()
+					// .exec(adbPath+" forward tcp:12580 tcp:62001");
+					// Runtime.getRuntime().exec(
+					// adbPath+" shell am broadcast -a NotifyServiceStart");
 				} catch (Exception e) {
-					LOGGER.error("PcClient forward failed!");
+					LOGGER.error("PcClient forward failed!",e);
 				}
 				connnectToServer();
 			}
@@ -174,15 +189,16 @@ public class PcClient {
 
 					Date time = DateUtils.parsePageDateTime(jsonLuckOne
 							.getString("Time"));
-					
+
 					if (matcher.find()) {
-						gameService.puttingLuckInfo(i+1,
+						gameService.puttingLuckInfo(i + 1,
 								jsonLuckOne.getString("RemarkName"),
 								Double.valueOf(matcher.group(1)), time);
 					}
 					runtimeDomain.setcurrentFirstPacageTime(time);
 					runtimeDomain.setcurrentLastPacageTime(time);
-					sumPackage = sumPackage.add(new BigDecimal(Double.valueOf(matcher.group(1))));
+					sumPackage = sumPackage.add(new BigDecimal(Double
+							.valueOf(matcher.group(1))));
 				} catch (Exception e) {
 					LOGGER.error(
 							"Luck message RemarkUser {} Money{} interpret failed!",
@@ -206,7 +222,7 @@ public class PcClient {
 	public Boolean getIsConnected() {
 		return isConnected;
 	}
-	
+
 	public void destory() {
 		destory = Boolean.TRUE;
 		openConnection.interrupt();

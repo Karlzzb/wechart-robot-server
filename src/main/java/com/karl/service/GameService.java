@@ -293,8 +293,9 @@ public class GameService {
 				} else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
 						AppUtils.TIMEOUTPAIDONETIME)) {
 					trace.setResultPoint(trace.getBetPoint());
-				} else if (!runtimeDomain.getCurrentTimeOutRuleBanker().equals(
+				} else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
 						AppUtils.TIMEOUTPAIDNONE)) {
+					trace.setResultPoint(Long.valueOf(0));
 					continue;
 				}
 
@@ -317,9 +318,9 @@ public class GameService {
 					loserList.add(trace);
 					bankerState -= trace.getResultPoint();
 					continue;
-				} else if (!runtimeDomain.getCurrentTimeOutRule().equals(
+				} else if (runtimeDomain.getCurrentTimeOutRule().equals(
 						AppUtils.TIMEOUTPAIDNONE)) {
-					// not count
+					trace.setResultPoint(Long.valueOf(0));
 				}
 				continue;
 			}
