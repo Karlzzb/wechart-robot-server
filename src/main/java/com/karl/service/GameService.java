@@ -284,43 +284,44 @@ public class GameService {
 			}
 
 			// check banker time out
-			if (!runtimeDomain.getCurrentTimeOutRuleBanker().equals(
-					AppUtils.TIMEOUTPAIDNONE)) {
-				if (bankerPackageTime - firstPackgeTime > runtimeDomain
-						.getCurrentTimeOut() * 1000) {
-					if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
-							AppUtils.TIMEOUTPAIDALL)) {
-						trace.setResultPoint(trace.getResultTimes()
-								* trace.getBetPoint());
-					} else if (runtimeDomain.getCurrentTimeOutRuleBanker()
-							.equals(AppUtils.TIMEOUTPAIDONETIME)) {
-						trace.setResultPoint(trace.getBetPoint());
-					}
-					winnerList.add(trace);
-					bankerState -= trace.getResultPoint();
+			if (bankerPackageTime - firstPackgeTime > runtimeDomain
+					.getCurrentTimeOut() * 1000) {
+				if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
+						AppUtils.TIMEOUTPAIDALL)) {
+					trace.setResultPoint(trace.getResultTimes()
+							* trace.getBetPoint());
+				} else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
+						AppUtils.TIMEOUTPAIDONETIME)) {
+					trace.setResultPoint(trace.getBetPoint());
+				} else if (!runtimeDomain.getCurrentTimeOutRuleBanker().equals(
+						AppUtils.TIMEOUTPAIDNONE)) {
 					continue;
 				}
+
+				winnerList.add(trace);
+				bankerState -= trace.getResultPoint();
+				continue;
 			}
 
 			// check player time out
-			if (!runtimeDomain.getCurrentTimeOutRule().equals(
-					AppUtils.TIMEOUTPAIDNONE)) {
-				if (trace.getLuckTime() - firstPackgeTime > runtimeDomain
-						.getCurrentTimeOut() * 1000) {
-					if (runtimeDomain.getCurrentTimeOutRule().equals(
-							AppUtils.TIMEOUTPAIDALL)) {
-						singleLostHandle(bankerTimes, loserList, allInList,
-								trace, pEntity);
-						continue;
-					} else if (runtimeDomain.getCurrentTimeOutRule().equals(
-							AppUtils.TIMEOUTPAIDONETIME)) {
-						trace.setResultPoint(-trace.getBetPoint());
-						loserList.add(trace);
-						bankerState -= trace.getResultPoint();
-						continue;
-					}
+			if (trace.getLuckTime() - firstPackgeTime > runtimeDomain
+					.getCurrentTimeOut() * 1000) {
+				if (runtimeDomain.getCurrentTimeOutRule().equals(
+						AppUtils.TIMEOUTPAIDALL)) {
+					singleLostHandle(bankerTimes, loserList, allInList, trace,
+							pEntity);
 					continue;
+				} else if (runtimeDomain.getCurrentTimeOutRule().equals(
+						AppUtils.TIMEOUTPAIDONETIME)) {
+					trace.setResultPoint(-trace.getBetPoint());
+					loserList.add(trace);
+					bankerState -= trace.getResultPoint();
+					continue;
+				} else if (!runtimeDomain.getCurrentTimeOutRule().equals(
+						AppUtils.TIMEOUTPAIDNONE)) {
+					// not count
 				}
+				continue;
 			}
 
 			// compare point between banker and player
@@ -354,9 +355,10 @@ public class GameService {
 				bankerState += winnerList.get(i).getResultPoint();
 				if (Long.valueOf(0).compareTo(
 						bankerState + runtimeDomain.getBankerBetPoint()) < 0) {
-					winnerList.get(i).setResultPoint(bankerState + runtimeDomain.getBankerBetPoint());
+					winnerList.get(i).setResultPoint(
+							bankerState + runtimeDomain.getBankerBetPoint());
 					bankerState -= winnerList.get(i).getResultPoint();
-				}else {
+				} else {
 					winnerList.get(i).setResultPoint(Long.valueOf(0));
 				}
 				if (Long.valueOf(0).compareTo(
@@ -391,6 +393,11 @@ public class GameService {
 				Math.abs(bankerState));
 		gameInfo.setResultPoint(bankerState);
 		playerService.save(gameInfo);
+
+		// sync banker betpoint on the view
+		runtimeDomain.setBankerBetPoint(bankerState > 0 ? runtimeDomain
+				.getBankerBetPoint() : bankerState
+				+ runtimeDomain.getBankerBetPoint());
 
 		// config the message
 		String winListStr = "";
@@ -486,8 +493,8 @@ public class GameService {
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
 				timeoutStr, runtimeDomain.getShowManageFee() ? "管理费： "
 						+ runtimeDomain.getManageFee() + "\n" : "", bankerState
-						- runtimeDomain.getManageFee() - packageFee
-						- bankerWinCut);
+						+ runtimeDomain.getManageFee() + packageFee
+						+ bankerWinCut);
 
 		return content;
 	}

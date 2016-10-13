@@ -16,7 +16,7 @@
 		<Label fx:id="groupSizeLable" layoutX="943.0" layoutY="38.0" prefHeight="26.0" prefWidth="73.0" text="群人数 :0" />
 		<Button fx:id="groupFlush" layoutX="1015.0" layoutY="8.0" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="73.0" text="刷新" />
 		<Button fx:id="syncPlayer" layoutX="1016.0" layoutY="42.0" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" text="保存" />
-		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="762.0" layoutY="74.0" prefHeight="523.0" prefWidth="329.0">
+		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" layoutX="762.0" layoutY="105.0" prefHeight="492.0" prefWidth="329.0">
 			<columns>
 				<TableColumn fx:id="colBankerSgin" prefWidth="98.6666259765625" text="选庄" />
 				<TableColumn fx:id="colPlayerName" editable="false" prefWidth="138.3333740234375" resizable="false" text="玩家" />
@@ -46,5 +46,7 @@
       <Label layoutX="501.0" layoutY="249.0" prefHeight="25.0" prefWidth="90.0" text="拼抢玩法下注：" />
 		<Button fx:id="openLotteryBut" layoutX="650.0" layoutY="294.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="25.0" prefWidth="73.0" text="计算" />
 		<ToggleButton fx:id="gameEnd" layoutX="505.0" layoutY="333.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="结束" />
+      <TextField fx:id="playerSearchText" layoutX="762.0" layoutY="77.0" prefHeight="25.0" prefWidth="221.0" />
+      <Button fx:id="playerSearch" layoutX="1016.0" layoutY="77.0" mnemonicParsing="false" onAction="#searchPlayer" prefHeight="25.0" prefWidth="73.0" text="查询" />
 	</children>
 </AnchorPane>

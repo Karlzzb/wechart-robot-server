@@ -2,7 +2,6 @@ package com.karl.domain;
 
 import java.io.File;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -73,6 +72,7 @@ public class RuntimeDomain implements Serializable {
 		mathPackageFeeB = 1L;
 		mathPackageFeeC = 1L;
 		bankerWinCutRate = 5L;
+		currentRealPackageFee = 0L;
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -248,6 +248,8 @@ public class RuntimeDomain implements Serializable {
 	private Long mathPackageFeeC;
 
 	private Long bankerWinCutRate;
+
+	private Long currentRealPackageFee;
 
 	/**
 	 * key=remarkName
@@ -791,13 +793,7 @@ public class RuntimeDomain implements Serializable {
 		} else if (packageFeeModel.equals(AppUtils.MATHPACKAGEFEEMODEL)) {
 			return (traceList.size() + 1)* mathPackageFeeB + mathPackageFeeC;
 		} else if (packageFeeModel.equals(AppUtils.REALPACKAGEFEEMODEL)) {
-			BigDecimal sumPackage = new BigDecimal(0);
-			for (int i = 0; i < traceList.size(); i++) {
-				sumPackage = sumPackage.add(new BigDecimal(traceList.get(i)
-						.getLuckInfo()));
-			}
-			sumPackage = sumPackage.add(new BigDecimal(gameInfo.getLuckInfo()));
-			return sumPackage.longValue();
+			return currentRealPackageFee;
 		}
 		return Long.valueOf(0);
 	}
@@ -832,5 +828,13 @@ public class RuntimeDomain implements Serializable {
 
 	public Long getBankerWinCutRate() {
 		return bankerWinCutRate;
+	}
+
+	public Long getCurrentRealPackageFee() {
+		return currentRealPackageFee;
+	}
+
+	public void setCurrentRealPackageFee(Long currentRealPackageFee) {
+		this.currentRealPackageFee = currentRealPackageFee;
 	}
 }

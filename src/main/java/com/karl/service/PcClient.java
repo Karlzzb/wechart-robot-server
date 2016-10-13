@@ -3,6 +3,7 @@ package com.karl.service;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Date;
@@ -164,6 +165,7 @@ public class PcClient {
 				return;
 			}
 			JSONObject jsonLuckOne = null;
+			BigDecimal sumPackage = new BigDecimal(0);
 			for (int i = 0; i < jsonLuckPeople.size(); i++) {
 				jsonLuckOne = jsonLuckPeople.getJSONObject(i);
 				try {
@@ -180,6 +182,7 @@ public class PcClient {
 					}
 					runtimeDomain.setcurrentFirstPacageTime(time);
 					runtimeDomain.setcurrentLastPacageTime(time);
+					sumPackage = sumPackage.add(new BigDecimal(Double.valueOf(matcher.group(1))));
 				} catch (Exception e) {
 					LOGGER.error(
 							"Luck message RemarkUser {} Money{} interpret failed!",
@@ -188,6 +191,7 @@ public class PcClient {
 					continue;
 				}
 			}
+			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			LOGGER.info("Luck package is {}", packageInfo);
 		} catch (ParseException pe) {
 			LOGGER.error("Luck package[{}] interpret failed!", packageInfo, pe);

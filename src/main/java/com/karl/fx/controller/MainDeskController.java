@@ -117,9 +117,37 @@ public class MainDeskController extends FxmlController {
 	@Autowired
 	@Lazy
 	private MessageController messageController;
+	
+	@FXML private TextField playerSearchText;
+	
+	@FXML private Button playerSearch;
 
 	@Override
 	public void initialize() {
+		buildGroupBox();
+		buildPlayerTab();
+		playerAutoFlush();
+		buildGameKeyBox();
+		buildGameQuicker();
+	}
+	
+	@FXML
+	private void searchPlayer(ActionEvent event) {
+		String content = playerSearchText.getText();
+		if (content == null || content.isEmpty() || playerList == null) {
+			return;
+		}
+		for (int i = 0; i < playerList.size(); i++) {
+			if (playerList.get(i).getPlayerName().equals(content)) {
+				playerTab.requestFocus();
+				playerTab.getSelectionModel().select(playerList.get(i));
+				playerTab.getFocusModel().focus(i);
+				break;
+			}
+		}
+	}
+
+	private void buildGameQuicker() {
 		gameStart.setToggleGroup(group);
 		gameEnd.setToggleGroup(group);
 		gameStart.setUserData(Boolean.TRUE);
@@ -132,7 +160,13 @@ public class MainDeskController extends FxmlController {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!newValue.matches("\\d*")) {
+				if (!newValue.matches("\\d*")
+						|| Long.valueOf(bankerBetPoint.getText()).compareTo(
+								runtimeDomain
+										.getRunningPlayeres()
+										.get(runtimeDomain
+												.getBankerRemarkName())
+										.getPoints()) > 0) {
 					bankerBetPoint.setText(oldValue);
 				} else {
 					bankerBetPoint.setText(newValue);
@@ -169,11 +203,7 @@ public class MainDeskController extends FxmlController {
 						}
 					}
 				});
-
-		buildGroupBox();
-		buildPlayerTab();
-		playerAutoFlush();
-		buildGameKeyBox();
+		
 		definedBet.setText(runtimeDomain.getDefiendBet().toString());
 		definedBet.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -385,6 +415,7 @@ public class MainDeskController extends FxmlController {
 	private void openLottery(ActionEvent event) {
 		String content = gameService.openLottery();
 		openMessageBoard(content);
+		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint() > 0 ?runtimeDomain.getBankerBetPoint().toString():"0");
 	}
 
 	@FXML
