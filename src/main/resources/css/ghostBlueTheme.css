@@ -1,0 +1,67 @@
+/*标题文字*/
+.txt {
+	-fx-font-size:14;
+	-fx-text-fill: '#222';
+}
+
+/*input框*/
+.input {
+	-fx-font-size:14;
+	-fx-border-radius:0;
+}
+
+.input:focus {
+	-fx-border-color:'#467ed4';
+}
+
+/*按钮*/
+.btnGhost {
+    -fx-border-width: 1;
+    -fx-border-color : '#386ab6';
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-text-fill: '#386ab6';
+    -fx-text-align: 'center';
+    -fx-font-size:12;
+    -fx-cursor:pointer;
+    -fx-width:50;
+}
+
+.btnBlock {
+    -fx-background-color: '#467ed4';
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-text-fill: '#fff';
+    -fx-text-align: 'center';
+    -fx-font-size:12;
+    -fx-cursor:pointer;
+}
+
+.btnBlock:hover {
+    -fx-background-color: '#386ab6';
+}
+
+.btnBlock:pressed, .btnBlock:default:hover:pressed, .btnBlock:focused
+{
+    -fx-background-color: '#2b579a';
+}
+
+.btnNormal {
+	-fx-width:50;
+	-fx-padding:0;
+}
+ 
+.btnGhost:hover{
+    -fx-background-color: '#386ab6';
+    -fx-text-fill: '#fff';
+    
+}
+ 
+.btnGhost:pressed, .btnGhost:default:hover:pressed, .btnGhost:focused
+{
+    -fx-border-color : '#2b579a';
+    -fx-background-color: '#2b579a';
+    -fx-text-fill: '#fff';
+}
+ 
