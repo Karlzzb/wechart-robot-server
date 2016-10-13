@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.karl.db.domain.Player;
 import com.karl.db.domain.PlayerTrace;
 import com.karl.fx.model.PlayerTraceModel;
 import com.karl.utils.AppUtils;
@@ -23,10 +24,9 @@ import com.karl.utils.AppUtils;
 @Component
 @Lazy
 public class GameRunningTabController extends FxmlController {
-	
+
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(GameRunningTabController.class);
-
 
 	@FXML
 	private TableView<PlayerTraceModel> traceTab;
@@ -86,21 +86,31 @@ public class GameRunningTabController extends FxmlController {
 		List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
 		if (traceList != null) {
 			PlayerTrace trace = null;
+			Player pEntity = null;
+			String resultInfo;
 			for (int i = 0; i < traceList.size(); i++) {
 				trace = traceList.get(i);
+				pEntity = runtimeDomain.getRunningPlayeres().get(
+						trace.getRemarkName());
+				if (pEntity == null) {
+					continue;
+				}
+				resultInfo = "";
+				if (trace.getResultPoint() != null) {
+					resultInfo = trace.getResultPoint() > 0 ? "赢"
+							+ trace.getResultPoint() : "输"
+							+ Math.abs(trace.getResultPoint());
+				}
+
 				traceModeList.add(new PlayerTraceModel(trace.getPlayerId(),
-						trace.getRemarkName(), runtimeDomain
-								.getRunningPlayeres()
-								.get(trace.getRemarkName()).getPoints(), trace
-								.getBetInfo(), trace.getResultRuleName(), trace
-								.getResultPoint() > 0 ? "赢"
-								+ trace.getResultPoint() : "输"
-								+ Math.abs(trace.getResultPoint())));
+						trace.getRemarkName(), pEntity.getPoints(), trace
+								.getBetInfo(), trace.getResultRuleName(),
+						resultInfo));
 			}
 		}
 		traceTab.setItems(traceModeList);
 	}
-	
+
 	/**
 	 * auto rync player table
 	 */
@@ -111,7 +121,8 @@ public class GameRunningTabController extends FxmlController {
 				while (true) {
 					try {
 						Thread.sleep(AppUtils.TRACE_TAB_FLSH_TERVAL);
-						List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
+						List<PlayerTrace> traceList = gameService
+								.getCurrentPlayTrace();
 						if (traceList != null) {
 							if (traceModeList == null) {
 								return null;
@@ -122,15 +133,24 @@ public class GameRunningTabController extends FxmlController {
 							PlayerTrace trace = null;
 							for (int i = 0; i < traceList.size(); i++) {
 								trace = traceList.get(i);
-								traceModeList.add(new PlayerTraceModel(trace.getPlayerId(),
-										trace.getRemarkName(), runtimeDomain
-												.getRunningPlayeres()
-												.get(trace.getRemarkName()).getPoints(), trace
-												.getBetInfo(), trace.getResultRuleName()==null?"":trace.getResultRuleName(), trace
-												.getResultPoint()==null?"":trace
-												.getResultPoint() > 0 ? "赢"
-												+ trace.getResultPoint() : "输"
-												+ Math.abs(trace.getResultPoint())));
+								traceModeList
+										.add(new PlayerTraceModel(
+												trace.getPlayerId(),
+												trace.getRemarkName(),
+												runtimeDomain
+														.getRunningPlayeres()
+														.get(trace
+																.getRemarkName())
+														.getPoints(),
+												trace.getBetInfo(),
+												trace.getResultRuleName() == null ? ""
+														: trace.getResultRuleName(),
+												trace.getResultPoint() == null ? ""
+														: trace.getResultPoint() > 0 ? "赢"
+																+ trace.getResultPoint()
+																: "输"
+																		+ Math.abs(trace
+																				.getResultPoint())));
 							}
 						}
 					} catch (Exception e) {
