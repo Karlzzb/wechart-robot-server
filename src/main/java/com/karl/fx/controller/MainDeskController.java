@@ -119,8 +119,6 @@ public class MainDeskController extends FxmlController {
 	private MessageController messageController;
 	
 	@FXML private TextField playerSearchText;
-	
-	@FXML private Button playerSearch;
 
 	@Override
 	public void initialize() {
@@ -129,22 +127,31 @@ public class MainDeskController extends FxmlController {
 		playerAutoFlush();
 		buildGameKeyBox();
 		buildGameQuicker();
+	    buildFilterPlayer();
 	}
 	
-	@FXML
-	private void searchPlayer(ActionEvent event) {
-		String content = playerSearchText.getText();
-		if (content == null || content.isEmpty() || playerList == null) {
-			return;
-		}
-		for (int i = 0; i < playerList.size(); i++) {
-			if (playerList.get(i).getPlayerName().equals(content)) {
-				playerTab.requestFocus();
-				playerTab.getSelectionModel().select(playerList.get(i));
-				playerTab.getFocusModel().focus(i);
-				break;
-			}
-		}
+	private void buildFilterPlayer() {
+		playerSearchText.textProperty().addListener(
+                (ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(oldVal, newVal));
+	}
+	
+	private void searchPlayer(String oldVal, String newVal) {
+        if ( newVal == null || newVal.isEmpty() ) {
+        	fillPlayerTab();
+        	return;
+        }
+        
+        ObservableList<PlayerModel> filterPlayer = FXCollections.observableArrayList();
+        for ( PlayerModel playerModle: playerTab.getItems() ) {
+            if (playerModle.getPlayerName().matches(".*"+newVal+".*")) {
+    			if (playerModle.getPlayerName().equals(
+    					runtimeDomain.getBankerRemarkName())) {
+    				playerModle.setIsBanker(Boolean.TRUE);
+    			}
+            	filterPlayer.add(playerModle);
+            }
+        }
+        playerTab.setItems(filterPlayer);
 	}
 
 	private void buildGameQuicker() {
