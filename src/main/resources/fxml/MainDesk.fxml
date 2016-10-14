@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
@@ -18,13 +20,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;" stylesheets="@../css/ghostBlueTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
       <BorderPane prefHeight="692.0" prefWidth="1072.0">
          <top>
             <HBox BorderPane.alignment="CENTER">
                <children>
-               		<ProgressBar fx:id="bar" layoutY="591.0" prefHeight="1.0" prefWidth="500.0" progress="0.0" />		
+                  <Label styleClass="header-title" text="工作台" />
+               		<ProgressBar fx:id="bar" layoutY="591.0" prefHeight="20.0" prefWidth="253.0" progress="0.0" />		
                   <Region HBox.hgrow="ALWAYS" />
             		<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="73.0" styleClass="btnBlock" text="刷新">
                      <HBox.margin>
@@ -66,7 +69,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Label>
-                                          <ChoiceBox fx:id="gamekeyBox" prefHeight="25.0" prefWidth="171.0" />
+                                          <ChoiceBox fx:id="gamekeyBox" prefHeight="25.0" prefWidth="170.0" />
                                        </children>
                                        <VBox.margin>
                                           <Insets bottom="10.0" />
@@ -135,14 +138,22 @@
                         </HBox>
                      </children>
                   </Pane>
-                  <TableView fx:id="playerTab1" depthTest="DISABLE" editable="true" prefHeight="539.0" prefWidth="456.0">
+                  <Line endX="350.0" startX="-100.0" stroke="LIGHTGRAY" strokeWidth="5.0">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Line>
+                  <TableView fx:id="playerTab1" depthTest="DISABLE" editable="true" prefHeight="539.0" prefWidth="455.0">
                      <columns>
                         <TableColumn fx:id="colBankerSgin1" prefWidth="67.0" styleClass="column-header" text="玩家" />
                         <TableColumn fx:id="colPlayerName1" editable="false" prefWidth="86.0" resizable="false" styleClass="column-header" text="现有积分" />
                         <TableColumn fx:id="colPlayerPoint1" editable="true" prefWidth="101.0" resizable="false" styleClass="column-header" text="当前局下注" />
                         <TableColumn fx:id="colBankerSgin11" prefWidth="100.0" styleClass="column-header" text="当前局点数" />
-                        <TableColumn fx:id="colBankerSgin12" prefWidth="97.0" text="当前局输赢" />
+                        <TableColumn fx:id="colBankerSgin12" prefWidth="101.0" text="当前局输赢" />
                      </columns>
+                     <VBox.margin>
+                        <Insets top="2.0" />
+                     </VBox.margin>
                   </TableView>
                </children>
                <BorderPane.margin>
@@ -158,7 +169,7 @@
                         <HBox>
                            <children>
                               <Label prefHeight="31.0" prefWidth="90.0" styleClass="txt" text="当前玩家群：" />
-                        		<ChoiceBox fx:id="groupBox" prefHeight="25.0" prefWidth="156.0" />
+                        		<ChoiceBox fx:id="groupBox" prefHeight="26.0" prefWidth="167.0" />
                            </children>
                            <VBox.margin>
                               <Insets bottom="10.0" />
@@ -189,14 +200,15 @@
                               <Insets bottom="10.0" />
                            </VBox.margin>
                         </HBox>
+                        <Line endX="150.0" startX="-100.0" stroke="LIGHTGRAY" strokeWidth="5.0" />
                   		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" prefHeight="564.0" prefWidth="246.0">
                   			<columns>
                   				<TableColumn fx:id="colBankerSgin" prefWidth="56.0" styleClass="column-header" text="选庄" />
                   				<TableColumn fx:id="colPlayerName" editable="false" minWidth="0.0" prefWidth="102.0" resizable="false" styleClass="column-header" text="玩家" />
-                  				<TableColumn fx:id="colPlayerPoint" editable="true" prefWidth="82.0" resizable="false" styleClass="column-header" text="积分" />
+                  				<TableColumn fx:id="colPlayerPoint" editable="true" prefWidth="96.0" resizable="false" styleClass="column-header" text="积分" />
                   			</columns>
                            <VBox.margin>
-                              <Insets />
+                              <Insets top="2.0" />
                            </VBox.margin>
                   		</TableView>
                      </children>
@@ -221,12 +233,13 @@
                               <Insets bottom="10.0" />
                            </VBox.margin>
                         </Label>
+                        <Line endX="150.0" startX="-100.0" stroke="LIGHTGRAY" strokeWidth="5.0" />
                         <TableView fx:id="playerTab2" depthTest="DISABLE" editable="true" prefHeight="590.0" prefWidth="253.0">
                            <columns>
                               <TableColumn fx:id="colPlayerName21" editable="false" prefWidth="59.0" resizable="false" styleClass="column-header" text="选择" />
                               <TableColumn fx:id="colPlayerName2" editable="false" prefWidth="68.0" resizable="false" styleClass="column-header" text="玩家" />
                               <TableColumn fx:id="colBankerSgin2" minWidth="0.0" prefWidth="55.0" styleClass="column-header" text="申请" />
-                              <TableColumn fx:id="colPlayerPoint2" editable="true" prefWidth="66.0" resizable="false" styleClass="column-header" text="操作" />
+                              <TableColumn fx:id="colPlayerPoint2" editable="true" prefWidth="72.0" resizable="false" styleClass="column-header" text="操作" />
                            </columns>
                            <VBox.margin>
                               <Insets />
@@ -245,4 +258,8 @@
          </center>
       </BorderPane>
 	</children>
+   <stylesheets>
+      <URL value="@../css/Metro-UI.css" />
+      <URL value="@../css/blueTheme.css" />
+   </stylesheets>
 </AnchorPane>

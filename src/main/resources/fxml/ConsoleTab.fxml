@@ -12,26 +12,37 @@
 
 <AnchorPane fx:id="consoleTab" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConsoleController">
 	<children>
-      <BorderPane prefHeight="600.0" prefWidth="864.0" styleClass="text-field">
+      <BorderPane prefHeight="600.0" prefWidth="864.0">
          <center>
-            <VBox prefHeight="200.0" prefWidth="100.0" stylesheets="@../css/ghostBlueTheme.css" BorderPane.alignment="CENTER">
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
             		<TextArea fx:id="logArea" prefHeight="562.0" prefWidth="864.0">
                      <VBox.margin>
-                        <Insets bottom="30.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </TextArea>
             		<Button fx:id="cleanButton" mnemonicParsing="false" onAction="#clearLog" prefHeight="100.0" prefWidth="101.0" styleClass="btnBlock" text="清除日志">
 		</Button>
                </children>
                <BorderPane.margin>
-                  <Insets bottom="10.0" left="10.0" right="50.0" top="30.0" />
+                  <Insets bottom="10.0" left="10.0" right="50.0" />
                </BorderPane.margin>
             </VBox>
          </center>
+         <top>
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <Label styleClass="header-title" text="用户日志" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </top>
       </BorderPane>
 	</children>
-	<stylesheets>
-		<URL value="@../css/Metro-UI.css" />
-	</stylesheets>
+   <stylesheets>
+      <URL value="@../css/Metro-UI.css" />
+      <URL value="@../css/blueTheme.css" />
+   </stylesheets>
 </AnchorPane>

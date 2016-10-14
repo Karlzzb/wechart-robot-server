@@ -1,0 +1,53 @@
+/*header title */
+.header-title {
+	-fx-text-fill:'#386ab6';
+	-fx-font-size:25pt;
+}
+
+.table-title-line {
+	-fx-border-width:5;
+	-fx-margin:0 0 5 0;
+}
+
+.button {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color : transparent;
+    -fx-background-color: '#386ab6';
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-text-fill:white;
+}
+ 
+.button:hover{
+    -fx-background-color: #467ed4;
+}
+ 
+.button:pressed, .button:default:hover:pressed,.button:focused{
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color : transparent;
+    -fx-background-color: #2b579a;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+#config-rule-panel {
+	-fx-background-color: #467ed4;
+}
+
+#config-fee-panel {
+	-fx-background-color: #ff8000;
+}
+
+#config-rule-panel .label,
+#config-rule-panel .check-box,
+#config-rule-panel .radio-button, 
+#config-fee-panel .label,
+#config-fee-panel .radio-button,
+#config-fee-panel .check-box {
+	-fx-text-fill:#fff;
+}
+ 
