@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -117,8 +119,12 @@ public class MainDeskController extends FxmlController {
 	@Autowired
 	@Lazy
 	private MessageController messageController;
-	
-	@FXML private TextField playerSearchText;
+
+	@FXML
+	private TextField playerSearchText;
+
+	@FXML
+	private ProgressBar bar;
 
 	@Override
 	public void initialize() {
@@ -127,31 +133,35 @@ public class MainDeskController extends FxmlController {
 		playerAutoFlush();
 		buildGameKeyBox();
 		buildGameQuicker();
-	    buildFilterPlayer();
+		buildFilterPlayer();
 	}
-	
+
 	private void buildFilterPlayer() {
-		playerSearchText.textProperty().addListener(
-                (ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(oldVal, newVal));
+		playerSearchText
+				.textProperty()
+				.addListener(
+						(ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(
+								oldVal, newVal));
 	}
-	
+
 	private void searchPlayer(String oldVal, String newVal) {
-        if ( newVal == null || newVal.isEmpty() ) {
-        	fillPlayerTab();
-        	return;
-        }
-        
-        ObservableList<PlayerModel> filterPlayer = FXCollections.observableArrayList();
-        for ( PlayerModel playerModle: playerTab.getItems() ) {
-            if (playerModle.getPlayerName().matches(".*"+newVal+".*")) {
-    			if (playerModle.getPlayerName().equals(
-    					runtimeDomain.getBankerRemarkName())) {
-    				playerModle.setIsBanker(Boolean.TRUE);
-    			}
-            	filterPlayer.add(playerModle);
-            }
-        }
-        playerTab.setItems(filterPlayer);
+		if (newVal == null || newVal.isEmpty()) {
+			fillPlayerTab();
+			return;
+		}
+
+		ObservableList<PlayerModel> filterPlayer = FXCollections
+				.observableArrayList();
+		for (PlayerModel playerModle : playerTab.getItems()) {
+			if (playerModle.getPlayerName().matches(".*" + newVal + ".*")) {
+				if (playerModle.getPlayerName().equals(
+						runtimeDomain.getBankerRemarkName())) {
+					playerModle.setIsBanker(Boolean.TRUE);
+				}
+				filterPlayer.add(playerModle);
+			}
+		}
+		playerTab.setItems(filterPlayer);
 	}
 
 	private void buildGameQuicker() {
@@ -210,7 +220,7 @@ public class MainDeskController extends FxmlController {
 						}
 					}
 				});
-		
+
 		definedBet.setText(runtimeDomain.getDefiendBet().toString());
 		definedBet.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -415,14 +425,24 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void savePlayerPoint(ActionEvent event) {
-		gameService.ryncPlayersPoint(playerList);
+		Service<Void> service = new Service<Void>() {
+			@Override
+			protected Task<Void> createTask() {
+				gameService.ryncPlayersPoint(playerList);
+				return null;
+			};
+		};
+		service.start();
+        bar.progressProperty().bind(service.progressProperty());
 	}
 
 	@FXML
 	private void openLottery(ActionEvent event) {
 		String content = gameService.openLottery();
 		openMessageBoard(content);
-		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint() > 0 ?runtimeDomain.getBankerBetPoint().toString():"0");
+		bankerBetPoint
+				.setText(runtimeDomain.getBankerBetPoint() > 0 ? runtimeDomain
+						.getBankerBetPoint().toString() : "0");
 	}
 
 	@FXML
