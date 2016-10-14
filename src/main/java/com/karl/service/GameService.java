@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.karl.db.domain.ApplyPoints;
 import com.karl.db.domain.GameInfo;
@@ -229,9 +230,39 @@ public class GameService {
 				return;
 			}
 		}
-
+	}
+	
+	@Transactional
+	public void undoTheGame(Long gameId) {
+		if (gameId == null || gameId.compareTo(0L) < 0) {
+			return;
+		}
+		List<PlayerTrace> traceList = playerService
+				.getPlayerTraceListByGameId(gameId);
+		GameInfo gameInfo = playerService.getGameById(gameId);
+		if (gameInfo == null || traceList == null) {
+			return;
+		}
+		
+		// write the data to db
+		for (int i = 0; i < traceList.size(); i++) {
+			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
+				continue;
+			}
+			ryncPlayerPoint(traceList.get(i).getPlayerId(), traceList.get(i)
+					.getResultPoint() < 0, Math.abs(traceList.get(i)
+					.getResultPoint()));
+		}
+		// banker point consistent
+		ryncPlayerPoint(gameInfo.getPlayerId(),
+				gameInfo.getResultPoint().compareTo(Long.valueOf(0)) > 0,
+				Math.abs(gameInfo.getResultPoint()));
+		gameInfo.setResultPoint(gameInfo.getResultPoint());
+		gameInfo.setIsUndo(Boolean.TRUE);
+		playerService.save(gameInfo);
 	}
 
+	@Transactional
 	public String openLottery() {
 
 		Long currentGameId = runtimeDomain.getCurrentGameId();
@@ -239,13 +270,13 @@ public class GameService {
 				|| currentGameId.compareTo(Long.valueOf(1)) < 0) {
 			return null;
 		}
-		GameInfo gameInfo = playerService.getlatestGame();
+		GameInfo gameInfo = playerService.getGameById(currentGameId);
 		if (gameInfo == null) {
 			return null;
 		}
 		List<PlayerTrace> traceList = playerService
 				.getPlayerTraceListByGameId(currentGameId);
-		if (traceList == null) {
+		if (traceList == null || traceList.size() < 1) {
 			return null;
 		}
 
@@ -493,7 +524,7 @@ public class GameService {
 				packageFee, bankerWinCut, runtimeDomain.getRunningPlayeres()
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
 				timeoutStr, runtimeDomain.getShowManageFee() ? "管理费： "
-						+ runtimeDomain.getManageFee() + "\n" : "", bankerState
+						+ runtimeDomain.getManageFee() + "\n" : "", gameInfo.getResultPoint()
 						+ runtimeDomain.getManageFee() + packageFee
 						+ bankerWinCut);
 
@@ -553,6 +584,7 @@ public class GameService {
 	 * @param remarkName
 	 * @param betInfo
 	 */
+	@Transactional
 	public void puttingBetInfo(String webchatId, String remarkName,
 			String betInfo, Boolean isLowRisk) {
 		Player player = runningPlayers().get(remarkName);
@@ -610,6 +642,7 @@ public class GameService {
 	 * @param luckInfo
 	 * @param time
 	 */
+	@Transactional
 	private void puttingLuckInfoWithBetInfo(Integer betIndex,
 			String remarkName, Double luckInfo, Date time) {
 		if (!runtimeDomain.getGlobalGameSignal()) {
@@ -661,6 +694,7 @@ public class GameService {
 	 * @param remarkName
 	 * @param luckInfo
 	 */
+	@Transactional
 	private void puttingLuckInfo(Integer index, Double luckInfo, Date luckTime) {
 		LotteryRule playerLottery = getResult(luckInfo);
 		if (index.compareTo(runtimeDomain.getBankerIndex()) == 0) {
@@ -681,6 +715,7 @@ public class GameService {
 	 * @param remarkName
 	 * @param luckInfo
 	 */
+	@Transactional
 	private void puttingLuckInfo(String remarkName, Double luckInfo,
 			Date luckTime) {
 		Player player = runningPlayers().get(remarkName);
@@ -895,6 +930,7 @@ public class GameService {
 
 	}
 
+	@Transactional
 	private Player ryncPlayerPoint(String playerId, Boolean plusOrMinus,
 			Long newPointvel) {
 		Player playEntity = null;
