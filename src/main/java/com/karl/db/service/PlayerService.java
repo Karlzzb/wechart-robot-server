@@ -210,4 +210,9 @@ public class PlayerService {
 		return Boolean.TRUE;
 	}
 
+	public GameInfo getGameById(Long gameId) {
+		Assert.notNull(gameId, "gameId must not be null");
+		return gameRepository.findOne(gameId);
+	}
+
 }

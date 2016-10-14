@@ -44,9 +44,11 @@ public class GameInfo implements Serializable {
     @Column(nullable = true)
     private Integer resultTimes;
 
-
     @Column(nullable = true)
     private Long resultPoint;
+    
+    @Column(columnDefinition="tinyint(1) default 0")
+    private Boolean isUndo;
 
 
 	public Long getGameSerialNo() {
@@ -127,6 +129,14 @@ public class GameInfo implements Serializable {
 
 	public void setResultRuleName(String resultRuleName) {
 		this.resultRuleName = resultRuleName;
+	}
+
+	public Boolean getIsUndo() {
+		return isUndo;
+	}
+
+	public void setIsUndo(Boolean isUndo) {
+		this.isUndo = isUndo;
 	}
 	
 
