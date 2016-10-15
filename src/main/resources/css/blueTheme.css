@@ -1,0 +1,129 @@
+/*header title */
+.header-title {
+	-fx-text-fill:'#386ab6';
+	-fx-font-size:25pt;
+}
+
+.table-title-line {
+	-fx-border-width:5;
+	-fx-margin:0 0 5 0;
+}
+
+.button {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color : transparent;
+    -fx-background-color: '#386ab6';
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-text-fill:white;
+}
+ 
+.button:hover{
+    -fx-background-color: #467ed4;
+}
+ 
+.button:pressed, .button:default:hover:pressed,.button:focused{
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color : transparent;
+    -fx-background-color: #2b579a;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+#config-rule-panel, #desk-main-panel {
+	-fx-background-color: #3a65a5;
+}
+
+#desk-user-panel {
+	-fx-background-color: #386ab6;
+}
+
+#desk-finance-panel {
+	-fx-background-color: #5689d8;
+}
+
+#config-fee-panel {
+	-fx-background-color: #ff8000;
+}
+
+.colorPanel .label,
+.colorPanel .radio-button,
+.colorPanel .check-box {
+	-fx-text-fill:#fff;
+}
+ 
+.colorPanel .text-input {
+	-fx-border-color:transparent;
+} 
+
+.colorPanel .check-box .box,
+.colorPanel .radio-button .radio {
+	-fx-border-color:transparent;
+}
+
+.colorPanel .combo-box-base  {
+    -fx-background-color: white;
+    -fx-background-radius: 0, 0, 0, 0;
+    -fx-border-color: transparent;
+}
+
+/*搜索框 */
+.searchBox {
+	-fx-border-radius: 20px, 20px;
+    -fx-background-color: white;
+    -fx-border-color: #386ab6;
+    -fx-background-insets: 0;
+
+    -fx-prompt-text-fill: #818181;
+
+    -fx-highlight-fill: #467ed4; /* TODO: this probably is the "active" color" */
+    -fx-highlight-text-fill: black;
+}
+
+.search-btn, #playerSearch {
+	-fx-background-color:transparent;
+	-fx-graphic: url('./icon_search.png');
+	padding:0;
+}
+
+.searchBox:hover,
+.searchBox:focus {
+	-fx-background-color: transparent;
+}
+
+.choice-box{
+    -fx-background-color: white;
+    -fx-padding: 3;
+    -fx-border-radius: 0,0;
+    -fx-background-radius: 0,0;
+    -fx-text-fill: black;
+    -fx-font-size: 12px;
+}
+
+.choice-box:hover,
+.choice-box:active,
+.choice-box:focus{
+	-fx-padding: 3;
+}
+
+.toggle-button {
+    -fx-padding: 5;   
+    -fx-border-style: null; 
+    -fx-background-radius: 0;
+ 
+    -fx-background-color: #509601;
+   
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: white;
+}
+
+.toggle-button:focused,.toggle-button:hover {
+    -fx-background-color: #63ae0e;
+    -fx-text-fill: white;  
+}
+

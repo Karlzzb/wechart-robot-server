@@ -115,7 +115,7 @@ and open the template in the editor.
     -fx-size: 35;
     -fx-border-color: -fx-box-border;
     -fx-border-insets: -1 0 0 -1;
-    -fx-padding: 0 5 0 0;
+    -fx-padding: 0 5;
 }
 .table-view .show-hide-columns-button {
     -fx-background-color: white;
@@ -802,7 +802,7 @@ and open the template in the editor.
 .combo-box-base  {
     -fx-background-color: transparent;
     -fx-background-radius: 0, 0, 0, 0;
-    -fx-border-color: gray;
+    -fx-border-color: #f00;
 }
  
 .combo-box-base:hover {
