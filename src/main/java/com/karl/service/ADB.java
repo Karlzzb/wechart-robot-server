@@ -26,7 +26,7 @@ public class ADB {
 			}/*
 			 * else { adbLocation = "adb"; }
 			 */
-			LOGGER.info("adbLocation=" + adbLocation);
+			LOGGER.debug("adbLocation=" + adbLocation);
 			AndroidDebugBridge.initIfNeeded(false);
 			mAndroidDebugBridge = AndroidDebugBridge.createBridge(adbLocation,
 					true);
