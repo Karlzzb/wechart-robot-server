@@ -78,6 +78,8 @@ public class PcClient {
 					IDevice[] mDevices = mADB.getDevices();
 					if (mDevices == null ||mDevices.length < 1) {
 						LOGGER.error("No devices found!");
+						mADB = null;
+						mADB = new ADB();
 						continue;
 					}
 					IDevice mDevice = mDevices[0];

@@ -38,6 +38,7 @@ public class WebWechat {
 	public WebWechat(RuntimeDomain runtimeDomain, GameService gameService)
 			throws InterruptedException {
 		System.setProperty("jsse.enableSNIExtension", "false");
+		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
 	}
