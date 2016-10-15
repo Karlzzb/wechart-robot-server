@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.shape.*?>
 <?import java.net.*?>
 <?import javafx.geometry.*?>
@@ -33,11 +35,17 @@
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
             		<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" styleClass="btnBlock" text="保存">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                </children>
                <padding>
@@ -111,24 +119,36 @@
                                  <font>
                                     <Font size="12.0" />
                                  </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ToggleButton>
                               <Button fx:id="publishBut" layoutX="110.0" layoutY="96.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="70.0" text="发布榜单">
                                  <styleClass>
                                     <String fx:value="btnGhost" />
                                     <String fx:value="btnNormal" />
                                  </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </Button>
                         		<Button fx:id="openLotteryBut" layoutX="11.0" layoutY="96.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0" prefWidth="70.0" text="计算">
                                  <styleClass>
                                     <String fx:value="btnGhost" />
                                     <String fx:value="btnNormal" />
                                  </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </Button>
                         		<ToggleButton fx:id="gameEnd" layoutX="110.0" layoutY="41.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="70.0" text="结束">
                                  <styleClass>
                                     <String fx:value="btnGhost" />
                                     <String fx:value="btnNormal" />
                                  </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ToggleButton>
                            </children>
                         </Pane>
@@ -196,23 +216,19 @@
                            </VBox.margin>
                         </VBox>
                         <Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
-                        <HBox>
+                        <Pane prefHeight="89.0" prefWidth="255.0">
                            <children>
-                              <TextField fx:id="playerSearchText" prefHeight="25.0" prefWidth="162.0" styleClass="searchBox" />
-                              <Button fx:id="playerSearch" mnemonicParsing="false" onAction="#searchPlayer" prefHeight="25.0" prefWidth="73.0" text="查询">
-                                 <styleClass>
-                                    <String fx:value="btnGhost" />
-                                    <String fx:value="btnNormal" />
-                                 </styleClass>
-                                 <HBox.margin>
-                                    <Insets left="10.0" />
-                                 </HBox.margin>
+                              <TextField fx:id="playerSearchText" prefHeight="28.0" prefWidth="256.0" styleClass="searchBox" />
+                              <Button fx:id="playerSearch" layoutX="230.0" layoutY="6.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#searchPlayer" prefHeight="14.0" prefWidth="8.0" styleClass="search-btn">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </Button>
                            </children>
                            <VBox.margin>
                               <Insets top="2.0" />
                            </VBox.margin>
-                        </HBox>
+                        </Pane>
                   		<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" prefHeight="543.0" prefWidth="255.0">
                   			<columns>
                   				<TableColumn fx:id="colBankerSgin" prefWidth="56.0" styleClass="column-header" text="选庄" />

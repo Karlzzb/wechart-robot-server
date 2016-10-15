@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
@@ -22,7 +23,9 @@
                      </VBox.margin>
                   </TextArea>
             		<Button fx:id="cleanButton" mnemonicParsing="false" onAction="#clearLog" prefHeight="100.0" prefWidth="101.0" styleClass="btnBlock" text="清除日志">
-		</Button>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                </children>
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" right="50.0" />

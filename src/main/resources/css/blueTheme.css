@@ -35,15 +35,15 @@
 }
 
 #config-rule-panel, #desk-main-panel {
-	-fx-background-color: #467ed4;
+	-fx-background-color: #3a65a5;
 }
 
 #desk-user-panel {
-	-fx-background-color: #00bfff;
+	-fx-background-color: #386ab6;
 }
 
 #desk-finance-panel {
-	-fx-background-color: #509601;
+	-fx-background-color: #5689d8;
 }
 
 #config-fee-panel {
@@ -84,6 +84,17 @@
     -fx-highlight-text-fill: black;
 }
 
+.search-btn, #playerSearch {
+	-fx-background-color:transparent;
+	-fx-graphic: url('./icon_search.png');
+	padding:0;
+}
+
+.searchBox:hover,
+.searchBox:focus {
+	-fx-background-color: transparent;
+}
+
 .choice-box{
     -fx-background-color: white;
     -fx-padding: 3;
@@ -92,3 +103,27 @@
     -fx-text-fill: black;
     -fx-font-size: 12px;
 }
+
+.choice-box:hover,
+.choice-box:active,
+.choice-box:focus{
+	-fx-padding: 3;
+}
+
+.toggle-button {
+    -fx-padding: 5;   
+    -fx-border-style: null; 
+    -fx-background-radius: 0;
+ 
+    -fx-background-color: #509601;
+   
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: white;
+}
+
+.toggle-button:focused,.toggle-button:hover {
+    -fx-background-color: #63ae0e;
+    -fx-text-fill: white;  
+}
+
