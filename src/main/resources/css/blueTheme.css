@@ -34,8 +34,16 @@
     -fx-border-insets: 0;
 }
 
-#config-rule-panel {
+#config-rule-panel, #desk-main-panel {
 	-fx-background-color: #467ed4;
+}
+
+#desk-user-panel {
+	-fx-background-color: #00bfff;
+}
+
+#desk-finance-panel {
+	-fx-background-color: #509601;
 }
 
 #config-fee-panel {
@@ -61,4 +69,26 @@
     -fx-background-color: white;
     -fx-background-radius: 0, 0, 0, 0;
     -fx-border-color: transparent;
+}
+
+/*搜索框 */
+.searchBox {
+	-fx-border-radius: 20px, 20px;
+    -fx-background-color: white;
+    -fx-border-color: #386ab6;
+    -fx-background-insets: 0;
+
+    -fx-prompt-text-fill: #818181;
+
+    -fx-highlight-fill: #467ed4; /* TODO: this probably is the "active" color" */
+    -fx-highlight-text-fill: black;
+}
+
+.choice-box{
+    -fx-background-color: white;
+    -fx-padding: 3;
+    -fx-border-radius: 0,0;
+    -fx-background-radius: 0,0;
+    -fx-text-fill: black;
+    -fx-font-size: 12px;
 }

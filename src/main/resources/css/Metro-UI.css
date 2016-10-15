@@ -802,7 +802,7 @@ and open the template in the editor.
 .combo-box-base  {
     -fx-background-color: transparent;
     -fx-background-radius: 0, 0, 0, 0;
-    -fx-border-color: gray;
+    -fx-border-color: #f00;
 }
  
 .combo-box-base:hover {

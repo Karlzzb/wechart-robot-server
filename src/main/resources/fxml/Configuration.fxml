@@ -132,13 +132,13 @@
                                     <HBox>
                                        <children>
                                           <RadioButton fx:id="mathPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="公式包费" />
-                                          <TextField fx:id="mathPackageFeeB" prefHeight="28.0" prefWidth="82.0" />
+                                          <TextField fx:id="mathPackageFeeB" prefHeight="28.0" prefWidth="76.0" />
                                           <Label alignment="CENTER" prefHeight="25.0" prefWidth="12.0" text="+" textAlignment="CENTER">
                                              <HBox.margin>
                                                 <Insets left="5.0" right="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <TextField fx:id="mathPackageFeeC" prefHeight="25.0" prefWidth="72.0" />
+                                          <TextField fx:id="mathPackageFeeC" prefHeight="25.0" prefWidth="76.0" />
                                           <Label alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="16.0" style="-fx-text-fill: red;" text="*" textFill="#ff0e0e" />
                                        </children>
                                        <VBox.margin>
