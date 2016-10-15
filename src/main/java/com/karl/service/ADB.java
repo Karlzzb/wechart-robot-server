@@ -2,24 +2,31 @@ package com.karl.service;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 
 public class ADB {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ADB.class);
+
 	private AndroidDebugBridge mAndroidDebugBridge;
 
 	public boolean initialize() {
 		boolean success = true;
-
-		String adbLocation = System
-				.getProperty("com.android.screenshot.bindir");
+		// String adbLocation = System
+		// .getProperty("com.android.screenshot.bindir");
 
 		if (success) {
-			if ((adbLocation != null) && (adbLocation.length() != 0)) {
-				adbLocation += File.separator + "adb";
-			} else {
-				adbLocation = "adb";
-			}
+			String adbLocation = new File(System.getProperty("java.class.path"))
+					.getAbsoluteFile().getParentFile().toString();
+			if (adbLocation != null && !adbLocation.isEmpty()) {
+				adbLocation += File.separator + "/adb/adb.exe";
+			}/*
+			 * else { adbLocation = "adb"; }
+			 */
+			LOGGER.info("adbLocation=" + adbLocation);
 			AndroidDebugBridge.initIfNeeded(false);
 			mAndroidDebugBridge = AndroidDebugBridge.createBridge(adbLocation,
 					true);
