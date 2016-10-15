@@ -42,12 +42,23 @@
 	-fx-background-color: #ff8000;
 }
 
-#config-rule-panel .label,
-#config-rule-panel .check-box,
-#config-rule-panel .radio-button, 
-#config-fee-panel .label,
-#config-fee-panel .radio-button,
-#config-fee-panel .check-box {
+.colorPanel .label,
+.colorPanel .radio-button,
+.colorPanel .check-box {
 	-fx-text-fill:#fff;
 }
  
+.colorPanel .text-input {
+	-fx-border-color:transparent;
+} 
+
+.colorPanel .check-box .box,
+.colorPanel .radio-button .radio {
+	-fx-border-color:transparent;
+}
+
+.colorPanel .combo-box-base  {
+    -fx-background-color: white;
+    -fx-background-radius: 0, 0, 0, 0;
+    -fx-border-color: transparent;
+}
