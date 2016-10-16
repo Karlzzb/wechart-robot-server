@@ -1,6 +1,7 @@
 package com.karl.fx.controller;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,7 +13,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -128,6 +132,9 @@ public class MainDeskController extends FxmlController {
 
 	private Task<Void> playerFlushTask;
 
+	@FXML
+	private Button undoGameButton;
+
 	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
 
@@ -150,6 +157,22 @@ public class MainDeskController extends FxmlController {
 				.addListener(
 						(ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(
 								oldVal, newVal));
+	}
+
+	@FXML
+	private void confirmUndoGame(ActionEvent event) {
+		if (runtimeDomain.getCurrentGameId() != null
+				&& runtimeDomain.getCurrentGameId() > 0) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("作废 第【" + runtimeDomain.getCurrentGameId() + "】期");
+			alert.setContentText("是否确定作废 第【" + runtimeDomain.getCurrentGameId() + "】期？");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK) {
+				gameService.undoTheGame(runtimeDomain.getCurrentGameId());
+				//TODO recover the view
+			}
+		}
 	}
 
 	private void searchPlayer(String oldVal, String newVal) {
