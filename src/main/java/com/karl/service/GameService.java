@@ -535,7 +535,7 @@ public class GameService {
 						+ packageFee + bankerWinCut,
 				(bankerPackageTime - firstPackgeTime > runtimeDomain
 						.getCurrentTimeOut() * 1000) ? "庄家超时: "
-						+ DateUtils.timeStamp(bankerPackageTime) +"\n": "");
+						+ DateUtils.timeStamp(bankerPackageTime) + "\n" : "");
 
 		return content;
 	}
@@ -897,7 +897,8 @@ public class GameService {
 				runtimeDomain.getPackageNumber(),
 				runtimeDomain.getBankerIndex(),
 				runtimeDomain.getCurrentGameKey()
-						+ (runtimeDomain.getAllowAllIn() ? "+梭哈" : ""));
+						+ (runtimeDomain.getAllowAllIn() ? "+梭哈" : ""),
+				gameInfo.getGameSerialNo());
 
 		if (runtimeDomain.getCurrentGameKey().equals(AppUtils.PLAYLUCKWAY)) {
 			content += "默认下注：" + runtimeDomain.getDefiendBet();

@@ -132,7 +132,7 @@ public class GameInfo implements Serializable {
 	}
 
 	public Boolean getIsUndo() {
-		return isUndo;
+		return isUndo==null?Boolean.FALSE:isUndo;
 	}
 
 	public void setIsUndo(Boolean isUndo) {
