@@ -12,6 +12,8 @@ public class PlayerModel{
     public static final String PLAYERNAMECOLKEY = "playerName";
     public static final String PLAYERPOINTCOLKEY = "playerPoint";
 	public static final String PLAYERBETCOLKEY = "playerLatestBet";
+	public static final String ISBANKERCOLKEY = "isBanker";
+	
     private  SimpleIntegerProperty autoID;
     private  SimpleBooleanProperty isBanker;
     private  SimpleStringProperty playerId;

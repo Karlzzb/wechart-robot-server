@@ -70,8 +70,6 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private TableColumn<PlayerModel, Boolean> colBankerSgin;
 
-	// @FXML
-	// private TableColumn<PlayerModel, Integer> colAutoID;
 
 	@FXML
 	private TableColumn<PlayerModel, String> colPlayerName;
@@ -111,7 +109,7 @@ public class MainDeskController extends FxmlController {
 
 	final ToggleGroup group = new ToggleGroup();
 
-	final ToggleGroup playerGroup = new ToggleGroup();
+	ToggleGroup playerGroup = new ToggleGroup();
 
 	@FXML
 	private ChoiceBox<String> gamekeyBox;
@@ -145,6 +143,7 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void searchPlayer(String oldVal, String newVal) {
+		
 		if (newVal == null || newVal.isEmpty()) {
 			fillPlayerTab();
 			return;
@@ -161,6 +160,7 @@ public class MainDeskController extends FxmlController {
 				filterPlayer.add(playerModle);
 			}
 		}
+		flushRadioCol();
 		playerTab.setItems(filterPlayer);
 	}
 
@@ -316,10 +316,9 @@ public class MainDeskController extends FxmlController {
 			}
 		};
 		colBankerSgin.setCellFactory(radioFactory);
+		colBankerSgin.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
+						PlayerModel.ISBANKERCOLKEY));
 
-		// colAutoID
-		// .setCellValueFactory(new PropertyValueFactory<PlayerModel, Integer>(
-		// PlayerModel.AUDOIDCOLKEY));
 		colPlayerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
 						PlayerModel.PLAYERNAMECOLKEY));
@@ -375,7 +374,24 @@ public class MainDeskController extends FxmlController {
 			}
 			playerList.add(playerModle);
 		}
+		
+		flushRadioCol();
 		playerTab.setItems(playerList);
+		
+		
+	}
+
+	private void flushRadioCol() {
+		Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {
+			@Override
+			public TableCell<PlayerModel, Boolean> call(
+					TableColumn<PlayerModel, Boolean> p) {
+				return new RadioButtonCell();
+			}
+		};
+		colBankerSgin.setCellFactory(radioFactory);
+		colBankerSgin.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
+						PlayerModel.ISBANKERCOLKEY));
 	}
 
 	private void fillUpGroupBox() {
@@ -602,13 +618,12 @@ public class MainDeskController extends FxmlController {
 		public void updateItem(Boolean item, boolean empty) {
 			super.updateItem(item, empty);
 			final ObservableList<PlayerModel> items = getTableView().getItems();
-			if (items != null) {
-				if (getIndex() < items.size() && getIndex() > -1) {
+			if (items != null && getIndex() > -1) {
+				if (getIndex() < items.size() ) {
 					radio.setSelected(items.get(getIndex()).getIsBanker());
 					setGraphic(radio);
 				}
 			}
-
 		}
 	}
 
