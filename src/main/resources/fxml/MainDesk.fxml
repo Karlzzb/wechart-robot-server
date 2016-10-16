@@ -103,7 +103,7 @@
 								</VBox>
 								<Pane prefHeight="154.0" prefWidth="197.0">
 									<children>
-										<ToggleButton fx:id="gameStart" layoutX="11.0" layoutY="28.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
+										<ToggleButton fx:id="gameStart" layoutX="11.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
 											<font>
 												<Font size="12.0" />
 											</font>
@@ -111,7 +111,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</ToggleButton>
-										<Button fx:id="publishBut" layoutX="110.0" layoutY="68.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="70.0" text="发布榜单">
+										<Button fx:id="publishBut" layoutX="105.0" layoutY="68.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="75.0" text="发布榜单">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -129,7 +129,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<ToggleButton fx:id="gameEnd" layoutX="94.0" layoutY="28.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="86.0" text="结束" textAlignment="CENTER">
+										<ToggleButton fx:id="gameEnd" layoutX="94.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="86.0" text="结束" textAlignment="CENTER">
 											<cursor>
 												<Cursor fx:constant="HAND" />
 											</cursor>
@@ -193,7 +193,7 @@
 												<Insets bottom="10.0" />
 											</VBox.margin>
 										</Label>
-      								<HBox prefHeight="100.0" prefWidth="200.0">
+      								<HBox prefHeight="100.0" prefWidth="200.0" styleClass="colorPanel">
       									<children>
       										<Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
       										<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="刷新">

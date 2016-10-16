@@ -9,19 +9,47 @@
 	-fx-margin:0 0 5 0;
 }
 
+.colorPanel .button {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color : white;
+    -fx-border-width:1;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-text-fill:white;
+}
+
+.colorPanel .button:hover{
+    -fx-background-color: transparent;
+}
+
+.colorPanel .button:pressed, .button:default:hover:pressed,.button:focused{
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0;
+    -fx-border-color : white;
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+        -fx-text-fill:black;
+    
+}
+
 .button {
     -fx-background-radius: 0;
     -fx-border-radius: 0;
     -fx-border-width: 0;
     -fx-border-color : transparent;
-    -fx-background-color: #44C662;
+    -fx-background-color: #467ed4;
     -fx-background-insets: 0;
     -fx-border-insets: 0;
     -fx-text-fill:white;
 }
  
 .button:hover{
-    -fx-background-color: #53d772;
+    -fx-background-color: #568fe6;
 }
  
 .button:pressed, .button:default:hover:pressed,.button:focused{
@@ -29,7 +57,7 @@
     -fx-border-radius: 0;
     -fx-border-width: 0;
     -fx-border-color : transparent;
-    -fx-background-color: #38ad53;
+    -fx-background-color: #386ab6;
     -fx-background-insets: 0;
     -fx-border-insets: 0;
 }
@@ -121,7 +149,7 @@
     -fx-border-style: null; 
     -fx-background-radius: 0;
  
-    -fx-background-color: #467ed4;
+    -fx-background-color: #44C662;
    
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-font-size: 11pt;
@@ -129,11 +157,13 @@
 }
 
 .toggle-button:hover {
-	-fx-background-color: #568fe6;
+	-fx-background-color: #53d772;
+	    -fx-text-fill: white;
+
 }
 
 .toggle-button:focused {
-    -fx-background-color: #386ab6;
+    -fx-background-color: #38ad53;
     -fx-text-fill: white;  
 }
  
