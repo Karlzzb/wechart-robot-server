@@ -129,16 +129,19 @@ public class MainDeskController extends FxmlController {
 	private Task<Void> playerFlushTask;
 
 	private Boolean autoPlayerFlushContinue;
+	private Boolean isInitializing;
 
 	@Override
 	public void initialize() {
 		autoPlayerFlushContinue = Boolean.TRUE;
+		isInitializing = Boolean.TRUE;
 		buildGroupBox();
 		buildPlayerTab();
 		playerAutoFlush();
 		buildGameKeyBox();
 		buildGameQuicker();
 		buildFilterPlayer();
+		isInitializing = Boolean.FALSE;
 	}
 
 	private void buildFilterPlayer() {
@@ -481,6 +484,9 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void openMessageBoard(String content) {
+		if (isInitializing) {
+			return;
+		}
 		runtimeDomain.setSentOutMessage(content);
 		if (runtimeDomain.getMessageBoardCount() < 1) {
 			popMessageWindow();
