@@ -104,7 +104,9 @@
     -fx-font-size: 12px;
 }
 
-.choice-box .context-menu .label {
+
+
+.choice-box .context-menu .label,.choice-box .label {
     -fx-text-fill: black;
 }
 

@@ -38,22 +38,6 @@
                   <Label styleClass="header-title" text="工作台" />
                		<ProgressBar fx:id="bar" layoutY="591.0" prefHeight="20.0" prefWidth="253.0" progress="0.0" />		
                   <Region HBox.hgrow="ALWAYS" />
-            		<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="73.0" styleClass="btnBlock" text="刷新">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-            		<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="73.0" styleClass="btnBlock" text="保存">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
@@ -82,7 +66,7 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <ChoiceBox fx:id="gamekeyBox" prefHeight="25.0" prefWidth="170.0" />
+                                    <ChoiceBox fx:id="gamekeyBox" prefHeight="25.0" prefWidth="170.0" styleClass="select" />
                                  </children>
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
@@ -189,7 +173,7 @@
                               <HBox>
                                  <children>
                                     <Label prefHeight="31.0" prefWidth="90.0" styleClass="txt" text="当前玩家群：" textFill="WHITE" />
-                              		<ChoiceBox fx:id="groupBox" prefHeight="26.0" prefWidth="167.0" />
+                              		<ChoiceBox fx:id="groupBox" prefHeight="26.0" prefWidth="167.0" styleClass="select" />
                                  </children>
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
@@ -212,7 +196,7 @@
                            </VBox.margin>
                         </VBox>
                         <Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
-                        <Pane prefHeight="89.0" prefWidth="255.0">
+                        <Pane minHeight="-Infinity" prefHeight="29.0" prefWidth="255.0">
                            <children>
                               <TextField fx:id="playerSearchText" prefHeight="28.0" prefWidth="255.0" styleClass="searchBox" />
                               <!-- 
@@ -237,6 +221,30 @@
                               <Insets top="2.0" />
                            </VBox.margin>
                   		</TableView>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        		<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="刷新">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                        		<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="保存">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </HBox>
                      </children>
                   </VBox>
                   <Region prefHeight="535.0" prefWidth="48.0" HBox.hgrow="ALWAYS" />
