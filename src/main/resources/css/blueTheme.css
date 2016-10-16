@@ -14,14 +14,14 @@
     -fx-border-radius: 0;
     -fx-border-width: 0;
     -fx-border-color : transparent;
-    -fx-background-color: '#386ab6';
+    -fx-background-color: #44C662;
     -fx-background-insets: 0;
     -fx-border-insets: 0;
     -fx-text-fill:white;
 }
  
 .button:hover{
-    -fx-background-color: #467ed4;
+    -fx-background-color: #53d772;
 }
  
 .button:pressed, .button:default:hover:pressed,.button:focused{
@@ -29,7 +29,7 @@
     -fx-border-radius: 0;
     -fx-border-width: 0;
     -fx-border-color : transparent;
-    -fx-background-color: #2b579a;
+    -fx-background-color: #38ad53;
     -fx-background-insets: 0;
     -fx-border-insets: 0;
 }
@@ -121,15 +121,29 @@
     -fx-border-style: null; 
     -fx-background-radius: 0;
  
-    -fx-background-color: #509601;
+    -fx-background-color: #467ed4;
    
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-font-size: 11pt;
     -fx-text-fill: white;
 }
 
-.toggle-button:focused,.toggle-button:hover {
-    -fx-background-color: #63ae0e;
+.toggle-button:hover {
+	-fx-background-color: #568fe6;
+}
+
+.toggle-button:focused {
+    -fx-background-color: #386ab6;
     -fx-text-fill: white;  
+}
+ 
+.toggle-button:selected {
+    -fx-background-color: #F23A3A;
+    -fx-text-fill: white;
+}
+ 
+.toggle-button:selected:hover {
+	-fx-background-color: #C9182B;
+	-fx-text-fill: white;
 }
 
