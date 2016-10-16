@@ -233,15 +233,15 @@ public class GameService {
 	}
 
 	@Transactional
-	public void undoTheGame(Long gameId) {
+	public GameInfo undoTheGame(Long gameId) {
 		if (gameId == null || gameId.compareTo(0L) < 0) {
-			return;
+			return null;
 		}
 		List<PlayerTrace> traceList = playerService
 				.getPlayerTraceListByGameId(gameId);
 		GameInfo gameInfo = playerService.getGameById(gameId);
 		if (gameInfo == null || traceList == null) {
-			return;
+			return gameInfo;
 		}
 
 		// write the data to db
@@ -255,11 +255,11 @@ public class GameService {
 		}
 		// banker point consistent
 		ryncPlayerPoint(gameInfo.getPlayerId(), gameInfo.getResultPoint()
-				.compareTo(Long.valueOf(0)) > 0, Math.abs(gameInfo
+				.compareTo(Long.valueOf(0)) < 0, Math.abs(gameInfo
 				.getResultPoint()));
-		gameInfo.setResultPoint(gameInfo.getResultPoint());
 		gameInfo.setIsUndo(Boolean.TRUE);
 		playerService.save(gameInfo);
+		return gameInfo;
 	}
 
 	@Transactional
@@ -1100,5 +1100,12 @@ public class GameService {
 		String tail = MessageFormat.format(AppUtils.PUBLICPOINTRANKTAIL,
 				sumPoint);
 		return head + body + tail;
+	}
+
+	public GameInfo getGameById(Long gameId) {
+		if (gameId == null) {
+			return null;
+		}
+		return playerService.getGameById(gameId);
 	}
 }

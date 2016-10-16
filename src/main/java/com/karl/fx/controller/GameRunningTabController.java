@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.karl.db.domain.GameInfo;
 import com.karl.db.domain.Player;
 import com.karl.db.domain.PlayerTrace;
 import com.karl.fx.model.PlayerTraceModel;
@@ -53,6 +54,10 @@ public class GameRunningTabController extends FxmlController {
 	@FXML
 	private Button bulkRejectButton;
 
+	private Thread traceFlushThread;
+
+	private Task<Void> traceFlushTask;
+
 	@Override
 	public void initialize() {
 		buidApprovalTab();
@@ -82,6 +87,11 @@ public class GameRunningTabController extends FxmlController {
 	private void fillTraceTab() {
 		if (traceModeList != null) {
 			traceModeList.clear();
+		}
+		GameInfo gameInfo = gameService.getGameById(runtimeDomain
+				.getCurrentGameId());
+		if (gameInfo == null || gameInfo.getIsUndo()) {
+			return;
 		}
 		List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
 		if (traceList != null) {
@@ -115,53 +125,64 @@ public class GameRunningTabController extends FxmlController {
 	 * auto rync player table
 	 */
 	private void traceAutoFlush() {
-		Task<Void> task = new Task<Void>() {
-			@Override
-			public Void call() {
-				while (true) {
-					try {
-						Thread.sleep(AppUtils.TRACE_TAB_FLSH_TERVAL);
-						List<PlayerTrace> traceList = gameService
-								.getCurrentPlayTrace();
-						if (traceList != null) {
-							if (traceModeList == null) {
-								return null;
+		if (traceFlushTask == null) {
+			traceFlushTask = new Task<Void>() {
+				@Override
+				public Void call() {
+					while (true) {
+						try {
+							Thread.sleep(AppUtils.TRACE_TAB_FLSH_TERVAL);
+							List<PlayerTrace> traceList = gameService
+									.getCurrentPlayTrace();
+							if (traceList != null) {
+								if (traceModeList == null) {
+									return null;
+								}
+								if (traceModeList.size() > 0) {
+									traceModeList.clear();
+								}
+								GameInfo gameInfo = gameService
+										.getGameById(runtimeDomain
+												.getCurrentGameId());
+								if (gameInfo == null || gameInfo.getIsUndo()) {
+									continue;
+								}
+								PlayerTrace trace = null;
+								for (int i = 0; i < traceList.size(); i++) {
+									trace = traceList.get(i);
+									traceModeList
+											.add(new PlayerTraceModel(
+													trace.getPlayerId(),
+													trace.getRemarkName(),
+													runtimeDomain
+															.getRunningPlayeres()
+															.get(trace
+																	.getRemarkName())
+															.getPoints(),
+													trace.getBetInfo(),
+													trace.getResultRuleName() == null ? ""
+															: trace.getResultRuleName(),
+													trace.getResultPoint() == null ? ""
+															: trace.getResultPoint() > 0 ? "赢"
+																	+ trace.getResultPoint()
+																	: "输"
+																			+ Math.abs(trace
+																					.getResultPoint())));
+								}
 							}
-							if (traceModeList.size() > 0) {
-								traceModeList.clear();
-							}
-							PlayerTrace trace = null;
-							for (int i = 0; i < traceList.size(); i++) {
-								trace = traceList.get(i);
-								traceModeList
-										.add(new PlayerTraceModel(
-												trace.getPlayerId(),
-												trace.getRemarkName(),
-												runtimeDomain
-														.getRunningPlayeres()
-														.get(trace
-																.getRemarkName())
-														.getPoints(),
-												trace.getBetInfo(),
-												trace.getResultRuleName() == null ? ""
-														: trace.getResultRuleName(),
-												trace.getResultPoint() == null ? ""
-														: trace.getResultPoint() > 0 ? "赢"
-																+ trace.getResultPoint()
-																: "输"
-																		+ Math.abs(trace
-																				.getResultPoint())));
-							}
+						} catch (Exception e) {
+							LOGGER.error("player table auto change failed!", e);
 						}
-					} catch (Exception e) {
-						LOGGER.error("player table auto change failed!", e);
-					}
 
+					}
 				}
+			};
+			if (traceFlushThread == null) {
+				traceFlushThread = new Thread(traceFlushTask);
+				traceFlushThread.setDaemon(Boolean.TRUE);
+				traceFlushThread.start();
 			}
-		};
-		Thread t1 = new Thread(task);
-		t1.setDaemon(Boolean.TRUE);
-		t1.start();
+			LOGGER.info("Auto trace flush Thread start");
+		}
 	}
 }

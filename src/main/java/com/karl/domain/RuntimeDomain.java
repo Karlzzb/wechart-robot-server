@@ -178,6 +178,11 @@ public class RuntimeDomain implements Serializable {
 	 * game serial No. for play
 	 */
 	public Long currentGameId;
+	
+	/**
+	 * game serial No. for play(before current)
+	 */
+	public Long beforeGameId;
 
 	/**
      * 
@@ -836,5 +841,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setCurrentRealPackageFee(Long currentRealPackageFee) {
 		this.currentRealPackageFee = currentRealPackageFee;
+	}
+
+	public Long getBeforeGameId() {
+		return beforeGameId;
+	}
+
+	public void setBeforeGameId(Long beforeGameId) {
+		this.beforeGameId = beforeGameId;
 	}
 }

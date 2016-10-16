@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.karl.db.domain.GameInfo;
 import com.karl.db.domain.Player;
 import com.karl.fx.FxmlView;
 import com.karl.fx.model.ChatGroupModel;
@@ -161,16 +162,16 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void confirmUndoGame(ActionEvent event) {
-		if (runtimeDomain.getCurrentGameId() != null
-				&& runtimeDomain.getCurrentGameId() > 0) {
+		if (runtimeDomain.getBeforeGameId() != null
+				&& runtimeDomain.getBeforeGameId() > 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("作废 第【" + runtimeDomain.getCurrentGameId() + "】期");
-			alert.setContentText("是否确定作废 第【" + runtimeDomain.getCurrentGameId() + "】期？");
-
+			alert.setTitle("作废 第【" + runtimeDomain.getBeforeGameId() + "】期");
+			alert.setContentText("是否确定作废 第【" + runtimeDomain.getBeforeGameId() + "】期？");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
-				gameService.undoTheGame(runtimeDomain.getCurrentGameId());
-				//TODO recover the view
+				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain.getCurrentGameId());
+				runtimeDomain.setBankerBetPoint(runtimeDomain.getBankerBetPoint()-gameInfo.getResultPoint());
+				bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
 			}
 		}
 	}
@@ -496,6 +497,9 @@ public class MainDeskController extends FxmlController {
 		bankerBetPoint
 				.setText(runtimeDomain.getBankerBetPoint() > 0 ? runtimeDomain
 						.getBankerBetPoint().toString() : "0");
+		runtimeDomain.setBeforeGameId(runtimeDomain.getCurrentGameId());
+		//TODO avoid repeat caculation
+		
 	}
 
 	@FXML
@@ -586,7 +590,7 @@ public class MainDeskController extends FxmlController {
 				playerFlushThread.setDaemon(Boolean.TRUE);
 				playerFlushThread.start();
 			}
-			LOGGER.info("Auto player Thread start");
+			LOGGER.info("Auto player flush Thread start");
 		}
 	}
 
