@@ -47,7 +47,7 @@
 }
 
 #config-fee-panel {
-	-fx-background-color: #ff8000;
+	-fx-background-color: #5689d8;
 }
 
 .colorPanel .label,
@@ -102,6 +102,10 @@
     -fx-background-radius: 0,0;
     -fx-text-fill: black;
     -fx-font-size: 12px;
+}
+
+.choice-box .context-menu .label {
+    -fx-text-fill: black;
 }
 
 .choice-box:hover,

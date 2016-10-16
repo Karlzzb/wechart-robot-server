@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?language javascript?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane 
-	prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.60"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.LoginController">
+<AnchorPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.LoginController">
 	<children>
-		<ImageView fx:id="loginImageView" fitHeight="160.0"
-			fitWidth="180.0" pickOnBounds="true"
-			preserveRatio="true" AnchorPane.bottomAnchor="30.0"
-			AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
-			AnchorPane.topAnchor="10.0">
-		</ImageView>
-		<ProgressBar fx:id="taskBar"
-			prefHeight="18.0"
-			prefWidth="176.0" progress="0.0" AnchorPane.bottomAnchor="5.0"
-			AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0"
-			AnchorPane.topAnchor="177.0" />
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+            		<ImageView fx:id="loginImageView" fitHeight="160.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </ImageView>
+            		<ProgressBar fx:id="taskBar" prefHeight="18.0" prefWidth="176.0" progress="0.0">
+                     <VBox.margin>
+                        <Insets left="12.0" />
+                     </VBox.margin>
+                  </ProgressBar>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
 	</children>
 </AnchorPane>

@@ -180,7 +180,7 @@
          <top>
             <HBox BorderPane.alignment="CENTER">
                <children>
-                  <Label styleClass="header-title" text="配置表" />
+                  <Label styleClass="header-title" text="配置" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" top="10.0" />

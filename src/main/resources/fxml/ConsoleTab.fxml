@@ -22,7 +22,7 @@
                         <Insets bottom="20.0" />
                      </VBox.margin>
                   </TextArea>
-            		<Button fx:id="cleanButton" mnemonicParsing="false" onAction="#clearLog" prefHeight="100.0" prefWidth="101.0" styleClass="btnBlock" text="清除日志">
+            		<Button fx:id="cleanButton" minHeight="40.0" mnemonicParsing="false" onAction="#clearLog" prefHeight="40.0" prefWidth="101.0" styleClass="btnBlock" text="清除日志">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
