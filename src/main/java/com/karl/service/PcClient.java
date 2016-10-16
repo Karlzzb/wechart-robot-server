@@ -31,8 +31,8 @@ public class PcClient {
 			.getLogger(PcClient.class);
 
 	private static final String socket_host = "127.0.0.1";
-	private static final int PC_LOCAL_PORT  = 12580;
-	private static final int PHONE_PORT  = 62001;
+	private static final int PC_LOCAL_PORT = 12580;
+	private static final int PHONE_PORT = 62001;
 
 	private Socket socket;
 
@@ -47,13 +47,13 @@ public class PcClient {
 
 	@Autowired
 	private RuntimeDomain runtimeDomain;
-	
+
 	private ADB mADB;
 
 	public PcClient() {
 		destory = Boolean.FALSE;
-		openConnection = new Thread(
-				new OpenConnection(socket_host, PC_LOCAL_PORT ));
+		openConnection = new Thread(new OpenConnection(socket_host,
+				PC_LOCAL_PORT));
 		openConnection.setDaemon(Boolean.TRUE);
 		openConnection.start();
 		isConnected = Boolean.FALSE;
@@ -76,7 +76,7 @@ public class PcClient {
 					Thread.sleep(5000);
 					mADB.initialize();
 					IDevice[] mDevices = mADB.getDevices();
-					if (mDevices == null ||mDevices.length < 1) {
+					if (mDevices == null || mDevices.length < 1) {
 						LOGGER.error("No devices found!");
 						mADB = null;
 						mADB = new ADB();
@@ -94,7 +94,7 @@ public class PcClient {
 					// Runtime.getRuntime().exec(
 					// adbPath+" shell am broadcast -a NotifyServiceStart");
 				} catch (Exception e) {
-					LOGGER.error("PcClient forward failed!",e);
+					LOGGER.error("PcClient forward failed!", e);
 				}
 				connnectToServer();
 			}
@@ -109,7 +109,7 @@ public class PcClient {
 				isConnected = Boolean.TRUE;
 				LOGGER.info("host【{}】 port【{}】 sent heartbeat! ", host, port);
 			} catch (Exception e) {
-				LOGGER.error("PcClient send heart beat failed!", e);
+				LOGGER.error("PcClient send heart beat failed!");
 				isConnected = Boolean.FALSE;
 			}
 		}
@@ -157,7 +157,7 @@ public class PcClient {
 
 			tempbuffer = null;
 		} catch (Exception e) {
-			LOGGER.error("Connection broken!", e);
+			LOGGER.error("PC Connection broken!");
 			isConnected = Boolean.FALSE;
 		}
 		return msg;
@@ -171,7 +171,8 @@ public class PcClient {
 	 */
 	private void interpretPackage(String packageInfo) {
 		try {
-			if (packageInfo == null || packageInfo.isEmpty()) {
+			if (packageInfo == null || packageInfo.isEmpty()
+					|| packageInfo.equals("{}")) {
 				return;
 			}
 
@@ -212,7 +213,7 @@ public class PcClient {
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			LOGGER.info("Luck package is {}", packageInfo);
 		} catch (ParseException pe) {
-			LOGGER.error("Luck package[{}] interpret failed!", packageInfo, pe);
+			LOGGER.error("Luck package[" + packageInfo + "] interpret failed!");
 			return;
 
 		} catch (Exception e) {

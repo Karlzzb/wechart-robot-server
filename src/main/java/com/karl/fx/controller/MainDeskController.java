@@ -44,6 +44,7 @@ import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
+import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
@@ -69,7 +70,6 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private TableColumn<PlayerModel, Boolean> colBankerSgin;
-
 
 	@FXML
 	private TableColumn<PlayerModel, String> colPlayerName;
@@ -124,8 +124,15 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private ProgressBar bar;
 
+	private Thread playerFlushThread;
+
+	private Task<Void> playerFlushTask;
+
+	private Boolean autoPlayerFlushContinue;
+
 	@Override
 	public void initialize() {
+		autoPlayerFlushContinue = Boolean.TRUE;
 		buildGroupBox();
 		buildPlayerTab();
 		playerAutoFlush();
@@ -143,7 +150,7 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void searchPlayer(String oldVal, String newVal) {
-		
+
 		if (newVal == null || newVal.isEmpty()) {
 			fillPlayerTab();
 			return;
@@ -316,7 +323,8 @@ public class MainDeskController extends FxmlController {
 			}
 		};
 		colBankerSgin.setCellFactory(radioFactory);
-		colBankerSgin.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
+		colBankerSgin
+				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
 						PlayerModel.ISBANKERCOLKEY));
 
 		colPlayerName
@@ -339,17 +347,20 @@ public class MainDeskController extends FxmlController {
 				.setOnEditCommit(new EventHandler<CellEditEvent<PlayerModel, String>>() {
 					@Override
 					public void handle(CellEditEvent<PlayerModel, String> cell) {
-						LOGGER.info("your edit value is " + cell.getNewValue());
-						/*
-						 * if (!StringUtils.matchLong(cell.getNewValue())) {
-						 * return; }
-						 */
-
-						if (cell.getNewValue().matches("\\d*")) {
-							((PlayerModel) cell.getTableView().getItems()
-									.get(cell.getTablePosition().getRow()))
-									.setPlayerPoint(cell.getNewValue());
-							gameService.ryncPlayersPoint(playerList);
+						if (!StringUtils.matchLong(cell.getNewValue())) {
+							return;
+						}
+						autoPlayerFlushContinue = Boolean.FALSE;
+						PlayerModel pModel = cell.getTableView().getItems()
+								.get(cell.getTablePosition().getRow());
+						try {
+							pModel.setPlayerPoint(cell.getNewValue());
+							gameService.ryncPlayersPoint(pModel);
+						} catch (Exception e) {
+							LOGGER.error("Player[" + pModel.getPlayerName()
+									+ "] change point failed!", e);
+						} finally {
+							autoPlayerFlushContinue = Boolean.TRUE;
 						}
 					}
 				});
@@ -374,11 +385,10 @@ public class MainDeskController extends FxmlController {
 			}
 			playerList.add(playerModle);
 		}
-		
+
 		flushRadioCol();
 		playerTab.setItems(playerList);
-		
-		
+
 	}
 
 	private void flushRadioCol() {
@@ -390,7 +400,8 @@ public class MainDeskController extends FxmlController {
 			}
 		};
 		colBankerSgin.setCellFactory(radioFactory);
-		colBankerSgin.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
+		colBankerSgin
+				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
 						PlayerModel.ISBANKERCOLKEY));
 	}
 
@@ -449,7 +460,7 @@ public class MainDeskController extends FxmlController {
 			};
 		};
 		service.start();
-        bar.progressProperty().bind(service.progressProperty());
+		bar.progressProperty().bind(service.progressProperty());
 	}
 
 	@FXML
@@ -510,38 +521,44 @@ public class MainDeskController extends FxmlController {
 	 * auto rync player table
 	 */
 	private void playerAutoFlush() {
-		Task<Void> task = new Task<Void>() {
-			@Override
-			public Void call() {
-				while (true) {
-					try {
-						Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
-						PlayerModel pModel = null;
-						Player pEntity = null;
-						if (playerList == null || playerList.size() < 1) {
-							continue;
-						}
-						for (int i = 0; i < playerList.size(); i++) {
-							pModel = playerList.get(i);
-							pModel.getPlayerName();
-							pEntity = runtimeDomain.getRunningPlayeres().get(
-									pModel.getPlayerName());
-							if (pEntity != null) {
-								pModel.setPlayerPoint(String.valueOf(pEntity
-										.getPoints() == null ? 0 : pEntity
-										.getPoints()));
+		if (playerFlushTask == null) {
+			playerFlushTask = new Task<Void>() {
+				@Override
+				public Void call() {
+					while (autoPlayerFlushContinue) {
+						try {
+							Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
+							PlayerModel pModel = null;
+							Player pEntity = null;
+							if (playerList == null || playerList.size() < 1) {
+								continue;
 							}
+							for (int i = 0; i < playerList.size(); i++) {
+								pModel = playerList.get(i);
+								pModel.getPlayerName();
+								pEntity = runtimeDomain.getRunningPlayeres()
+										.get(pModel.getPlayerName());
+								if (pEntity != null) {
+									pModel.setPlayerPoint(String
+											.valueOf(pEntity.getPoints() == null ? 0
+													: pEntity.getPoints()));
+								}
+							}
+						} catch (Exception e) {
+							LOGGER.error("player table auto change failed!", e);
 						}
-					} catch (Exception e) {
-						LOGGER.error("player table auto change failed!", e);
-					}
 
+					}
+					return null;
 				}
+			};
+			if (playerFlushThread == null) {
+				playerFlushThread = new Thread(playerFlushTask);
+				playerFlushThread.setDaemon(Boolean.TRUE);
+				playerFlushThread.start();
 			}
-		};
-		Thread t1 = new Thread(task);
-		t1.setDaemon(Boolean.TRUE);
-		t1.start();
+			LOGGER.info("Auto player Thread start");
+		}
 	}
 
 	private void startGameViewAction() {
@@ -619,7 +636,7 @@ public class MainDeskController extends FxmlController {
 			super.updateItem(item, empty);
 			final ObservableList<PlayerModel> items = getTableView().getItems();
 			if (items != null && getIndex() > -1) {
-				if (getIndex() < items.size() ) {
+				if (getIndex() < items.size()) {
 					radio.setSelected(items.get(getIndex()).getIsBanker());
 					setGraphic(radio);
 				}

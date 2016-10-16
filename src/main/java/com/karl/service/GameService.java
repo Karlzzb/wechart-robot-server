@@ -231,7 +231,7 @@ public class GameService {
 			}
 		}
 	}
-	
+
 	@Transactional
 	public void undoTheGame(Long gameId) {
 		if (gameId == null || gameId.compareTo(0L) < 0) {
@@ -243,7 +243,7 @@ public class GameService {
 		if (gameInfo == null || traceList == null) {
 			return;
 		}
-		
+
 		// write the data to db
 		for (int i = 0; i < traceList.size(); i++) {
 			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
@@ -254,9 +254,9 @@ public class GameService {
 					.getResultPoint()));
 		}
 		// banker point consistent
-		ryncPlayerPoint(gameInfo.getPlayerId(),
-				gameInfo.getResultPoint().compareTo(Long.valueOf(0)) > 0,
-				Math.abs(gameInfo.getResultPoint()));
+		ryncPlayerPoint(gameInfo.getPlayerId(), gameInfo.getResultPoint()
+				.compareTo(Long.valueOf(0)) > 0, Math.abs(gameInfo
+				.getResultPoint()));
 		gameInfo.setResultPoint(gameInfo.getResultPoint());
 		gameInfo.setIsUndo(Boolean.TRUE);
 		playerService.save(gameInfo);
@@ -501,16 +501,18 @@ public class GameService {
 							.abs(traceList.get(i).getResultPoint())).toString();
 		}
 
-		String content = MessageFormat.format(AppUtils.GAMERESULT,
-				runtimeDomain.getCurrentGameId(), runtimeDomain
-						.getCurrentGameKey(), runtimeDomain
-						.getCurrentGroupName(), winListStr, loseListStr,
-				allInListStr, DateUtils.timeStamp(runtimeDomain
-						.getCurrentLastPackegeTime().getTime()), DateUtils
-						.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
-								.getTime()
-								+ runtimeDomain.getCurrentTimeOut()
-								* 1000),
+		String content = MessageFormat.format(
+				AppUtils.GAMERESULT,
+				runtimeDomain.getCurrentGameId(),
+				runtimeDomain.getCurrentGameKey(),
+				runtimeDomain.getCurrentGroupName(),
+				winListStr,
+				loseListStr,
+				allInListStr,
+				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime()
+						.getTime()),
+				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
+						.getTime() + runtimeDomain.getCurrentTimeOut() * 1000),
 				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
 						.getTime()),
 				gameInfo.getBankerRemarkName(),
@@ -520,13 +522,20 @@ public class GameService {
 				winnerList.size(),// 13
 				loserList.size(),// 14
 				paceList.size(),// 15
-				runtimeDomain.getBankerBetPoint(), traceList.size(),
-				packageFee, bankerWinCut, runtimeDomain.getRunningPlayeres()
+				runtimeDomain.getBankerBetPoint(),
+				traceList.size(),
+				packageFee,
+				bankerWinCut,
+				runtimeDomain.getRunningPlayeres()
 						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
-				timeoutStr, runtimeDomain.getShowManageFee() ? "管理费： "
-						+ runtimeDomain.getManageFee() + "\n" : "", gameInfo.getResultPoint()
-						+ runtimeDomain.getManageFee() + packageFee
-						+ bankerWinCut);
+				timeoutStr,
+				runtimeDomain.getShowManageFee() ? "管理费： "
+						+ runtimeDomain.getManageFee() + "\n" : "",
+				gameInfo.getResultPoint() + runtimeDomain.getManageFee()
+						+ packageFee + bankerWinCut,
+				(bankerPackageTime - firstPackgeTime > runtimeDomain
+						.getCurrentTimeOut() * 1000) ? "庄家超时: "
+						+ DateUtils.timeStamp(bankerPackageTime) +"\n": "");
 
 		return content;
 	}
@@ -814,6 +823,13 @@ public class GameService {
 					Long.valueOf(playerView.getPlayerPoint()),
 					playerView.getWechatName());
 		}
+	}
+
+	public void ryncPlayersPoint(PlayerModel playerView) {
+		ryncPlayerPoint(playerView.getWechatId(), playerView.getWechatName(),
+				playerView.getPlayerId(), playerView.getPlayerNameRaw(),
+				Long.valueOf(playerView.getPlayerPoint()),
+				playerView.getWechatName());
 	}
 
 	private void ryncPlayerPoint(String webchatId, String wechatName,
