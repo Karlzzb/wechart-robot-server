@@ -35,11 +35,27 @@ public class StringUtils {
         return null;
     }
     
+    public static Boolean matchLongSplit(String str) {
+    	if(str == null || str.isEmpty()) {
+    		return Boolean.FALSE;
+    	}
+        Matcher m = LONGSPLIT.matcher(str);
+        return m.find();
+    }
+    
     public static Boolean matchLong(String str) {
     	if(str == null || str.isEmpty()) {
     		return Boolean.FALSE;
     	}
         Matcher m = LONG.matcher(str);
+        return m.find();
+    }
+    
+    public static Boolean matchDouble(String str) {
+    	if(str == null || str.isEmpty()) {
+    		return Boolean.FALSE;
+    	}
+        Matcher m = DOUBLE.matcher(str);
         return m.find();
     }
     

@@ -12,6 +12,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
@@ -19,9 +20,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.karl.db.domain.ApplyPoints;
-import com.karl.fx.model.CheckBoxButtonCellApply;
 import com.karl.fx.model.PlayerApply;
 import com.karl.utils.AppUtils;
+import com.karl.utils.ResouceUtils;
 
 @Component
 @Lazy
@@ -30,8 +31,8 @@ public class ApprovalTabController extends FxmlController {
 	@FXML
 	private TableView<PlayerApply> approvalTab;
 
-	@FXML
-	private TableColumn<PlayerApply, Boolean> appCheck;
+//	@FXML
+//	private TableColumn<PlayerApply, Boolean> appCheck;
 
 	@FXML
 	private TableColumn<PlayerApply, String> playerName;
@@ -55,14 +56,14 @@ public class ApprovalTabController extends FxmlController {
 
 	private void buidApprovalTab() {
 		approvalTab.setEditable(false);
-		appCheck.setCellFactory(new Callback<TableColumn<PlayerApply, Boolean>, TableCell<PlayerApply, Boolean>>() {
-			@Override
-			public TableCell<PlayerApply, Boolean> call(
-					TableColumn<PlayerApply, Boolean> arg0) {
-				return new CheckBoxButtonCellApply();
-			}
-
-		});
+//		appCheck.setCellFactory(new Callback<TableColumn<PlayerApply, Boolean>, TableCell<PlayerApply, Boolean>>() {
+//			@Override
+//			public TableCell<PlayerApply, Boolean> call(
+//					TableColumn<PlayerApply, Boolean> arg0) {
+//				return new CheckBoxButtonCellApply();
+//			}
+//
+//		});
 		applyInfo.setSortable(Boolean.TRUE);
 
 		approvalOption
@@ -161,9 +162,9 @@ public class ApprovalTabController extends FxmlController {
 			gridPane.setAlignment(Pos.CENTER);
 
 			pass = new Button();
-			pass.setText("通过 ");
+			pass.setGraphic(new ImageView(ResouceUtils.IMAGEOK));
 			deny = new Button();
-			deny.setText("驳回 ");
+			deny.setGraphic(new ImageView(ResouceUtils.IMAGENO));
 
 			pass.setOnAction(new EventHandler<ActionEvent>() {
 				@Override

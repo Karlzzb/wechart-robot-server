@@ -5,7 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 
-public class EditingCell extends TableCell<PlayerModel, String> {
+public class EditingCell<T> extends TableCell<T, String> {
     private TextField textField;
     
     public EditingCell() {
@@ -25,7 +25,6 @@ public class EditingCell extends TableCell<PlayerModel, String> {
     @Override
     public void cancelEdit() {
         super.cancelEdit();
-
         setText(String.valueOf(getItem()));
         setGraphic(null);
     }
@@ -42,7 +41,7 @@ public class EditingCell extends TableCell<PlayerModel, String> {
                 if (textField != null) {
                     textField.setText(getString());
                 }
-                setText(null);
+                setText(getString());
                 setGraphic(textField);
             } else {
                 setText(getString());

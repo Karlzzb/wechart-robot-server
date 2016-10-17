@@ -215,4 +215,14 @@ public class PlayerService {
 		return gameRepository.findOne(gameId);
 	}
 
+	public PlayerTrace getPlayerTraceById(Long traceId) {
+		Assert.notNull(traceId, "traceId must not be null");
+		return playerTraceRepository.findOne(traceId);
+	}
+
+	public void deleteTraceById(Long traceId) {
+		Assert.notNull(traceId, "traceId must not be null");
+		playerTraceRepository.delete(traceId);
+	}
+
 }

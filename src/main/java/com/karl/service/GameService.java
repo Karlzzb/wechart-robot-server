@@ -26,6 +26,7 @@ import com.karl.db.service.PlayerService;
 import com.karl.domain.LotteryRule;
 import com.karl.domain.RuntimeDomain;
 import com.karl.fx.controller.ApprovalTabController;
+import com.karl.fx.controller.GameRunningTabController;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
 import com.karl.utils.DateUtils;
@@ -50,6 +51,11 @@ public class GameService {
 	@Autowired
 	@Lazy
 	private ApprovalTabController approvalTabController;
+	
+	
+	@Autowired
+	@Lazy
+	private GameRunningTabController gameRunningTabController;
 
 	public void mainMessageHandle(String messageFrom, String webChatId,
 			String remarkName, String content) {
@@ -622,6 +628,7 @@ public class GameService {
 				player.getWebchatId(), player.getWechatName(), remarkName,
 				betInfo, betPoint, isLowRisk, betIndex, (new Date()).getTime());
 		playerService.save(playerTrace);
+		gameRunningTabController.flushBetInfo();
 	}
 
 	/**
@@ -641,6 +648,7 @@ public class GameService {
 				.getCurrentGameKey())) {
 			puttingLuckInfoWithBetInfo(index, remarkName, luckInfo, time);
 		}
+		gameRunningTabController.flushLuckInfo();
 	}
 
 	/**
@@ -1108,5 +1116,52 @@ public class GameService {
 			return null;
 		}
 		return playerService.getGameById(gameId);
+	}
+
+	public PlayerTrace updatePlayerTraceBetInfo(Long traceId, String betInfo) {
+		PlayerTrace trace = null;
+		try {
+			trace = playerService.getPlayerTraceById(traceId);
+			trace.setBetInfo(betInfo);
+			String[] betInfoStr = betInfo.split(StringUtils.BETSPLIT);
+			if (betInfoStr.length < 2) {
+				trace.setBetIndex(Integer.valueOf(betInfoStr[0]));
+				trace.setBetPoint(Long.valueOf(betInfoStr[1]));
+			}
+			return playerService.save(trace);
+		} catch (Exception e) {
+			LOGGER.error("update PlayerTrace[" + traceId + "] betInfo["
+					+ betInfo + "] failed!", e);
+		}
+		return trace;
+	}
+
+	public PlayerTrace updatePlayerTraceLuckInfo(Long traceId, Double luckInfo) {
+		PlayerTrace trace = null;
+		try {
+			trace = playerService.getPlayerTraceById(traceId);
+			LotteryRule playerLottery = getResult(luckInfo);
+			trace.setLuckInfo(luckInfo);
+			trace.setResultTimes(playerLottery.getTimes());
+			trace.setResultRuleName(playerLottery.getRuleName());
+			return playerService.save(trace);
+		} catch (Exception e) {
+			LOGGER.error("update PlayerTrace[" + traceId + "] luckInfo["
+					+ luckInfo + "] failed!", e);
+		}
+		return trace;
+	}
+
+	public boolean deleteTraceById(Long traceId) {
+		if (traceId == null || traceId < 0) {
+			return Boolean.FALSE;
+		}
+		try {
+			playerService.deleteTraceById(traceId);
+			return Boolean.TRUE;
+		} catch (Exception e) {
+
+		}
+		return Boolean.FALSE;
 	}
 }

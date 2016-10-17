@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.karl.db.domain.PlayerTrace;
 
-public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, String> {
+public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Long> {
 
     @Query("from PlayerTrace p where p.gameSerialNo = ?1 order by resultTimes desc, p.betTime desc, betPoint desc")
     List<PlayerTrace> findByGameId(Long gameId);

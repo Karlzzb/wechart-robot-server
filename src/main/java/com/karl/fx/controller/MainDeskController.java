@@ -98,10 +98,7 @@ public class MainDeskController extends FxmlController {
 	private TextField definedBet;
 
 	@FXML
-	private ToggleButton gameStart;
-
-	@FXML
-	private ToggleButton gameEnd;
+	private ToggleButton gameSingal;
 
 	@FXML
 	private Label bankerLabel;
@@ -112,7 +109,7 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private Button publishBut;
 
-	final ToggleGroup group = new ToggleGroup();
+	final ToggleGroup gameSingalGroup = new ToggleGroup();
 
 	ToggleGroup playerGroup = new ToggleGroup();
 
@@ -122,6 +119,10 @@ public class MainDeskController extends FxmlController {
 	@Autowired
 	@Lazy
 	private MessageController messageController;
+
+	@Autowired
+	@Lazy
+	private GameRunningTabController gameRunningTabController;
 
 	@FXML
 	private TextField playerSearchText;
@@ -166,12 +167,17 @@ public class MainDeskController extends FxmlController {
 				&& runtimeDomain.getBeforeGameId() > 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("作废 第【" + runtimeDomain.getBeforeGameId() + "】期");
-			alert.setContentText("是否确定作废 第【" + runtimeDomain.getBeforeGameId() + "】期？");
+			alert.setContentText("是否确定作废 第【" + runtimeDomain.getBeforeGameId()
+					+ "】期？");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
-				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain.getCurrentGameId());
-				runtimeDomain.setBankerBetPoint(runtimeDomain.getBankerBetPoint()-gameInfo.getResultPoint());
-				bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
+				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain
+						.getCurrentGameId());
+				runtimeDomain.setBankerBetPoint(runtimeDomain
+						.getBankerBetPoint() - gameInfo.getResultPoint());
+				bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
+						.toString());
+				gameRunningTabController.cleanCurrentTrace();
 			}
 		}
 	}
@@ -199,13 +205,15 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void buildGameQuicker() {
-		gameStart.setToggleGroup(group);
-		gameEnd.setToggleGroup(group);
-		gameStart.setUserData(Boolean.TRUE);
-		gameEnd.setUserData(Boolean.FALSE);
-		gameStart.setSelected(runtimeDomain.getGlobalGameSignal());
-		gameEnd.setSelected(runtimeDomain.getGlobalGameSignal() ? Boolean.FALSE
-				: Boolean.TRUE);
+		gameSingal.setToggleGroup(gameSingalGroup);
+		gameSingal.setUserData(Boolean.TRUE);
+		gameSingal.setSelected(runtimeDomain.getGlobalGameSignal());
+		if (runtimeDomain.getGlobalGameSignal()) {
+			gameSingal.setText("结束");
+		} else {
+			gameSingal.setText("开局");
+		}
+
 		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
 		bankerBetPoint.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -228,30 +236,64 @@ public class MainDeskController extends FxmlController {
 		});
 
 		setCurrentBankSign(runtimeDomain.getBankerRemarkName());
-		group.selectedToggleProperty().addListener(
+		gameSingalGroup.selectedToggleProperty().addListener(
 				new ChangeListener<Toggle>() {
 					public void changed(ObservableValue<? extends Toggle> ov,
 							Toggle toggle, Toggle new_toggle) {
-						if (new_toggle == null) {
-							runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
-						} else {
-							runtimeDomain.setGlobalGameSignal((Boolean) group
-									.getSelectedToggle().getUserData());
-							// save current player when game started
-							if ((Boolean) group.getSelectedToggle()
-									.getUserData()) {
-								gameService.ryncPlayersPoint(playerList);
+						if (isInitializing) {
+							return;
+						}
+
+						Boolean selected = Boolean.FALSE;
+						if (new_toggle != null) {
+							selected = (Boolean) new_toggle.getUserData();
+						}
+
+						if (selected) {
+							if (runtimeDomain.getBankerRemarkName() == null
+									|| runtimeDomain.getBankerRemarkName()
+											.isEmpty()) {
+								Alert alert = new Alert(AlertType.WARNING);
+								alert.setTitle("错误操作");
+								alert.setContentText("请先选择庄家，再开局！");
+								alert.showAndWait();
+								gameSingal.setSelected(Boolean.FALSE);
+								return;
+							}
+							if (runtimeDomain.getBankerBetPoint().compareTo(
+									Long.valueOf(0)) <= 0) {
+								Alert alert = new Alert(AlertType.WARNING);
+								alert.setTitle("错误操作");
+								alert.setContentText("请确认庄家的上庄积分大于0，再开局！");
+								alert.showAndWait();
+								gameSingal.setSelected(Boolean.FALSE);
+								return;
 							}
 						}
 
+						runtimeDomain.setGlobalGameSignal(selected);
 						// start/end game, the view actions
 						if (runtimeDomain.getGlobalGameSignal()) {
+							gameService.ryncPlayersPoint(playerList);
 							startGameViewAction();
+							gameRunningTabController.gameStartFlush();
+							gameSingal.setText("结束");
 							openMessageBoard(gameService.declareGame());
 						} else {
+							gameSingal.setText("开局");
+							if (runtimeDomain.getBankerRemarkName() == null
+									|| runtimeDomain.getBankerRemarkName()
+											.isEmpty()) {
+								return;
+							}
+							if (runtimeDomain.getBankerBetPoint().compareTo(
+									Long.valueOf(0)) <= 0) {
+								return;
+							}
 							endGameViewAction();
 							openMessageBoard(gameService.declareGame());
 						}
+
 					}
 				});
 
@@ -362,7 +404,7 @@ public class MainDeskController extends FxmlController {
 		Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>> cellFactory = new Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>>() {
 			public TableCell<PlayerModel, String> call(
 					TableColumn<PlayerModel, String> p) {
-				return new EditingCell();
+				return new EditingCell<PlayerModel>();
 			}
 		};
 		colPlayerPoint.setEditable(Boolean.TRUE);
@@ -374,12 +416,14 @@ public class MainDeskController extends FxmlController {
 				.setOnEditCommit(new EventHandler<CellEditEvent<PlayerModel, String>>() {
 					@Override
 					public void handle(CellEditEvent<PlayerModel, String> cell) {
+						PlayerModel pModel = cell.getTableView().getItems()
+								.get(cell.getTablePosition().getRow());
 						if (!StringUtils.matchLong(cell.getNewValue())) {
+							flushPlayerList();
+							autoPlayerFlushContinue = Boolean.TRUE;
 							return;
 						}
 						autoPlayerFlushContinue = Boolean.FALSE;
-						PlayerModel pModel = cell.getTableView().getItems()
-								.get(cell.getTablePosition().getRow());
 						try {
 							pModel.setPlayerPoint(cell.getNewValue());
 							gameService.ryncPlayersPoint(pModel);
@@ -492,14 +536,40 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void openLottery(ActionEvent event) {
+		if (runtimeDomain.getGlobalGameSignal()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请先手动点击结束， 确认当前局数据收集完成！");
+			alert.showAndWait();
+			return;
+		}
+		if (runtimeDomain.getCurrentGameId() == null
+				|| runtimeDomain.getCurrentGameId().compareTo(Long.valueOf(0)) <= 0) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("无可用计算的数据，请确定是否已完成开局和包采集！");
+			alert.showAndWait();
+			return;
+		}
+
+		if (runtimeDomain.getBeforeGameId() != null
+				&& runtimeDomain.getBeforeGameId().compareTo(
+						runtimeDomain.getCurrentGameId()) == 0) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("重复操作");
+			alert.setContentText("本局已完成计算，继续操作会导致重复扣分。是否继续？");
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.CANCEL) {
+				return;
+			}
+		}
 		String content = gameService.openLottery();
 		openMessageBoard(content);
 		bankerBetPoint
 				.setText(runtimeDomain.getBankerBetPoint() > 0 ? runtimeDomain
 						.getBankerBetPoint().toString() : "0");
 		runtimeDomain.setBeforeGameId(runtimeDomain.getCurrentGameId());
-		//TODO avoid repeat caculation
-		
+		gameRunningTabController.flushResult();
 	}
 
 	@FXML
@@ -558,31 +628,17 @@ public class MainDeskController extends FxmlController {
 			playerFlushTask = new Task<Void>() {
 				@Override
 				public Void call() {
-					while (autoPlayerFlushContinue) {
+					while (true) {
 						try {
 							Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
-							PlayerModel pModel = null;
-							Player pEntity = null;
-							if (playerList == null || playerList.size() < 1) {
-								continue;
-							}
-							for (int i = 0; i < playerList.size(); i++) {
-								pModel = playerList.get(i);
-								pModel.getPlayerName();
-								pEntity = runtimeDomain.getRunningPlayeres()
-										.get(pModel.getPlayerName());
-								if (pEntity != null) {
-									pModel.setPlayerPoint(String
-											.valueOf(pEntity.getPoints() == null ? 0
-													: pEntity.getPoints()));
-								}
+							if (autoPlayerFlushContinue) {
+								flushPlayerList();
 							}
 						} catch (Exception e) {
 							LOGGER.error("player table auto change failed!", e);
 						}
 
 					}
-					return null;
 				}
 			};
 			if (playerFlushThread == null) {
@@ -591,6 +647,26 @@ public class MainDeskController extends FxmlController {
 				playerFlushThread.start();
 			}
 			LOGGER.info("Auto player flush Thread start");
+		}
+	}
+	
+	private synchronized void flushPlayerList() {
+		PlayerModel pModel = null;
+		Player pEntity = null;
+		if (playerList == null || playerList.size() < 1) {
+			return;
+		}
+		for (int i = 0; i < playerList.size(); i++) {
+			pModel = playerList.get(i);
+			pModel.getPlayerName();
+			pEntity = runtimeDomain
+					.getRunningPlayeres().get(
+							pModel.getPlayerName());
+			if (pEntity != null) {
+				pModel.setPlayerPoint(String
+						.valueOf(pEntity.getPoints() == null ? 0
+								: pEntity.getPoints()));
+			}
 		}
 	}
 

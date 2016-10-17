@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.effect.*?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -30,7 +21,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
 		<BorderPane prefHeight="692.0" prefWidth="1072.0">
 			<top>
@@ -103,7 +94,7 @@
 								</VBox>
 								<Pane prefHeight="154.0" prefWidth="197.0">
 									<children>
-										<ToggleButton fx:id="gameStart" layoutX="11.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
+										<ToggleButton fx:id="gameSingal" layoutX="11.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
 											<font>
 												<Font size="12.0" />
 											</font>
@@ -129,11 +120,6 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<ToggleButton fx:id="gameEnd" layoutX="94.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="86.0" text="结束" textAlignment="CENTER">
-											<cursor>
-												<Cursor fx:constant="HAND" />
-											</cursor>
-										</ToggleButton>
 										<Button fx:id="undoGameButton" layoutX="11.0" layoutY="104.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="170.0" text="作废当前局">
 											<styleClass>
 												<String fx:value="btnGhost" />
