@@ -23,9 +23,8 @@ public class ADB {
 					.getAbsoluteFile().getParentFile().toString();
 			if (adbLocation != null && !adbLocation.isEmpty()) {
 				adbLocation += File.separator + "/adb/adb.exe";
-			}/*
-			 * else { adbLocation = "adb"; }
-			 */
+			}else { adbLocation = "adb"; }
+			 
 			LOGGER.debug("adbLocation=" + adbLocation);
 			AndroidDebugBridge.initIfNeeded(false);
 			mAndroidDebugBridge = AndroidDebugBridge.createBridge(adbLocation,
