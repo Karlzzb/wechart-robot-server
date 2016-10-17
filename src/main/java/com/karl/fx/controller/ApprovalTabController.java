@@ -105,7 +105,7 @@ public class ApprovalTabController extends FxmlController {
 		}
 		approvalTab.setItems(applyList);
 	}
-
+	
 	public void addApply(String webChatId, ApplyPoints applyEntity) {
 		if (applyEntity == null) {
 			return;
@@ -116,6 +116,18 @@ public class ApprovalTabController extends FxmlController {
 						applyEntity.getApplyType(), applyEntity.getPoints(),
 						applyEntity.getApprovalStatus(), applyEntity
 								.getWebChatId(), applyEntity.getWebchatName()));
+		flushDefiedCol();
+	}
+	
+	private void flushDefiedCol() {
+		approvalOption
+		.setCellFactory(new Callback<TableColumn<PlayerApply, Long>, TableCell<PlayerApply, Long>>() {
+			@Override
+			public TableCell<PlayerApply, Long> call(
+					TableColumn<PlayerApply, Long> applyId) {
+				return new MultiButtonCellApply();
+			}
+		});		
 	}
 
 /*	@FXML
@@ -202,6 +214,7 @@ public class ApprovalTabController extends FxmlController {
 			for (int i = 0; i < items.size(); i++) {
 				if (i == getIndex()) {
 					applyList.remove(i);
+					flushDefiedCol();
 				}
 			}
 		}

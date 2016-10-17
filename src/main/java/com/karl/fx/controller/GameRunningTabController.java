@@ -6,8 +6,10 @@ import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -18,6 +20,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
 import org.slf4j.Logger;
@@ -63,7 +66,7 @@ public class GameRunningTabController extends FxmlController {
 	private TableColumn<PlayerTraceModel, String> resultInfo;
 
 	@FXML
-	private TableColumn<PlayerTraceModel, PlayerTraceModel> optionsCol;
+	private TableColumn<PlayerTraceModel, Long> optionsCol;
 
 	private ObservableList<PlayerTraceModel> traceModeList;
 
@@ -170,38 +173,35 @@ public class GameRunningTabController extends FxmlController {
 		});
 
 		// button col
+		flushDefiedCol();
+
+	}
+	
+	private void flushDefiedCol() {
 		optionsCol
-				.setCellFactory(param -> new TableCell<PlayerTraceModel, PlayerTraceModel>() {
-					private final Button deleteButton = new Button("",
-							new ImageView(ResouceUtils.IMAGENO));
+		.setCellFactory(new Callback<TableColumn<PlayerTraceModel, Long>, TableCell<PlayerTraceModel, Long>>() {
+			@Override
+			public TableCell<PlayerTraceModel, Long> call(
+					TableColumn<PlayerTraceModel, Long> applyId) {
+				return new TraceDelCell();
+			}
+		});		
+	}
+	
+	private void deleteTrace(PlayerTraceModel traceModel) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("删除确认");
+		alert.setContentText("确定删除玩家【"
+				+ traceModel.getPlayerName() + "】 的这条下注信息？");
 
-					@Override
-					protected void updateItem(PlayerTraceModel traceModel,
-							boolean empty) {
-						super.updateItem(traceModel, empty);
-						if (traceModel == null) {
-							setGraphic(null);
-							return;
-						}
-						setGraphic(deleteButton);
-						deleteButton.setOnAction(event -> delete(traceModel));
-					}
-
-					private void delete(PlayerTraceModel traceModel) {
-						Alert alert = new Alert(AlertType.CONFIRMATION);
-						alert.setTitle("删除确认");
-						alert.setContentText("确定删除玩家【"
-								+ traceModel.getPlayerName() + "】 的这条下注信息？");
-
-						Optional<ButtonType> result = alert.showAndWait();
-						if (result.get() == ButtonType.OK) {
-							if (gameService.deleteTraceById(traceModel
-									.getTraceId())) {
-								getTableView().getItems().remove(traceModel);
-							}
-						}
-					}
-				});
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			if (gameService.deleteTraceById(traceModel
+					.getTraceId())) {
+				traceTab.getItems().remove(traceModel);
+			}
+			flushDefiedCol();
+		}
 	}
 
 	private synchronized void fillTraceTab() {
@@ -239,6 +239,7 @@ public class GameRunningTabController extends FxmlController {
 								.getResultRuleName(), resultInfo));
 			}
 		}
+		flushDefiedCol();
 		traceTab.setItems(traceModeList);
 	}
 
@@ -334,6 +335,57 @@ public class GameRunningTabController extends FxmlController {
 			traceModeList.clear();
 		}
 		traceTab.setItems(traceModeList);
+	}
+	
+	
+	private class TraceDelCell extends TableCell<PlayerTraceModel, Long> {
+
+		private GridPane gridPane;
+
+		private Button traceDel;
+
+		public TraceDelCell() {
+			createButtons();
+		}
+
+		private void createButtons() {
+			gridPane = new GridPane();
+			gridPane.setAlignment(Pos.CENTER);
+
+			traceDel = new Button();
+			traceDel.setGraphic(new ImageView(ResouceUtils.IMAGENO));
+
+			traceDel.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					int index = traceTab.getSelectionModel()
+							.getSelectedIndex();
+
+					index = getIndex();
+					if ((index != -1)) {
+						deleteTrace(traceTab.getItems().get(index));
+					}
+				}
+			});
+
+			gridPane.add(traceDel, 0, 0);
+		}
+
+		@Override
+		public void commitEdit(Long t) {
+			super.commitEdit(t);
+		}
+
+		@Override
+		public void updateItem(Long item, boolean empty) {
+			super.updateItem(item, empty);
+			final ObservableList<PlayerTraceModel> items = getTableView().getItems();
+			if (items != null) {
+				if (getIndex() < items.size()) {
+					setGraphic(gridPane);
+				}
+			}
+		}
 	}
 
 }
