@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -21,13 +30,21 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
 		<BorderPane prefHeight="692.0" prefWidth="1072.0">
 			<top>
 				<HBox BorderPane.alignment="CENTER">
 					<children>
 						<Label styleClass="header-title" text="工作台" />
+						<ImageView fx:id="imgLoad" fitHeight="33.0" fitWidth="30.0" layoutX="192.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" visible="true">
+					         <image>
+					            <Image url="@../img/301.GIF" />
+					         </image>
+                     <HBox.margin>
+                        <Insets left="30.0" top="5.0" />
+                     </HBox.margin>
+					     </ImageView>
 						<ProgressBar fx:id="bar" layoutY="591.0" prefHeight="20.0" prefWidth="253.0" progress="0.0" />
 						<Region HBox.hgrow="ALWAYS" />
 					</children>
