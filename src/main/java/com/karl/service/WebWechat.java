@@ -794,6 +794,7 @@ public class WebWechat {
 			remarkName = runtimeDomain.getUser().getString("NickName");
 			content = jsonMsg.getString("Content");
 			webChatId = runtimeDomain.getUser().getString("UserName");
+			gameService.mainSelfMessageHandle(content);
 			return;
 		}
 

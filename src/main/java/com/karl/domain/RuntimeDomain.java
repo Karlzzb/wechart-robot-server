@@ -63,7 +63,7 @@ public class RuntimeDomain implements Serializable {
 		currentTimeOutRule = AppUtils.TIMEOUTPAIDONETIME;
 		currentTimeOutRuleBanker = AppUtils.TIMEOUTPAIDONETIME;
 		currentLotteryRule = AppUtils.LOTTERYRULE3;
-		currentTimeOut = 21;
+		currentTimeOut = 3;
 		messageBoardCount = 0;
 		manageFee = 130L;
 		showManageFee = Boolean.TRUE;

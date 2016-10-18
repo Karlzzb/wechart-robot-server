@@ -12,6 +12,8 @@ public class StringUtils {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(StringUtils.class);
 
+	public static final String SELFPACKSPLIT = "<br/>";
+
     public static Pattern DOUBLE = Pattern.compile("^([0-9]*\\.?[0-9]+)$");
     public static Pattern LONGSPLIT = Pattern.compile("^([1-9]+[0-9]*/[1-9]+[0-9]*)$");
     public static Pattern SUOHAPERF = Pattern.compile("^(梭哈)+([1-9]+[0-9]*)(梭哈)+$");
@@ -20,6 +22,10 @@ public class StringUtils {
     public static Pattern SUBPOINT = Pattern.compile("^回\\s*([1-9]+[0-9]*)$");
     public static Pattern PUTPOINT = Pattern.compile("^上\\s*([1-9]+[0-9]*)$");
     public static Pattern DRAWPOINT = Pattern.compile("^下\\s*([1-9]+[0-9]*)$");
+    
+    public static Pattern SELFPACKHEAD = Pattern.compile("^【包信息】.*");
+    
+    public static Pattern SELFPACKLINE = Pattern.compile("([1-9]+[0-9]*)位: (.*), ([0-9]*\\.?[0-9]+), (.*)");
     
     public static String ANGLEINLINE = "</?[^>]+>";
     
@@ -33,6 +39,14 @@ public class StringUtils {
             return m.group(1);
         }
         return null;
+    }
+    
+    public static Boolean matchSelfPackageHead(String str) {
+    	if(str == null || str.isEmpty()) {
+    		return Boolean.FALSE;
+    	}
+        Matcher m = SELFPACKHEAD.matcher(str);
+        return m.find();
     }
     
     public static Boolean matchLongSplit(String str) {
@@ -79,5 +93,5 @@ public class StringUtils {
     	 
     	return key;
     }
-
+    
 }

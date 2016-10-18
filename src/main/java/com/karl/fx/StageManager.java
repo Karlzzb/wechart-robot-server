@@ -30,7 +30,9 @@ public class StageManager {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
             	webWechat.setStopRequested(Boolean.FALSE);
-            	pcClient.destory();
+            	if(pcClient != null) {
+            		pcClient.destory();
+            	}
             	System.exit(0);
             }
         });
@@ -38,12 +40,13 @@ public class StageManager {
 
     public void switchScene(final FxmlView view) {
         Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
-        show(viewRootNodeHierarchy, view.getFxmlFile());
+//        show(viewRootNodeHierarchy, view.getTitle());
+        show(viewRootNodeHierarchy, "翱翔出品");
     }
     
     public void popupWindow(final FxmlView view) {
         Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
-        popup(viewRootNodeHierarchy, view.getFxmlFile());
+        popup(viewRootNodeHierarchy, view.getTitle());
     }
     
     private void popup(final Parent rootnode, String title) {

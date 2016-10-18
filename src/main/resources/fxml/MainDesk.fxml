@@ -94,7 +94,7 @@
 								</VBox>
 								<Pane prefHeight="154.0" prefWidth="197.0">
 									<children>
-										<ToggleButton fx:id="gameSingal" layoutX="11.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
+										<ToggleButton fx:id="gameSingal" layoutX="7.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
 											<font>
 												<Font size="12.0" />
 											</font>
@@ -102,7 +102,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</ToggleButton>
-										<Button fx:id="publishBut" layoutX="105.0" layoutY="68.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="75.0" text="发布榜单">
+										<Button fx:id="publishBut" layoutX="7.0" layoutY="69.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="78.0" text="发布榜单">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -111,7 +111,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="openLotteryBut" layoutX="11.0" layoutY="67.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0" prefWidth="70.0" text="计算">
+										<Button fx:id="openLotteryBut" layoutX="103.0" layoutY="30.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0" prefWidth="78.0" text="计算">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -120,7 +120,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="undoGameButton" layoutX="11.0" layoutY="104.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="170.0" text="作废当前局">
+										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="104.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="78.0" text="作废上一局">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -129,6 +129,24 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
+                              <Button fx:id="manualFlushBut" layoutX="104.0" layoutY="69.0" mnemonicParsing="false" onAction="#manuallyFlushTraceTab" prefHeight="28.0" prefWidth="78.0" text="手动刷新">
+                                 <styleClass>
+                                    <String fx:value="btnGhost" />
+                                    <String fx:value="btnNormal" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="cleanAllTraceBut" layoutX="104.0" layoutY="104.0" mnemonicParsing="false" onAction="#cleanAllTrace" prefHeight="28.0" prefWidth="78.0" text="清空">
+                                 <styleClass>
+                                    <String fx:value="btnGhost" />
+                                    <String fx:value="btnNormal" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
 									</children>
 								</Pane>
 							</children>

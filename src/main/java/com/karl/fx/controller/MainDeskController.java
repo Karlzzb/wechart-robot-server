@@ -109,6 +109,12 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private Button publishBut;
 
+	@FXML
+	private Button manualFlushBut;
+
+	@FXML
+	private Button cleanAllTraceBut;
+
 	final ToggleGroup gameSingalGroup = new ToggleGroup();
 
 	ToggleGroup playerGroup = new ToggleGroup();
@@ -163,12 +169,20 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void confirmUndoGame(ActionEvent event) {
+		if (runtimeDomain.getGlobalGameSignal()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请勿在开局过程中操作, 本操作用于恢复最近一次完成计算的游戏局！");
+			alert.showAndWait();
+			return;
+		}
+
 		if (runtimeDomain.getBeforeGameId() != null
 				&& runtimeDomain.getBeforeGameId() > 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("作废 第【" + runtimeDomain.getBeforeGameId() + "】期");
-			alert.setContentText("是否确定作废 第【" + runtimeDomain.getBeforeGameId()
-					+ "】期？");
+			alert.setContentText("本操作用于恢复最近一次完成计算的游戏局！ 是否确定作废 第【"
+					+ runtimeDomain.getBeforeGameId() + "】期？");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
 				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain
@@ -580,6 +594,33 @@ public class MainDeskController extends FxmlController {
 		}
 	}
 
+	@FXML
+	private void manuallyFlushTraceTab(ActionEvent event) {
+		gameRunningTabController.manuallyFlush();
+	}
+
+	@FXML
+	private void cleanAllTrace(ActionEvent event) {
+		if (!runtimeDomain.getShowManageFee()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("仅能在开局过程中使用，用于清空本局的所有下注和包信息！");
+			alert.showAndWait();
+			return;
+		}
+
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("确认操作");
+		alert.setContentText("本操作会清空本局所有的下注和包信息。是否继续？");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.CANCEL) {
+			return;
+		}
+
+		gameService.cleanTraceInfo(runtimeDomain.getCurrentGameId());
+		gameRunningTabController.flushLuckInfo();
+	}
+
 	private void openMessageBoard(String content) {
 		if (isInitializing) {
 			return;
@@ -649,23 +690,24 @@ public class MainDeskController extends FxmlController {
 			LOGGER.info("Auto player flush Thread start");
 		}
 	}
-	
-	private synchronized void flushPlayerList() {
-		PlayerModel pModel = null;
-		Player pEntity = null;
-		if (playerList == null || playerList.size() < 1) {
-			return;
-		}
-		for (int i = 0; i < playerList.size(); i++) {
-			pModel = playerList.get(i);
-			pModel.getPlayerName();
-			pEntity = runtimeDomain
-					.getRunningPlayeres().get(
-							pModel.getPlayerName());
-			if (pEntity != null) {
-				pModel.setPlayerPoint(String
-						.valueOf(pEntity.getPoints() == null ? 0
-								: pEntity.getPoints()));
+
+	private void flushPlayerList() {
+		synchronized (this) {
+			PlayerModel pModel = null;
+			Player pEntity = null;
+			if (playerList == null || playerList.size() < 1) {
+				return;
+			}
+			for (int i = 0; i < playerList.size(); i++) {
+				pModel = playerList.get(i);
+				pModel.getPlayerName();
+				pEntity = runtimeDomain.getRunningPlayeres().get(
+						pModel.getPlayerName());
+				if (pEntity != null) {
+					pModel.setPlayerPoint(String
+							.valueOf(pEntity.getPoints() == null ? 0 : pEntity
+									.getPoints()));
+				}
 			}
 		}
 	}

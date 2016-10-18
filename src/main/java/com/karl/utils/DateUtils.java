@@ -181,7 +181,7 @@ public class DateUtils {
 	            return localSimpleDateFormat.parse(paramString);  
 	        } catch (Exception localParseException) {  
 //	            throw new Exception("时间解析异常！", localParseException);
-	        	return new Date();
+	        	return null;
 	        }  
 	    }  
 	  

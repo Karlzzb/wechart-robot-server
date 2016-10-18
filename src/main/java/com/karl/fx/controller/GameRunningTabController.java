@@ -149,7 +149,8 @@ public class GameRunningTabController extends FxmlController {
 		luckInfo.setOnEditCommit(new EventHandler<CellEditEvent<PlayerTraceModel, String>>() {
 			@Override
 			public void handle(CellEditEvent<PlayerTraceModel, String> cell) {
-				PlayerTraceModel traceModel = traceModeList.get(cell.getTablePosition().getRow());
+				PlayerTraceModel traceModel = traceModeList.get(cell
+						.getTablePosition().getRow());
 				if (!StringUtils.matchDouble(cell.getNewValue())) {
 					fillTraceTab();
 					return;
@@ -176,71 +177,72 @@ public class GameRunningTabController extends FxmlController {
 		flushDefiedCol();
 
 	}
-	
+
 	private void flushDefiedCol() {
 		optionsCol
-		.setCellFactory(new Callback<TableColumn<PlayerTraceModel, Long>, TableCell<PlayerTraceModel, Long>>() {
-			@Override
-			public TableCell<PlayerTraceModel, Long> call(
-					TableColumn<PlayerTraceModel, Long> applyId) {
-				return new TraceDelCell();
-			}
-		});		
+				.setCellFactory(new Callback<TableColumn<PlayerTraceModel, Long>, TableCell<PlayerTraceModel, Long>>() {
+					@Override
+					public TableCell<PlayerTraceModel, Long> call(
+							TableColumn<PlayerTraceModel, Long> applyId) {
+						return new TraceDelCell();
+					}
+				});
 	}
-	
+
 	private void deleteTrace(PlayerTraceModel traceModel) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("删除确认");
-		alert.setContentText("确定删除玩家【"
-				+ traceModel.getPlayerName() + "】 的这条下注信息？");
+		alert.setContentText("确定删除玩家【" + traceModel.getPlayerName()
+				+ "】 的这条下注信息？");
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
-			if (gameService.deleteTraceById(traceModel
-					.getTraceId())) {
+			if (gameService.deleteTraceById(traceModel.getTraceId())) {
 				traceTab.getItems().remove(traceModel);
 			}
 			flushDefiedCol();
 		}
 	}
 
-	private synchronized void fillTraceTab() {
-		if (traceModeList != null) {
-			traceModeList.clear();
-		}
-		GameInfo gameInfo = gameService.getGameById(runtimeDomain
-				.getCurrentGameId());
-		if (gameInfo == null || gameInfo.getIsUndo()) {
-			return;
-		}
-		List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
-		if (traceList != null) {
-			PlayerTrace trace = null;
-			Player pEntity = null;
-			String resultInfo;
-			for (int i = 0; i < traceList.size(); i++) {
-				trace = traceList.get(i);
-				pEntity = runtimeDomain.getRunningPlayeres().get(
-						trace.getRemarkName());
-				if (pEntity == null) {
-					continue;
-				}
-				resultInfo = "";
-				if (trace.getResultPoint() != null) {
-					resultInfo = trace.getResultPoint() > 0 ? "赢"
-							+ trace.getResultPoint() : "输"
-							+ Math.abs(trace.getResultPoint());
-				}
-
-				traceModeList.add(new PlayerTraceModel(trace.getTraceId(),
-						trace.getPlayerId(), trace.getRemarkName(), pEntity
-								.getPoints(), trace.getBetInfo(), trace
-								.getLuckInfo().toString(), trace
-								.getResultRuleName(), resultInfo));
+	private void fillTraceTab() {
+		synchronized (this) {
+			if (traceModeList != null) {
+				traceModeList.clear();
 			}
+			GameInfo gameInfo = gameService.getGameById(runtimeDomain
+					.getCurrentGameId());
+			if (gameInfo == null || gameInfo.getIsUndo()) {
+				return;
+			}
+			List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
+			if (traceList != null) {
+				PlayerTrace trace = null;
+				Player pEntity = null;
+				String resultInfo;
+				for (int i = 0; i < traceList.size(); i++) {
+					trace = traceList.get(i);
+					pEntity = runtimeDomain.getRunningPlayeres().get(
+							trace.getRemarkName());
+					if (pEntity == null) {
+						continue;
+					}
+					resultInfo = "";
+					if (trace.getResultPoint() != null) {
+						resultInfo = trace.getResultPoint() > 0 ? "赢"
+								+ trace.getResultPoint() : "输"
+								+ Math.abs(trace.getResultPoint());
+					}
+
+					traceModeList.add(new PlayerTraceModel(trace.getTraceId(),
+							trace.getPlayerId(), trace.getRemarkName(), pEntity
+									.getPoints(), trace.getBetInfo(), trace
+									.getLuckInfo().toString(), trace
+									.getResultRuleName(), resultInfo));
+				}
+			}
+			flushDefiedCol();
+			traceTab.setItems(traceModeList);
 		}
-		flushDefiedCol();
-		traceTab.setItems(traceModeList);
 	}
 
 	/**
@@ -312,7 +314,7 @@ public class GameRunningTabController extends FxmlController {
 			LOGGER.info("Auto trace flush Thread start");
 		}
 	}
-
+	
 	public void flushLuckInfo() {
 		this.fillTraceTab();
 	}
@@ -328,6 +330,10 @@ public class GameRunningTabController extends FxmlController {
 	public void gameStartFlush() {
 		this.fillTraceTab();
 	}
+	
+	public void manuallyFlush() {
+		this.fillTraceTab();
+	}
 
 	public void cleanCurrentTrace() {
 		runtimeDomain.setCurrentGameId(Long.valueOf(0));
@@ -336,8 +342,7 @@ public class GameRunningTabController extends FxmlController {
 		}
 		traceTab.setItems(traceModeList);
 	}
-	
-	
+
 	private class TraceDelCell extends TableCell<PlayerTraceModel, Long> {
 
 		private GridPane gridPane;
@@ -358,8 +363,7 @@ public class GameRunningTabController extends FxmlController {
 			traceDel.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					int index = traceTab.getSelectionModel()
-							.getSelectedIndex();
+					int index = traceTab.getSelectionModel().getSelectedIndex();
 
 					index = getIndex();
 					if ((index != -1)) {
@@ -379,7 +383,8 @@ public class GameRunningTabController extends FxmlController {
 		@Override
 		public void updateItem(Long item, boolean empty) {
 			super.updateItem(item, empty);
-			final ObservableList<PlayerTraceModel> items = getTableView().getItems();
+			final ObservableList<PlayerTraceModel> items = getTableView()
+					.getItems();
 			if (items != null) {
 				if (getIndex() < items.size()) {
 					setGraphic(gridPane);

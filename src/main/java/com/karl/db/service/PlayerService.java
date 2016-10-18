@@ -225,4 +225,9 @@ public class PlayerService {
 		playerTraceRepository.delete(traceId);
 	}
 
+	public void deleteTraceByGameId(Long gameId) {
+		Assert.notNull(gameId, "gameId must not be null");
+		playerTraceRepository.deleteTraceByGameId(gameId);
+	}
+
 }

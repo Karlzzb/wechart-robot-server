@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import blade.kit.json.JSON;
 import blade.kit.json.JSONArray;
@@ -24,7 +23,7 @@ import com.karl.domain.RuntimeDomain;
 import com.karl.utils.DateUtils;
 import com.karl.utils.StringUtils;
 
-@Service
+//@Service
 public class PcClient {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -189,19 +188,21 @@ public class PcClient {
 				try {
 					Matcher matcher = StringUtils.DOUBLE.matcher(jsonLuckOne
 							.getString("Money"));
-
 					Date time = DateUtils.parsePageDateTime(jsonLuckOne
 							.getString("Time"));
 
 					if (matcher.find()) {
+						sumPackage = sumPackage.add(new BigDecimal(Double
+								.valueOf(matcher.group(1))));
+						if (time == null) {
+							continue;
+						}
 						gameService.puttingLuckInfo(i + 1,
 								jsonLuckOne.getString("RemarkName"),
 								Double.valueOf(matcher.group(1)), time);
 					}
 					runtimeDomain.setcurrentFirstPacageTime(time);
 					runtimeDomain.setcurrentLastPacageTime(time);
-					sumPackage = sumPackage.add(new BigDecimal(Double
-							.valueOf(matcher.group(1))));
 				} catch (Exception e) {
 					LOGGER.error(
 							"Luck message RemarkUser {} Money{} interpret failed!",

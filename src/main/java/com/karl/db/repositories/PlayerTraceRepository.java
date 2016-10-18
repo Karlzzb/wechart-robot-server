@@ -43,6 +43,10 @@ public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Long>
 
     @Query("from PlayerTrace p where p.gameSerialNo = ?1 and p.remarkName = ?2")
 	List<PlayerTrace> getPlayerTraceListByGameIdRemarkName(
-			Long gameId, String remarkName);    
+			Long gameId, String remarkName);
+
+    @Modifying
+    @Query("delete from PlayerTrace p where p.gameSerialNo = ?1")
+	void deleteTraceByGameId(Long gameId);    
 
 }

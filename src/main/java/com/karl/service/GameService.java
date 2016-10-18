@@ -1,5 +1,6 @@
 package com.karl.service;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,11 +52,68 @@ public class GameService {
 	@Autowired
 	@Lazy
 	private ApprovalTabController approvalTabController;
-	
-	
+
 	@Autowired
 	@Lazy
 	private GameRunningTabController gameRunningTabController;
+
+	public void mainSelfMessageHandle(String content) {
+		if (!runtimeDomain.getGlobalGameSignal()) {
+			return;
+		}
+
+		if (!StringUtils.matchSelfPackageHead(content)) {
+			return;
+		}
+
+		LOGGER.debug("Self package info【" + content + "】 Got!");
+		try {
+			String[] packageArray = content.split(StringUtils.SELFPACKSPLIT);
+			if (packageArray == null || packageArray.length < 2) {
+				return;
+			}
+			String line = null;
+
+			Integer index;
+			String remarkName;
+			Double luckInfo;
+			Date luckTime = null;
+			BigDecimal sumPackage = new BigDecimal(0);
+			for (int i = 1; i < packageArray.length; i++) {
+				line = packageArray[i];
+				if (line == null || line.isEmpty()) {
+					continue;
+				}
+				try {
+					Matcher m = StringUtils.SELFPACKLINE.matcher(line);
+					if (m.find()) {
+						index = Integer.valueOf(m.group(1).trim());
+						remarkName = m.group(2).trim();
+						luckInfo = Double.valueOf(m.group(3).trim());
+						luckTime = DateUtils.parsePageDateTime(m.group(4).trim());
+						if (index == null || index == 0 || remarkName == null
+								|| remarkName.isEmpty() || luckInfo == null
+								|| luckTime == null) {
+							continue;
+						}
+						puttingLuckInfo(index, remarkName, luckInfo, luckTime);
+						runtimeDomain.setcurrentFirstPacageTime(luckTime);
+						runtimeDomain.setcurrentLastPacageTime(luckTime);
+						sumPackage = sumPackage.add(new BigDecimal(luckInfo));
+						LOGGER.debug("Self package single line【" + line + "】 analyze success!");
+					}
+				} catch (Exception e) {
+					LOGGER.error("Self package single line【" + line
+							+ "】 analyze failed!");
+				}
+			}
+			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
+			gameRunningTabController.flushLuckInfo();
+			LOGGER.debug("Self package info【" + content + "】 analyze success!");
+		} catch (Exception e) {
+			LOGGER.error("Self package info【" + content + "】 analyze failed!");
+		}
+	}
 
 	public void mainMessageHandle(String messageFrom, String webChatId,
 			String remarkName, String content) {
@@ -639,6 +697,8 @@ public class GameService {
 	 */
 	public void puttingLuckInfo(Integer index, String remarkName,
 			Double luckInfo, Date time) {
+		LOGGER.debug("index[{}] remarkName[{}] luckInfo[{}] time[{}]", index, remarkName, luckInfo, time);
+		
 		if (AppUtils.PLAYLONG.equals(runtimeDomain.getCurrentGameKey())) {
 			puttingLuckInfo(remarkName, luckInfo, time);
 		} else if (AppUtils.PLAYLONGSPLIT.equals(runtimeDomain
@@ -648,7 +708,6 @@ public class GameService {
 				.getCurrentGameKey())) {
 			puttingLuckInfoWithBetInfo(index, remarkName, luckInfo, time);
 		}
-		gameRunningTabController.flushLuckInfo();
 	}
 
 	/**
@@ -1164,4 +1223,11 @@ public class GameService {
 		}
 		return Boolean.FALSE;
 	}
+
+	public void cleanTraceInfo(Long currentGameId) {
+		if (currentGameId != null && currentGameId >0) {
+			playerService.deleteTraceByGameId(currentGameId);
+		}
+	}
+
 }
