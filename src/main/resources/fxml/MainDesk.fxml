@@ -37,7 +37,7 @@
 				<HBox BorderPane.alignment="CENTER">
 					<children>
 						<Label styleClass="header-title" text="工作台" />
-						<ImageView fx:id="imgLoad" fitHeight="33.0" fitWidth="30.0" layoutX="192.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" visible="true">
+						<ImageView fx:id="imgLoad" fitHeight="33.0" fitWidth="30.0" layoutX="192.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" visible="false">
 					         <image>
 					            <Image url="@../img/301.GIF" />
 					         </image>

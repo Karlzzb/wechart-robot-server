@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,6 +32,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -57,6 +59,9 @@ public class MainDeskController extends FxmlController {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MainDeskController.class);
+
+	@FXML
+	private ImageView imgLoad;
 
 	@FXML
 	private Button groupFlush;
@@ -148,6 +153,7 @@ public class MainDeskController extends FxmlController {
 
 	@Override
 	public void initialize() {
+		imgLoad.setVisible(Boolean.TRUE);
 		autoPlayerFlushContinue = Boolean.TRUE;
 		isInitializing = Boolean.TRUE;
 		buildGroupBox();
@@ -157,6 +163,7 @@ public class MainDeskController extends FxmlController {
 		buildGameQuicker();
 		buildFilterPlayer();
 		isInitializing = Boolean.FALSE;
+		imgLoad.setVisible(Boolean.FALSE);
 	}
 
 	private void buildFilterPlayer() {
@@ -529,23 +536,41 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void flushGroup(ActionEvent event) {
+		imgLoad.setVisible(true);
+		try {
 		webWechat.wxInit();
 		webWechat.getContact();
 		// webWechat.getGroupMembers();
 		fillUpGroupBox();
+		}catch(Exception e) {
+			LOGGER.error("wechart Group flush failed!",e);
+		}finally {
+			imgLoad.setVisible(false);
+		}
 	}
 
 	@FXML
 	private void savePlayerPoint(ActionEvent event) {
-		Service<Void> service = new Service<Void>() {
+		Service<Integer> service = new Service<Integer>() {
 			@Override
-			protected Task<Void> createTask() {
-				gameService.ryncPlayersPoint(playerList);
-				return null;
+			protected Task<Integer> createTask() {
+				return new Task<Integer>() {
+					@Override
+					protected Integer call() throws Exception {
+						gameService.ryncPlayersPoint(playerList);
+						return Integer.valueOf("0");
+					}
+				};
 			};
 		};
 		service.start();
 		bar.progressProperty().bind(service.progressProperty());
+		service.setOnRunning((WorkerStateEvent we) -> {
+			imgLoad.setVisible(true);
+		});
+		service.setOnSucceeded((WorkerStateEvent we) -> {
+			imgLoad.setVisible(false);
+		});
 	}
 
 	@FXML
@@ -577,6 +602,8 @@ public class MainDeskController extends FxmlController {
 				return;
 			}
 		}
+
+		// DO it
 		String content = gameService.openLottery();
 		openMessageBoard(content);
 		bankerBetPoint
@@ -596,7 +623,26 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void manuallyFlushTraceTab(ActionEvent event) {
-		gameRunningTabController.manuallyFlush();
+		Service<Integer> service = new Service<Integer>() {
+			@Override
+			protected Task<Integer> createTask() {
+				return new Task<Integer>() {
+					@Override
+					protected Integer call() throws Exception {
+						gameRunningTabController.manuallyFlush();
+						return Integer.valueOf("0");
+					}
+				};
+			};
+		};
+		service.start();
+		bar.progressProperty().bind(service.progressProperty());
+		service.setOnRunning((WorkerStateEvent we) -> {
+			imgLoad.setVisible(true);
+		});
+		service.setOnSucceeded((WorkerStateEvent we) -> {
+			imgLoad.setVisible(false);
+		});
 	}
 
 	@FXML
