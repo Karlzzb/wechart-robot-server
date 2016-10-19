@@ -209,6 +209,20 @@ public class PlayerService {
 		
 		return Boolean.TRUE;
 	}
+	
+	public PlayerTrace getTraceByGameIdRemarkName(String remarkName,
+			Long gameId) {
+		Assert.notNull(remarkName, "remarkName must not be null");
+		Assert.notNull(gameId, "gameId must not be null");
+		PlayerTrace trace = null;
+		List<PlayerTrace> result = playerTraceRepository.getPlayerTraceListByGameIdRemarkName(gameId, remarkName);
+		if (result != null && result.size() > 0) {
+			return result.get(0);
+		}
+		
+		return trace;
+	}
+	
 
 	public GameInfo getGameById(Long gameId) {
 		Assert.notNull(gameId, "gameId must not be null");

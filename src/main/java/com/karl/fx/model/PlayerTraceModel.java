@@ -20,7 +20,7 @@ public class PlayerTraceModel {
 	 */
 	public PlayerTraceModel(Long traceId, String playerId, String playerName,
 			Long playerPoint, String betInfo, String luckInfo,
-			String resultRuleName, String resultInfo) {
+			String resultRuleName, String resultInfo, Boolean isBanker) {
 		super();
 		this.playerId = new SimpleStringProperty(playerId);
 		this.playerName = new SimpleStringProperty(playerName);
@@ -30,6 +30,7 @@ public class PlayerTraceModel {
 		this.resultInfo = new SimpleStringProperty(resultInfo);
 		this.luckInfo = new SimpleStringProperty(luckInfo);
 		this.traceId = traceId;
+		this.isBanker = isBanker;
 	}
 
 	public static final String PLAYERIDCOLKEY = "playerId";
@@ -52,6 +53,8 @@ public class PlayerTraceModel {
 
 	// unvisualable properties
 	private Long traceId;
+	private Boolean isBanker;
+
 
 	/**
 	 * very import for cell data auto fresh
@@ -209,5 +212,13 @@ public class PlayerTraceModel {
 
 	public void setTraceId(Long traceId) {
 		this.traceId = traceId;
+	}
+
+	public Boolean getIsBanker() {
+		return isBanker==null?Boolean.FALSE:isBanker;
+	}
+
+	public void setIsBanker(Boolean isBanker) {
+		this.isBanker = isBanker;
 	}
 }

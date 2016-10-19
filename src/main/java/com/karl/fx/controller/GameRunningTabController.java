@@ -17,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -81,18 +82,45 @@ public class GameRunningTabController extends FxmlController {
 
 	@Override
 	public void initialize() {
-		buidApprovalTab();
+		buildTraceTable();
 		fillTraceTab();
 		traceAutoFlush();
 	}
 
-	private void buidApprovalTab() {
+	private void buildTraceTable() {
 		traceTab.setEditable(Boolean.TRUE);
 		traceModeList = FXCollections.observableArrayList();
 		playerName.setEditable(Boolean.FALSE);
 		playerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerTraceModel, String>(
 						PlayerTraceModel.PLAYERNAMECOLKEY));
+
+		playerName
+				.setCellFactory(param -> new TableCell<PlayerTraceModel, String>() {
+					@Override
+					public void updateItem(String item, boolean empty) {
+						super.updateItem(item, empty);
+						setText(empty ? null : getString());
+						setGraphic(null);
+						TableRow<PlayerTraceModel> currentRow = getTableRow();
+						PlayerTraceModel playerName = currentRow == null ? null : (PlayerTraceModel)currentRow.getItem();
+						if (playerName != null && !playerName.getPlayerName().isEmpty()) {
+							clearPriorityStyle();
+							if (playerName.getPlayerName().equals(runtimeDomain
+											.getBankerRemarkName())) {
+								currentRow.setStyle("-fx-background-color: palevioletred");  
+							}
+						}
+					}
+					
+			        private void clearPriorityStyle(){
+			        	getTableRow().setStyle("");
+			        }
+			        private String getString() {
+			            return getItem() == null ? "" : getItem().toString();
+			        }
+				});
+
 		playerPoint.setEditable(Boolean.FALSE);
 		playerPoint
 				.setCellValueFactory(new PropertyValueFactory<PlayerTraceModel, Long>(
@@ -126,6 +154,7 @@ public class GameRunningTabController extends FxmlController {
 					fillTraceTab();
 					return;
 				}
+
 				try {
 					PlayerTrace trace = gameService.updatePlayerTraceBetInfo(
 							traceModel.getTraceId(), cell.getNewValue());
@@ -237,7 +266,8 @@ public class GameRunningTabController extends FxmlController {
 							trace.getPlayerId(), trace.getRemarkName(), pEntity
 									.getPoints(), trace.getBetInfo(), trace
 									.getLuckInfo().toString(), trace
-									.getResultRuleName(), resultInfo));
+									.getResultRuleName(), resultInfo, trace
+									.getIsBanker()));
 				}
 			}
 			flushDefiedCol();
@@ -296,7 +326,8 @@ public class GameRunningTabController extends FxmlController {
 																		+ trace.getResultPoint()
 																		: "输"
 																				+ Math.abs(trace
-																						.getResultPoint())));
+																						.getResultPoint()),
+														trace.getIsBanker()));
 									}
 								}
 							}
@@ -314,7 +345,7 @@ public class GameRunningTabController extends FxmlController {
 			LOGGER.info("Auto trace flush Thread start");
 		}
 	}
-	
+
 	public void flushLuckInfo() {
 		this.fillTraceTab();
 	}
@@ -330,7 +361,7 @@ public class GameRunningTabController extends FxmlController {
 	public void gameStartFlush() {
 		this.fillTraceTab();
 	}
-	
+
 	public void manuallyFlush() {
 		this.fillTraceTab();
 	}
@@ -390,6 +421,33 @@ public class GameRunningTabController extends FxmlController {
 					setGraphic(gridPane);
 				}
 			}
+		}
+	}
+
+	class TaskCellFactory implements Callback<TableColumn, TableCell> {
+
+		@Override
+		public TableCell call(TableColumn p) {
+
+			TableCell cell = new TableCell<Task, Object>() {
+				@Override
+				public void updateItem(Object item, boolean empty) {
+					super.updateItem(item, empty);
+					setText(empty ? null : getString());
+					TableRow currentRow = getTableRow();
+					PlayerTraceModel currentTraceModel = currentRow == null ? null
+							: (PlayerTraceModel) currentRow.getItem();
+					if (currentTraceModel != null) {
+						getStyleClass()
+								.add(" -fx-control-inner-background: palevioletred;-fx-accent: derive(-fx-control-inner-background, -40%);-fx-cell-hover-color: derive(-fx-control-inner-background, -20%);");
+					}
+				}
+
+				private String getString() {
+					return getItem() == null ? "" : getItem().toString();
+				}
+			};
+			return cell;
 		}
 	}
 

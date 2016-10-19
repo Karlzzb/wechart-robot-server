@@ -42,6 +42,14 @@ public class PlayerModel{
     	return playerLatestBet;
     }
     
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleStringProperty playerNameProperty() {
+    	return playerName;
+    }
+    
     
     /**
      * very import for cell data auto fresh

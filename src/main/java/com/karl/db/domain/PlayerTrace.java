@@ -30,6 +30,23 @@ public class PlayerTrace implements Serializable {
 		this.betTime = betTime;
 		this.islowRisk = islowRisk;
 	}
+	
+	public PlayerTrace(Long gameSerialNo, String playerId,
+			String webchatId, String wechatName, String remarkName,
+			String betInfo, Long betPoint, Boolean islowRisk, Integer betIndex, Long betTime, Boolean isBanker) {
+		super();
+		this.gameSerialNo = gameSerialNo;
+		this.playerId = playerId;
+		this.webchatId = webchatId;
+		this.wechatName = wechatName;
+		this.remarkName = remarkName;
+		this.betInfo = betInfo;
+		this.betPoint = betPoint;
+		this.betIndex = betIndex;
+		this.betTime = betTime;
+		this.islowRisk = islowRisk;
+		this.isBanker = isBanker;
+	}
 
 	private static final long serialVersionUID = -7909930972652408103L;
     
@@ -66,6 +83,9 @@ public class PlayerTrace implements Serializable {
     
     @Column(nullable = true)
     private Boolean islowRisk;
+    
+    @Column(columnDefinition="tinyint(1) default 0")
+    private Boolean isBanker;
 
     @Column(nullable = true)
     private Double luckInfo;
@@ -209,6 +229,14 @@ public class PlayerTrace implements Serializable {
 
 	public void setResultTimes(Integer resultTimes) {
 		this.resultTimes = resultTimes;
+	}
+
+	public Boolean getIsBanker() {
+		return isBanker;
+	}
+
+	public void setIsBanker(Boolean isBanker) {
+		this.isBanker = isBanker;
 	}
 
 }

@@ -312,7 +312,10 @@ public class MainDeskController extends FxmlController {
 								return;
 							}
 							endGameViewAction();
-							openMessageBoard(gameService.declareGame());
+							if (!AppUtils.PLAYLUCKWAY.equals(runtimeDomain
+									.getCurrentGameKey())) {
+								openMessageBoard(gameService.declareGame());
+							}
 						}
 
 					}
@@ -416,12 +419,12 @@ public class MainDeskController extends FxmlController {
 		colBankerSgin
 				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
 						PlayerModel.ISBANKERCOLKEY));
-
 		colPlayerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
 						PlayerModel.PLAYERNAMECOLKEY));
 		colPlayerName.setEditable(Boolean.FALSE);
 
+		// Editable col
 		Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>> cellFactory = new Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>>() {
 			public TableCell<PlayerModel, String> call(
 					TableColumn<PlayerModel, String> p) {
@@ -538,13 +541,13 @@ public class MainDeskController extends FxmlController {
 	private void flushGroup(ActionEvent event) {
 		imgLoad.setVisible(true);
 		try {
-		webWechat.wxInit();
-		webWechat.getContact();
-		// webWechat.getGroupMembers();
-		fillUpGroupBox();
-		}catch(Exception e) {
-			LOGGER.error("wechart Group flush failed!",e);
-		}finally {
+			webWechat.wxInit();
+			webWechat.getContact();
+			// webWechat.getGroupMembers();
+			fillUpGroupBox();
+		} catch (Exception e) {
+			LOGGER.error("wechart Group flush failed!", e);
+		} finally {
 			imgLoad.setVisible(false);
 		}
 	}
@@ -575,7 +578,9 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void openLottery(ActionEvent event) {
-		if (runtimeDomain.getGlobalGameSignal()) {
+		if (runtimeDomain.getGlobalGameSignal()
+				&& !AppUtils.PLAYLUCKWAY.equals(runtimeDomain
+						.getCurrentGameKey())) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("错误操作");
 			alert.setContentText("请先手动点击结束， 确认当前局数据收集完成！");
@@ -586,7 +591,7 @@ public class MainDeskController extends FxmlController {
 				|| runtimeDomain.getCurrentGameId().compareTo(Long.valueOf(0)) <= 0) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("错误操作");
-			alert.setContentText("无可用计算的数据，请确定是否已完成开局和包采集！");
+			alert.setContentText("无可用计算的数据，请确定是否已完成开局和包数据采集！");
 			alert.showAndWait();
 			return;
 		}
@@ -601,6 +606,26 @@ public class MainDeskController extends FxmlController {
 			if (result.get() == ButtonType.CANCEL) {
 				return;
 			}
+		}
+
+		GameInfo gameInfo = gameService.getGameById(runtimeDomain
+				.getCurrentGameId());
+		if (gameInfo == null) {
+			return;
+		}
+		if (gameInfo.getLuckTime() == null
+				|| gameInfo.getLuckTime().compareTo(Long.valueOf(0)) <= 0) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("庄家无包信息");
+			alert.setContentText("庄家无包信息，继续操作仅仅扣除管理费。是否继续？");
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.CANCEL) {
+				return;
+			}
+		}
+
+		if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())) {
+			gameSingal.setSelected(Boolean.FALSE);
 		}
 
 		// DO it
@@ -663,8 +688,13 @@ public class MainDeskController extends FxmlController {
 			return;
 		}
 
+		// clean player && banker
 		gameService.cleanTraceInfo(runtimeDomain.getCurrentGameId());
 		gameRunningTabController.flushLuckInfo();
+
+		// clean time
+		runtimeDomain.removeCurrentFirstPacageTime();
+		runtimeDomain.removeCurrentLastPackegeTime();
 	}
 
 	private void openMessageBoard(String content) {
@@ -753,6 +783,7 @@ public class MainDeskController extends FxmlController {
 					pModel.setPlayerPoint(String
 							.valueOf(pEntity.getPoints() == null ? 0 : pEntity
 									.getPoints()));
+					pModel.setPlayerName(pEntity.getRemarkName());
 				}
 			}
 		}

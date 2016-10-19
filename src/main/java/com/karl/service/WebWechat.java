@@ -348,14 +348,10 @@ public class WebWechat {
 			runtimeDomain.putAllUsrMap(contact.getString("UserName"), contact);
 			// 公众号/服务号
 			if (contact.getInt("VerifyFlag", 0) == 8) {
-				runtimeDomain.putPublicUsrMap(contact.getString("UserName"),
-						contact);
 				continue;
 			}
 			// 特殊联系人
 			if (AppUtils.specialUsers.contains(contact.getString("UserName"))) {
-				runtimeDomain.putSpecialUsrMap(contact.getString("UserName"),
-						contact);
 				continue;
 			}
 			// 群
@@ -715,7 +711,7 @@ public class WebWechat {
 			if (recommendInfo != null) {
 				recommendWechatId = recommendInfo.getString("UserName");
 				recommendWechatName = recommendInfo.getString("NickName");
-
+				
 			} else {
 				LOGGER.debug(
 						"FromUserName{} message's recommendInfo is empty!",
@@ -726,6 +722,13 @@ public class WebWechat {
 					"FromUserName[{}] message is not come from specific manage group[{}]!",
 					jsonMsg.getString("FromUserName"),
 					runtimeDomain.getCurrentMGroupId());
+		}
+		
+		if(runtimeDomain.getAllUsrMap().get(recommendWechatId) == null) {
+			String content = MessageFormat.format(AppUtils.ASKRECOMMENDUNKNOWN,
+					recommendWechatName);
+			webwxsendmsgM(content);
+			return;
 		}
 
 		if (recommendWechatId.isEmpty() || recommendWechatName.isEmpty()) {
@@ -824,8 +827,6 @@ public class WebWechat {
 				console.writeLog("[*] 获取联系人成功");
 				console.writeLog("[*] 共有 "
 						+ runtimeDomain.getAllUsrMap().size() + " 位联系人");
-				console.writeLog("[*] 共有 "
-						+ runtimeDomain.getSpecialUsrMap().size() + " 位特殊联系人");
 				console.writeLog("[*] 共有 " + runtimeDomain.getGroupMap().size()
 						+ " 个群");
 				console.writeLog("[*] 进入消息监听模式 ...");

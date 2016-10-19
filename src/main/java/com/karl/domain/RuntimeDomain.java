@@ -35,8 +35,8 @@ public class RuntimeDomain implements Serializable {
 	public RuntimeDomain() {
 		groupMap = new HashMap<String, JSONObject>();
 		allUsrMap = new HashMap<String, JSONObject>();
-		publicUsrMap = new HashMap<String, JSONObject>();
-		specialUsrMap = new HashMap<String, JSONObject>();
+//		publicUsrMap = new HashMap<String, JSONObject>();
+//		specialUsrMap = new HashMap<String, JSONObject>();
 		runningPlayeres = new HashMap<String, Player>();
 		qrCodeFile = new File("data/temp.jpg");
 		imagePath = "file:data/temp.jpg";
@@ -102,11 +102,11 @@ public class RuntimeDomain implements Serializable {
 	// 所有用戶信息
 	private Map<String, JSONObject> allUsrMap;
 
-	// 公众号／服务号
-	private Map<String, JSONObject> publicUsrMap;
+//	// 公众号／服务号
+//	private Map<String, JSONObject> publicUsrMap;
 
-	// 特殊账号
-	private Map<String, JSONObject> specialUsrMap;
+//	// 特殊账号
+//	private Map<String, JSONObject> specialUsrMap;
 
 	/**
 	 * The latest player info(key= remarkName)
@@ -262,18 +262,18 @@ public class RuntimeDomain implements Serializable {
 	 * @return
 	 */
 	public Map<String, PlayerModel> getCurrentPlayers() {
-		Map<String, PlayerModel> playersName = new HashMap<String, PlayerModel>();
+		Map<String, PlayerModel> playModelMap = new HashMap<String, PlayerModel>();
 		if (getCurrentGroupId() == null || getCurrentGroupId().isEmpty()) {
-			return playersName;
+			return playModelMap;
 		}
 
 		JSONObject groupNode = getGroupMap().get(getCurrentGroupId());
 		if (groupNode == null) {
-			return playersName;
+			return playModelMap;
 		}
 		JSONArray memberList = groupNode.getJSONArray("MemberList");
 		if (memberList == null || memberList.size() < 1) {
-			return playersName;
+			return playModelMap;
 		}
 		JSONObject contact = null;
 		String remarkName = "";
@@ -281,15 +281,20 @@ public class RuntimeDomain implements Serializable {
 		String wechatId = "";
 		for (int i = 0, len = memberList.size(); i < len; i++) {
 			contact = memberList.getJSONObject(i);
+			if (contact.getString("UserName").equals(
+					getUser().getString("UserName"))) {
+				//exclude self
+				continue;
+			}
 			remarkName = getUserRemarkName(contact.getString("UserName"));
 			wechatName = getUserNickName(contact.getString("UserName"));
 			wechatId = contact.getString("UserName");
 			if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
-				playersName.put(remarkName, new PlayerModel(i, remarkName, 0,
+				playModelMap.put(remarkName, new PlayerModel(i, remarkName, 0,
 						wechatId, wechatName));
 			}
 		}
-		return playersName;
+		return playModelMap;
 	}
 
 	public String getUserRemarkName(String id) {
@@ -388,30 +393,6 @@ public class RuntimeDomain implements Serializable {
 
 	public void putAllUsrMap(String key, JSONObject value) {
 		this.allUsrMap.put(key, value);
-	}
-
-	public Map<String, JSONObject> getPublicUsrMap() {
-		return publicUsrMap;
-	}
-
-	public void setPublicUsrMap(Map<String, JSONObject> publicUsrMap) {
-		this.publicUsrMap = publicUsrMap;
-	}
-
-	public void putPublicUsrMap(String key, JSONObject value) {
-		this.publicUsrMap.put(key, value);
-	}
-
-	public Map<String, JSONObject> getSpecialUsrMap() {
-		return specialUsrMap;
-	}
-
-	public void setSpecialUsrMap(Map<String, JSONObject> specialUsrMap) {
-		this.specialUsrMap = specialUsrMap;
-	}
-
-	public void putSpecialUsrMap(String key, JSONObject value) {
-		this.specialUsrMap.put(key, value);
 	}
 
 	public String getCurrentGroupId() {

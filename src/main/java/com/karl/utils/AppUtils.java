@@ -57,13 +57,13 @@ public class AppUtils {
 
 	public static final String BETRESULTTAIL = "--------------------------\n"
 			+ "有效下注：{0}\n" + "应发包数：{1}\n" + "应发金额：{2}\n"
-			+ "--------------------------\n" + "总下注额：{3}\n" + "普通下注：{4}\n"
+			+ "--------------------------\n" + "总下注额：{3,number,#}\n" + "普通下注：{4}\n"
 			+ "自定义梭哈下注：{5}\n" + "--------------------------\n"
 			+ "请发包手核对无误再发包\n" + "机器统计    对错勿怪\n";
 
 	public static final String GAMESTART = "--------[开始下注]--------\n"
 			+ "◆◆◆◆◆[第{8}期]◆◆◆◆◆\n" + "{0}\n" + "--------[庄家列表]--------\n"
-			+ "本局庄家：{1}\n" + "庄家积分：{2}\n" + "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n"
+			+ "本局庄家：{1}\n" + "庄家积分：{2,number,#}\n" + "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n"
 			+ "包数量：{5}\n" + "庄家位置：{6}\n" + "当前玩法：{7}\n";
 
 	public static final String GAMERESULT = "◆◆◆◆◆[第{0}期]◆◆◆◆◆\n" + "{1}！{2}\n"
@@ -73,30 +73,33 @@ public class AppUtils {
 			+ "--------------------------\n" + "尾包时间：{6}\n" + "超时时间：{7}\n"
 			+ "首包时间：{8}\n" + "--------------------------\n" + "本局庄家：{9}\n"
 			+ "庄家抢包：{10} {11} 赔率：{12}\n" + "庄家输赢：输{13}家/赢{14}家 /和{15}家\n"
-			+ "{24}" + "庄上积分：{16}\n" + "本局下注：{17}\n" + "{22}" + "发包费用：{18}\n"
-			+ "本局基金：{19}\n" + "本局盈亏：{23}\n" + "庄总积分：{20}\n"
+			+ "{24}" + "庄上积分：{16,number,#}\n" + "本局下注：{17,number,#}\n" + "{22}" + "发包费用：{18,number,#}\n"
+			+ "本局基金：{19,number,#}\n" + "本局盈亏：{23,number,#}\n" + "庄总积分：{20,number,#}\n"
 			+ "--------[翱翔出品]--------";
 
 	public static final String RANKINGLAYOUT = "---------[富豪榜]---------\n{0}\n可用积分：{1} 锁定：{2}\n玩家:{3} 总分:{4}\n"
 			+ "--------------------------\n"
 			+ "{5}--------------------------\n"
 			+ " 富豪榜总积分：{4} \n积分列表仅供参考,如有误请私聊管理员";
-	public static final String RANKINGLINE = "第{0}　 {1}　　 积分：{2}\n";
+	public static final String RANKINGLINE = "第{0}　 {1}　　 积分：{2,number,#}\n";
 
-	public static final String GAMERESULTWIN = "{0} {1} {2} 赢 {3}";
+	public static final String GAMERESULTWIN = "{0} {1} {2} 赢 {3,number,#}";
 	public static final String GAMERESULTINVAIN = "{0} {1} {2} 喝水";
-	public static final String GAMERESULTLOSE = "{0} {1} {2} 输 {3}";
-	public static final String GAMERESULTTIMEOUT = "{0} {1} 超时 输 {2}\n";
+	public static final String GAMERESULTLOSE = "{0} {1} {2} 输 {3,number,#}";
+	public static final String GAMERESULTTIMEOUT = "{0} {1} 超时 输 {2,number,#}\n";
 	public static final String GAMERESULTESAME = "{0} {1} {2} 和 {3}";
 
-	public static final String REPLYPOINTAPPLYPUT = "给{0} 已上[{1}] 剩余积分： {2}";
-	public static final String REPLYPOINTAPPLYDRAW = "给{0} 已下[{1}] 剩余积分： {2}";
+	public static final String REPLYPOINTAPPLYPUT = "给{0} 已上[{1}] 剩余积分： {2,number,#}";
+	public static final String REPLYPOINTAPPLYDRAW = "给{0} 已下[{1}] 剩余积分： {2,number,#}";
 	public static final String REPLYPOINTAPPLYERROR = "{0}剩余积分： {1}, 不足以完成下{2}积分操作!!";
 	public static final String REPLYPOINTAPPLYERROR2 = "@{3} {0}剩余积分： {1}, 不足以完成下{2}积分操作!!";
-	public static final String REPLYPOINTAPPLYADD = "@{0} 已上[{1}] 剩余积分： {2}";
-	public static final String REPLYPOINTAPPLYSUB = "@{0} 已下[{1}] 剩余积分： {2}";
+	public static final String REPLYPOINTAPPLYADD = "@{0} 已上[{1}] 剩余积分： {2,number,#}";
+	public static final String REPLYPOINTAPPLYSUB = "@{0} 已下[{1}] 剩余积分： {2,number,#}";
 
 	public static final String ASKRECOMMEND = "你要对{0}做点什么呢！";
+	
+	public static final String ASKRECOMMENDUNKNOWN = "{0}不是好友，什么都做不了！";
+
 
 	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");
 	public static final Long DEFAULT_MINBET = Long.valueOf("10");
@@ -118,12 +121,12 @@ public class AppUtils {
 	public static final String TIMEOUTPAIDNONE = "无效";
 
 	public static final String PUBLICPOINTRANKHEAD = "---------[富豪榜]---------\n"
-			+ "玩家:{0} 总分:{1}\n" + "--------------------------\n";
+			+ "玩家:{0} 总分:{1,number,#}\n" + "--------------------------\n";
 
-	public static final String PUBLICPOINTRANKLINE = "第{0} {1} 积分：{2}\n";
+	public static final String PUBLICPOINTRANKLINE = "第{0} {1} 积分：{2,number,#}\n";
 
 	public static final String PUBLICPOINTRANKTAIL = "--------------------------\n"
-			+ "富豪榜总积分：{0}\n" + "积分列表仅供参考,如有误请私聊管理员\n";
+			+ "富豪榜总积分：{0,number,#}\n" + "积分列表仅供参考,如有误请私聊管理员\n";
 
 	public static final String LOTTERYRULE3 = "后三位有效";
 	public static final String LOTTERYRULE2 = "后二位有效";
