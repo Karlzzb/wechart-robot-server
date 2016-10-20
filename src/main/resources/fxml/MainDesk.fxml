@@ -329,8 +329,8 @@
 			</center>
 		</BorderPane>
 	</children>
-	<stylesheets>
-		<URL value="@../css/Metro-UI.css" />
-		<URL value="@../css/blueTheme.css" />
-	</stylesheets>
+   <stylesheets>
+      <URL value="@../css/Metro-UI.css" />
+      <URL value="@../css/blueTheme.css" />
+   </stylesheets>
 </AnchorPane>
