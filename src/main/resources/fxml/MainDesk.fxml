@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -23,7 +32,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
 		<BorderPane prefHeight="692.0" prefWidth="1072.0">
 			<top>
@@ -104,7 +113,7 @@
 								</VBox>
 								<Pane prefHeight="154.0" prefWidth="197.0">
 									<children>
-										<ToggleButton fx:id="gameSingal" layoutX="7.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="83.0" text="开始">
+										<ToggleButton fx:id="gameSingal" layoutX="7.0" layoutY="29.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="85.0" text="开始">
 											<font>
 												<Font size="12.0" />
 											</font>
@@ -112,7 +121,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</ToggleButton>
-										<Button fx:id="publishBut" layoutX="7.0" layoutY="69.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="78.0" text="发布榜单">
+										<Button fx:id="publishBut" layoutX="7.0" layoutY="69.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="85.0" text="发布榜单">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -130,7 +139,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="104.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="78.0" text="作废上一局">
+										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="104.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="85.0" text="作废上一局">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -184,124 +193,139 @@
 				</VBox>
 			</left>
 			<center>
-				<HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-					<children>
-						<VBox prefHeight="535.0" prefWidth="246.0">
-							<children>
-								<VBox id="desk-user-panel" styleClass="desk-user-panel">
-									<children>
-										<HBox>
-											<children>
-												<Label prefHeight="31.0" prefWidth="90.0" styleClass="txt" text="当前玩家群：" textFill="WHITE" />
-												<ChoiceBox fx:id="groupBox" prefHeight="26.0" prefWidth="167.0" styleClass="select" />
-											</children>
-											<VBox.margin>
-												<Insets bottom="10.0" />
-											</VBox.margin>
-										</HBox>
-										<Label fx:id="groupSizeLable" prefHeight="21.0" prefWidth="246.0" text="当前群人数 :0" textFill="WHITE">
-											<font>
-												<Font size="14.0" />
-											</font>
-											<VBox.margin>
-												<Insets bottom="10.0" />
-											</VBox.margin>
-										</Label>
-      								<HBox prefHeight="100.0" prefWidth="200.0" styleClass="colorPanel">
+            <VBox>
+               <children>
+                  <HBox prefHeight="482.0" prefWidth="556.0">
+                     <children>
+      						<VBox prefHeight="535.0" prefWidth="246.0">
+      							<children>
+      								<VBox id="desk-user-panel" styleClass="desk-user-panel">
       									<children>
-      										<Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-      										<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="刷新">
-      											<HBox.margin>
-      												<Insets right="10.0" />
-      											</HBox.margin>
-      											<cursor>
-      												<Cursor fx:constant="HAND" />
-      											</cursor>
-      										</Button>
-      										<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="保存">
-      											<HBox.margin>
-      												<Insets />
-      											</HBox.margin>
-      											<cursor>
-      												<Cursor fx:constant="HAND" />
-      											</cursor>
-      										</Button>
+      										<HBox>
+      											<children>
+      												<Label prefHeight="31.0" prefWidth="90.0" styleClass="txt" text="当前玩家群：" textFill="WHITE" />
+      												<ChoiceBox fx:id="groupBox" prefHeight="26.0" prefWidth="167.0" styleClass="select" />
+      											</children>
+      											<VBox.margin>
+      												<Insets bottom="10.0" />
+      											</VBox.margin>
+      										</HBox>
+      										<Label fx:id="groupSizeLable" prefHeight="21.0" prefWidth="246.0" text="当前群人数 :0" textFill="WHITE">
+      											<font>
+      												<Font size="14.0" />
+      											</font>
+      											<VBox.margin>
+      												<Insets bottom="10.0" />
+      											</VBox.margin>
+      										</Label>
+            								<HBox prefHeight="100.0" prefWidth="200.0" styleClass="colorPanel">
+            									<children>
+            										<Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            										<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="刷新">
+            											<HBox.margin>
+            												<Insets right="10.0" />
+            											</HBox.margin>
+            											<cursor>
+            												<Cursor fx:constant="HAND" />
+            											</cursor>
+            										</Button>
+            										<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="保存">
+            											<HBox.margin>
+            												<Insets />
+            											</HBox.margin>
+            											<cursor>
+            												<Cursor fx:constant="HAND" />
+            											</cursor>
+            										</Button>
+            									</children>
+            									<VBox.margin>
+            										<Insets top="5.0" />
+            									</VBox.margin>
+            								</HBox>
+      									</children>
+      									<padding>
+      										<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      									</padding>
+      									<VBox.margin>
+      										<Insets bottom="15.0" />
+      									</VBox.margin>
+      								</VBox>
+      								<Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
+      								<Pane minHeight="-Infinity" prefHeight="29.0" prefWidth="255.0">
+      									<children>
+      										<TextField fx:id="playerSearchText" prefHeight="28.0" prefWidth="255.0" styleClass="searchBox" />
+      										<!-- <Button fx:id="playerSearch" layoutX="230.0" layoutY="6.0" 
+      											minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#searchPlayer" 
+            											prefHeight="14.0" prefWidth="8.0" styleClass="search-btn"> <cursor> <Cursor 
+            											fx:constant="HAND" /> </cursor> </Button> -->
       									</children>
       									<VBox.margin>
-      										<Insets top="5.0" />
+      										<Insets top="2.0" />
       									</VBox.margin>
-      								</HBox>
-									</children>
-									<padding>
-										<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-									</padding>
-									<VBox.margin>
-										<Insets bottom="15.0" />
-									</VBox.margin>
-								</VBox>
-								<Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
-								<Pane minHeight="-Infinity" prefHeight="29.0" prefWidth="255.0">
-									<children>
-										<TextField fx:id="playerSearchText" prefHeight="28.0" prefWidth="255.0" styleClass="searchBox" />
-										<!-- <Button fx:id="playerSearch" layoutX="230.0" layoutY="6.0" 
-											minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#searchPlayer" 
-											prefHeight="14.0" prefWidth="8.0" styleClass="search-btn"> <cursor> <Cursor 
-											fx:constant="HAND" /> </cursor> </Button> -->
-									</children>
-									<VBox.margin>
-										<Insets top="2.0" />
-									</VBox.margin>
-								</Pane>
-								<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" prefHeight="543.0" prefWidth="255.0">
-									<columns>
-										<TableColumn fx:id="colBankerSgin" prefWidth="43.0" styleClass="column-header" text="选庄" />
-										<TableColumn fx:id="colPlayerName" editable="false" minWidth="0.0" prefWidth="115.0" resizable="false" styleClass="column-header" text="玩家" />
-										<TableColumn fx:id="colPlayerPoint" editable="true" prefWidth="96.0" resizable="false" styleClass="column-header" text="积分" />
-									</columns>
-									<VBox.margin>
-										<Insets top="2.0" />
-									</VBox.margin>
-								</TableView>
-							</children>
-						</VBox>
-						<Region prefHeight="535.0" prefWidth="48.0" HBox.hgrow="ALWAYS" />
-						<VBox prefHeight="535.0" prefWidth="253.0">
-							<children>
-								<VBox id="desk-finance-panel">
-									<children>
-										<HBox>
-											<children>
-												<Label prefHeight="34.0" prefWidth="90.0" styleClass="txt" text="当前财务群：" textFill="WHITE" />
-												<ChoiceBox fx:id="groupBoxM" prefHeight="25.0" prefWidth="163.0" />
-											</children>
-											<VBox.margin>
-												<Insets bottom="10.0" />
-											</VBox.margin>
-										</HBox>
-									</children>
-									<padding>
-										<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-									</padding>
-									<VBox.margin>
-										<Insets bottom="15.0" />
-									</VBox.margin>
-								</VBox>
-								<Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
-								<Pane prefHeight="539.0" prefWidth="255.0">
-									<children>
-										<fx:include source="ApprovalTab.fxml" />
-									</children>
-								</Pane>
-							</children>
-							<HBox.margin>
-								<Insets right="10.0" />
-							</HBox.margin>
-						</VBox>
-					</children>
-					<BorderPane.margin>
-						<Insets bottom="10.0" />
-					</BorderPane.margin>
-				</HBox>
+      								</Pane>
+      								<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" prefHeight="543.0" prefWidth="255.0">
+      									<columns>
+      										<TableColumn fx:id="colBankerSgin" prefWidth="43.0" styleClass="column-header" text="选庄" />
+      										<TableColumn fx:id="colPlayerName" editable="false" minWidth="0.0" prefWidth="115.0" resizable="false" styleClass="column-header" text="玩家" />
+      										<TableColumn fx:id="colPlayerPoint" editable="true" prefWidth="96.0" resizable="false" styleClass="column-header" text="积分" />
+      									</columns>
+      									<VBox.margin>
+      										<Insets top="2.0" />
+      									</VBox.margin>
+      								</TableView>
+      							</children>
+      						</VBox>
+      						<Region prefHeight="535.0" prefWidth="48.0" HBox.hgrow="ALWAYS" />
+      						<VBox prefHeight="535.0" prefWidth="253.0">
+      							<children>
+      								<VBox id="desk-finance-panel">
+      									<children>
+      										<HBox>
+      											<children>
+      												<Label prefHeight="34.0" prefWidth="90.0" styleClass="txt" text="当前财务群：" textFill="WHITE" />
+      												<ChoiceBox fx:id="groupBoxM" prefHeight="25.0" prefWidth="163.0" />
+      											</children>
+      											<VBox.margin>
+      												<Insets bottom="10.0" />
+      											</VBox.margin>
+      										</HBox>
+      									</children>
+      									<padding>
+      										<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      									</padding>
+      									<VBox.margin>
+      										<Insets bottom="15.0" />
+      									</VBox.margin>
+      								</VBox>
+      								<Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
+      								<Pane prefHeight="394.0" prefWidth="255.0">
+      									<children>
+      										<fx:include source="ApprovalTab.fxml" />
+      									</children>
+      								</Pane>
+      							</children>
+      							<HBox.margin>
+      								<Insets right="10.0" />
+      							</HBox.margin>
+      						</VBox>
+                     </children>
+                  </HBox>
+                  <Line endX="450.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Line>
+                  <TableView prefHeight="142.0" prefWidth="556.0">
+                    <columns>
+                      <TableColumn prefWidth="255.0" text="C1" />
+                      <TableColumn prefWidth="300.0" text="C2" />
+                    </columns>
+                     <VBox.margin>
+                        <Insets top="2.0" />
+                     </VBox.margin>
+                  </TableView>
+               </children>
+            </VBox>
 			</center>
 		</BorderPane>
 	</children>
