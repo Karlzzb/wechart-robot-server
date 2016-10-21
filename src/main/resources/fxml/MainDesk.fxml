@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -32,7 +23,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
 		<BorderPane prefHeight="692.0" prefWidth="1072.0">
 			<top>
@@ -195,7 +186,7 @@
 			<center>
             <VBox>
                <children>
-                  <HBox prefHeight="482.0" prefWidth="556.0">
+                  <HBox prefHeight="623.0" prefWidth="556.0">
                      <children>
       						<VBox prefHeight="535.0" prefWidth="246.0">
       							<children>
@@ -220,8 +211,15 @@
       										</Label>
             								<HBox prefHeight="100.0" prefWidth="200.0" styleClass="colorPanel">
             									<children>
-            										<Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-            										<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="刷新">
+                                          <Button fx:id="singlePlayerInfoSend" mnemonicParsing="false" onAction="#singleInfoSentOut" prefHeight="27.0" prefWidth="79.0" styleClass="btnBlock" text="发送积分">
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+            										<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="27.0" prefWidth="77.0" styleClass="btnBlock" text="刷新">
             											<HBox.margin>
             												<Insets right="10.0" />
             											</HBox.margin>
@@ -229,7 +227,7 @@
             												<Cursor fx:constant="HAND" />
             											</cursor>
             										</Button>
-            										<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="26.0" prefWidth="173.0" styleClass="btnBlock" text="保存">
+            										<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="27.0" prefWidth="77.0" styleClass="btnBlock" text="保存">
             											<HBox.margin>
             												<Insets />
             											</HBox.margin>
@@ -298,7 +296,7 @@
       									</VBox.margin>
       								</VBox>
       								<Line endX="150.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" />
-      								<Pane prefHeight="394.0" prefWidth="255.0">
+      								<Pane prefHeight="538.0" prefWidth="255.0">
       									<children>
       										<fx:include source="ApprovalTab.fxml" />
       									</children>
@@ -310,20 +308,6 @@
       						</VBox>
                      </children>
                   </HBox>
-                  <Line endX="450.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Line>
-                  <TableView prefHeight="142.0" prefWidth="556.0">
-                    <columns>
-                      <TableColumn prefWidth="255.0" text="C1" />
-                      <TableColumn prefWidth="300.0" text="C2" />
-                    </columns>
-                     <VBox.margin>
-                        <Insets top="2.0" />
-                     </VBox.margin>
-                  </TableView>
                </children>
             </VBox>
 			</center>

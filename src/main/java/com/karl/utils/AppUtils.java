@@ -95,6 +95,9 @@ public class AppUtils {
 	public static final String REPLYPOINTAPPLYERROR2 = "@{3} {0}剩余积分： {1}, 不足以完成下{2}积分操作!!";
 	public static final String REPLYPOINTAPPLYADD = "@{0} 已上[{1}] 剩余积分： {2,number,#}";
 	public static final String REPLYPOINTAPPLYSUB = "@{0} 已下[{1}] 剩余积分： {2,number,#}";
+	
+	public static final String SINGLEPLAYERINFO = "@{0} 剩余积分： {1}";
+
 
 	public static final String ASKRECOMMEND = "你要对{0}做点什么呢！";
 	

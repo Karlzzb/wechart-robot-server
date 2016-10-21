@@ -423,32 +423,4 @@ public class GameRunningTabController extends FxmlController {
 			}
 		}
 	}
-
-	class TaskCellFactory implements Callback<TableColumn, TableCell> {
-
-		@Override
-		public TableCell call(TableColumn p) {
-
-			TableCell cell = new TableCell<Task, Object>() {
-				@Override
-				public void updateItem(Object item, boolean empty) {
-					super.updateItem(item, empty);
-					setText(empty ? null : getString());
-					TableRow currentRow = getTableRow();
-					PlayerTraceModel currentTraceModel = currentRow == null ? null
-							: (PlayerTraceModel) currentRow.getItem();
-					if (currentTraceModel != null) {
-						getStyleClass()
-								.add(" -fx-control-inner-background: palevioletred;-fx-accent: derive(-fx-control-inner-background, -40%);-fx-cell-hover-color: derive(-fx-control-inner-background, -20%);");
-					}
-				}
-
-				private String getString() {
-					return getItem() == null ? "" : getItem().toString();
-				}
-			};
-			return cell;
-		}
-	}
-
 }

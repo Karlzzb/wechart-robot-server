@@ -1,5 +1,6 @@
 package com.karl.fx.controller;
 
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,7 +14,6 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -33,9 +33,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 import org.slf4j.Logger;
@@ -46,7 +43,6 @@ import org.springframework.stereotype.Component;
 
 import com.karl.db.domain.GameInfo;
 import com.karl.db.domain.Player;
-import com.karl.fx.FxmlView;
 import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
@@ -147,6 +143,9 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Button undoGameButton;
+
+	@FXML
+	private Button singlePlayerInfoSend;
 
 	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
@@ -459,7 +458,14 @@ public class MainDeskController extends FxmlController {
 						}
 					}
 				});
+		playerTab.getSelectionModel().selectedItemProperty()
+				.addListener((obs, oldSelection, selectedPModel) -> {
+					if (selectedPModel != null) {
+						singlePlayerInfoSend.setUserData(selectedPModel);
+					}
+				});
 		fillPlayerTab();
+		singlePlayerInfoSend.setUserData(null);
 	}
 
 	private void fillPlayerTab() {
@@ -483,7 +489,6 @@ public class MainDeskController extends FxmlController {
 
 		flushRadioCol();
 		playerTab.setItems(playerList);
-
 	}
 
 	private void flushRadioCol() {
@@ -535,6 +540,34 @@ public class MainDeskController extends FxmlController {
 		groupBoxM.setItems(groupListFiniance);
 		groupBox.getSelectionModel().select(selected);
 		groupBoxM.getSelectionModel().select(selectedM);
+	}
+
+	@FXML
+	private void singleInfoSentOut(ActionEvent event) {
+		Object selectedRow = singlePlayerInfoSend.getUserData();
+		if (selectedRow == null) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请先在列表中选择一个玩家！");
+			alert.showAndWait();
+			return;
+		}
+		
+		if (selectedRow instanceof PlayerModel) {
+			PlayerModel pMode = (PlayerModel) selectedRow;
+			String content = MessageFormat.format(
+					AppUtils.SINGLEPLAYERINFO, pMode.getWechatName(),
+					pMode.getPlayerPoint());
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("信息发送");
+			alert.setHeaderText("确认发送");
+			alert.setContentText(content);
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.CANCEL) {
+				return;
+			}
+			webWechat.webwxsendmsg(content);
+		}
 	}
 
 	@FXML
@@ -703,38 +736,11 @@ public class MainDeskController extends FxmlController {
 		}
 		runtimeDomain.setSentOutMessage(content);
 		if (runtimeDomain.getMessageBoardCount() < 1) {
-			popMessageWindow();
+			stageManager.popMessageWindow(runtimeDomain);
 			runtimeDomain.setMessageBoardCount(1);
 		} else {
 			messageController.changeMessage();
 		}
-	}
-
-	private void popMessageWindow() {
-		Scene scene = new Scene(
-				stageManager.loadViewNodeHierarchy(FxmlView.MESSAGE
-						.getFxmlFile()));
-		Stage newStage = new Stage();
-		// newStage.initStyle(StageStyle.UNIFIED);
-		newStage.setTitle(FxmlView.MESSAGE.getTitle());
-		newStage.initModality(Modality.NONE);
-		newStage.initOwner(stageManager.getPrimaryStage());
-		newStage.setScene(scene);
-		newStage.sizeToScene();
-		newStage.centerOnScreen();
-		try {
-			newStage.show();
-		} catch (Exception e) {
-			LOGGER.error(
-					"Uable to show scene for title "
-							+ FxmlView.MESSAGE.getTitle(), e);
-		}
-
-		newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				runtimeDomain.setMessageBoardCount(0);
-			}
-		});
 	}
 
 	/**

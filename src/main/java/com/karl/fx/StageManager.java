@@ -14,6 +14,7 @@ import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.karl.domain.RuntimeDomain;
 import com.karl.service.PcClient;
 import com.karl.service.WebWechat;
 
@@ -72,6 +73,7 @@ public class StageManager {
         primaryStage.sizeToScene();
         primaryStage.centerOnScreen();
         try {
+        	primaryStage.hide();
             primaryStage.show();
         } catch (Exception e) {
             LOGGER.error("Uable to show scene for title " + title, e);
@@ -98,6 +100,32 @@ public class StageManager {
         }
         return rootNode;
     }
+    
+	public void popMessageWindow(RuntimeDomain runtimeDomain) {
+		Scene scene = new Scene(
+				loadViewNodeHierarchy(FxmlView.MESSAGE
+						.getFxmlFile()));
+		Stage newStage = new Stage();
+		// newStage.initStyle(StageStyle.UNIFIED);
+		newStage.setTitle(FxmlView.MESSAGE.getTitle());
+		newStage.initModality(Modality.NONE);
+		newStage.initOwner(getPrimaryStage());
+		newStage.setScene(scene);
+		newStage.sizeToScene();
+		newStage.centerOnScreen();
+		try {
+			newStage.show();
+		} catch (Exception e) {
+			LOGGER.error(
+					"Uable to show scene for title "
+							+ FxmlView.MESSAGE.getTitle(), e);
+		}
+		newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				runtimeDomain.setMessageBoardCount(0);
+			}
+		});
+	}
 
     public void loadAnchorPaneMemu(AnchorPane ap, final FxmlView view) {
         try {

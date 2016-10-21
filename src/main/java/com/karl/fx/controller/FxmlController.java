@@ -10,7 +10,7 @@ import com.karl.service.GameService;
 import com.karl.service.WebWechat;
 
 @Component
-public abstract class FxmlController {
+public class FxmlController{
 
     @Autowired
     @Lazy
@@ -26,5 +26,5 @@ public abstract class FxmlController {
     public GameService gameService;
 
     public void initialize() {
-    };
+    }
 }
