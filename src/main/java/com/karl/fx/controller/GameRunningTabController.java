@@ -3,7 +3,6 @@ package com.karl.fx.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -69,8 +68,6 @@ public class GameRunningTabController extends FxmlController {
 	@FXML
 	private TableColumn<PlayerTraceModel, Long> optionsCol;
 
-	private ObservableList<PlayerTraceModel> traceModeList;
-
 	@FXML
 	private Button bulkApproveButton;
 	@FXML
@@ -84,12 +81,10 @@ public class GameRunningTabController extends FxmlController {
 	public void initialize() {
 		buildTraceTable();
 		fillTraceTab();
-		traceAutoFlush();
 	}
 
 	private void buildTraceTable() {
 		traceTab.setEditable(Boolean.TRUE);
-		traceModeList = FXCollections.observableArrayList();
 		playerName.setEditable(Boolean.FALSE);
 		playerName
 				.setCellValueFactory(new PropertyValueFactory<PlayerTraceModel, String>(
@@ -178,7 +173,7 @@ public class GameRunningTabController extends FxmlController {
 		luckInfo.setOnEditCommit(new EventHandler<CellEditEvent<PlayerTraceModel, String>>() {
 			@Override
 			public void handle(CellEditEvent<PlayerTraceModel, String> cell) {
-				PlayerTraceModel traceModel = traceModeList.get(cell
+				PlayerTraceModel traceModel = traceTab.getItems().get(cell
 						.getTablePosition().getRow());
 				if (!StringUtils.matchDouble(cell.getNewValue())) {
 					fillTraceTab();
@@ -235,8 +230,9 @@ public class GameRunningTabController extends FxmlController {
 
 	private void fillTraceTab() {
 		synchronized (this) {
-			if (traceModeList != null) {
-				traceModeList.clear();
+			try {
+			if (traceTab.getItems() != null) {
+				traceTab.getItems().clear();
 			}
 			GameInfo gameInfo = gameService.getGameById(runtimeDomain
 					.getCurrentGameId());
@@ -262,7 +258,7 @@ public class GameRunningTabController extends FxmlController {
 								+ Math.abs(trace.getResultPoint());
 					}
 
-					traceModeList.add(new PlayerTraceModel(trace.getTraceId(),
+					traceTab.getItems().add(new PlayerTraceModel(trace.getTraceId(),
 							trace.getPlayerId(), trace.getRemarkName(), pEntity
 									.getPoints(), trace.getBetInfo(), trace
 									.getLuckInfo().toString(), trace
@@ -271,7 +267,10 @@ public class GameRunningTabController extends FxmlController {
 				}
 			}
 			flushDefiedCol();
-			traceTab.setItems(traceModeList);
+			LOGGER.info("Trace table flush secess, table size={}!", traceTab.getItems().size());
+			}catch(Exception e) {
+				LOGGER.error("Trace table flush failed!", e);
+			}
 		}
 	}
 
@@ -290,11 +289,11 @@ public class GameRunningTabController extends FxmlController {
 								List<PlayerTrace> traceList = gameService
 										.getCurrentPlayTrace();
 								if (traceList != null) {
-									if (traceModeList == null) {
+									if (traceTab.getItems() == null) {
 										return null;
 									}
-									if (traceModeList.size() > 0) {
-										traceModeList.clear();
+									if (traceTab.getItems().size() > 0) {
+										traceTab.getItems().clear();
 									}
 									GameInfo gameInfo = gameService
 											.getGameById(runtimeDomain
@@ -306,7 +305,7 @@ public class GameRunningTabController extends FxmlController {
 									PlayerTrace trace = null;
 									for (int i = 0; i < traceList.size(); i++) {
 										trace = traceList.get(i);
-										traceModeList
+										traceTab.getItems()
 												.add(new PlayerTraceModel(
 														trace.getTraceId(),
 														trace.getPlayerId(),
@@ -330,6 +329,7 @@ public class GameRunningTabController extends FxmlController {
 														trace.getIsBanker()));
 									}
 								}
+								flushDefiedCol();
 							}
 						} catch (Exception e) {
 							LOGGER.error("player table auto change failed!", e);
@@ -338,9 +338,9 @@ public class GameRunningTabController extends FxmlController {
 				}
 			};
 			if (traceFlushThread == null) {
-				// traceFlushThread = new Thread(traceFlushTask);
-				// traceFlushThread.setDaemon(Boolean.TRUE);
-				// traceFlushThread.start();
+				 traceFlushThread = new Thread(traceFlushTask);
+				 traceFlushThread.setDaemon(Boolean.TRUE);
+				 traceFlushThread.start();
 			}
 			LOGGER.info("Auto trace flush Thread start");
 		}
@@ -348,6 +348,7 @@ public class GameRunningTabController extends FxmlController {
 
 	public void flushLuckInfo() {
 		this.fillTraceTab();
+		stageManager.popLuckInfoWindow(runtimeDomain);
 	}
 
 	public void flushBetInfo() {
@@ -368,10 +369,9 @@ public class GameRunningTabController extends FxmlController {
 
 	public void cleanCurrentTrace() {
 		runtimeDomain.setCurrentGameId(Long.valueOf(0));
-		if (traceModeList != null) {
-			traceModeList.clear();
+		if (traceTab.getItems() != null) {
+			traceTab.getItems().clear();
 		}
-		traceTab.setItems(traceModeList);
 	}
 
 	private class TraceDelCell extends TableCell<PlayerTraceModel, Long> {
@@ -420,6 +420,8 @@ public class GameRunningTabController extends FxmlController {
 				if (getIndex() < items.size()) {
 					setGraphic(gridPane);
 				}
+			}else {
+				setGraphic(null);
 			}
 		}
 	}

@@ -54,10 +54,7 @@
 			<artifactId>ddmlib</artifactId>
 			<version>22.0</version>
 		</dependency>
-
 	</dependencies>
-
-
 	<build>
 		<finalName>cyc</finalName>
 		<plugins>

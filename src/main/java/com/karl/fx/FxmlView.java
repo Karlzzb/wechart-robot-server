@@ -66,6 +66,16 @@ public enum FxmlView {
         public String getFxmlFile() {
             return "/fxml/Message.fxml";
         }
+    }, LUCKTABLE{
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("luckinfo.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/LuckInfo.fxml";
+        }    	
     };
 
     public abstract String getTitle();

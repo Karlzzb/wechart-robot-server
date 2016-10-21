@@ -12,8 +12,9 @@
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
-				%msg%n</Pattern>
+			<Pattern>
+				[ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n
+			</Pattern>
 			<charset>UTF-8</charset> <!-- 此处设置字符集 -->
 		</layout>
 		<!--日志文件最大的大小 -->
@@ -25,8 +26,9 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
-				%msg%n</Pattern>
+			<Pattern>
+				[ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n
+			</Pattern>
 			<charset>UTF-8</charset> <!-- 此处设置字符集 -->
 		</layout>
 	</appender>

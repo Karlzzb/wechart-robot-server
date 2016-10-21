@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Optional;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -86,12 +87,6 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private TableView<PlayerModel> playerTab;
 
-	private ObservableList<ChatGroupModel> groupList;
-
-	private ObservableList<ChatGroupModel> groupListFiniance;
-
-	private ObservableList<PlayerModel> playerList;
-
 	@FXML
 	private TextField bankerBetPoint;
 
@@ -149,9 +144,13 @@ public class MainDeskController extends FxmlController {
 
 	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
+	
+	@Autowired
+	private ConsoleController consoleController;
 
 	@Override
 	public void initialize() {
+//		buildWechatList();
 		imgLoad.setVisible(Boolean.TRUE);
 		autoPlayerFlushContinue = Boolean.TRUE;
 		isInitializing = Boolean.TRUE;
@@ -163,6 +162,23 @@ public class MainDeskController extends FxmlController {
 		buildFilterPlayer();
 		isInitializing = Boolean.FALSE;
 		imgLoad.setVisible(Boolean.FALSE);
+	}
+
+	private void buildWechatList() {
+		Service<Integer> service = new Service<Integer>() {
+			@Override
+			protected Task<Integer> createTask() {
+				return new Task<Integer>() {
+					@Override
+					public Integer call() throws InterruptedException {
+						webWechat.listenMsgMode2(consoleController);
+						return null;
+					}
+				};
+			}
+		};
+		Platform.setImplicitExit(false);
+        service.start();
 	}
 
 	private void buildFilterPlayer() {
@@ -220,8 +236,8 @@ public class MainDeskController extends FxmlController {
 				filterPlayer.add(playerModle);
 			}
 		}
-		flushRadioCol();
 		playerTab.setItems(filterPlayer);
+		this.flushRadioCol();
 	}
 
 	private void buildGameQuicker() {
@@ -294,7 +310,7 @@ public class MainDeskController extends FxmlController {
 						runtimeDomain.setGlobalGameSignal(selected);
 						// start/end game, the view actions
 						if (runtimeDomain.getGlobalGameSignal()) {
-							gameService.ryncPlayersPoint(playerList);
+							gameService.ryncPlayersPoint(playerTab.getItems());
 							startGameViewAction();
 							gameRunningTabController.gameStartFlush();
 							gameSingal.setText("结束");
@@ -469,11 +485,10 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void fillPlayerTab() {
-		if (playerList != null) {
-			playerList.clear();
+		if (playerTab.getItems() != null) {
+			playerTab.getItems().clear();
 		}
-		playerList = runtimeDomain.getPlayerList();
-		runtimeDomain.getRunningPlayeres().clear();
+		playerTab.getItems().clear();
 		PlayerModel playerModle = null;
 		Map<String, PlayerModel> currentPlayers = runtimeDomain
 				.getCurrentPlayers();
@@ -484,11 +499,8 @@ public class MainDeskController extends FxmlController {
 					runtimeDomain.getBankerRemarkName())) {
 				playerModle.setIsBanker(Boolean.TRUE);
 			}
-			playerList.add(playerModle);
+			playerTab.getItems().add(playerModle);
 		}
-
-		flushRadioCol();
-		playerTab.setItems(playerList);
 	}
 
 	private void flushRadioCol() {
@@ -506,14 +518,14 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void fillUpGroupBox() {
+		ObservableList<ChatGroupModel> groupList = groupBox.getItems();
+		ObservableList<ChatGroupModel> groupListFiniance = groupBoxM.getItems();
+		
 		if (groupList != null)
 			groupList.clear();
 		if (groupListFiniance != null) {
 			groupListFiniance.clear();
 		}
-
-		groupList = runtimeDomain.getGroupList();
-		groupListFiniance = runtimeDomain.getGroupListFiniance();
 		ChatGroupModel groupModel = null;
 		int i = 1;
 		int selected = 0;
@@ -536,8 +548,6 @@ public class MainDeskController extends FxmlController {
 			groupListFiniance.add(groupModel);
 			i++;
 		}
-		groupBox.setItems(groupList);
-		groupBoxM.setItems(groupListFiniance);
 		groupBox.getSelectionModel().select(selected);
 		groupBoxM.getSelectionModel().select(selectedM);
 	}
@@ -593,7 +603,7 @@ public class MainDeskController extends FxmlController {
 				return new Task<Integer>() {
 					@Override
 					protected Integer call() throws Exception {
-						gameService.ryncPlayersPoint(playerList);
+						gameService.ryncPlayersPoint(playerTab.getItems());
 						return Integer.valueOf("0");
 					}
 				};
@@ -743,6 +753,7 @@ public class MainDeskController extends FxmlController {
 		}
 	}
 
+
 	/**
 	 * auto rync player table
 	 */
@@ -777,6 +788,7 @@ public class MainDeskController extends FxmlController {
 		synchronized (this) {
 			PlayerModel pModel = null;
 			Player pEntity = null;
+			ObservableList<PlayerModel> playerList = playerTab.getItems();
 			if (playerList == null || playerList.size() < 1) {
 				return;
 			}
@@ -792,11 +804,13 @@ public class MainDeskController extends FxmlController {
 					pModel.setPlayerName(pEntity.getRemarkName());
 				}
 			}
+			this.flushRadioCol();
 		}
 	}
 
 	private void startGameViewAction() {
 		PlayerModel pModel = null;
+		ObservableList<PlayerModel> playerList = playerTab.getItems();
 		for (int i = 0; i < playerList.size(); i++) {
 			pModel = playerList.get(i);
 			pModel.getPlayerName();
@@ -874,6 +888,8 @@ public class MainDeskController extends FxmlController {
 					radio.setSelected(items.get(getIndex()).getIsBanker());
 					setGraphic(radio);
 				}
+			}else {
+				setGraphic(null);
 			}
 		}
 	}

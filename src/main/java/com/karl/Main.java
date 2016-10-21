@@ -41,7 +41,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		Stage loadingStage = new Stage();
-		buildWelcomePage(loadingStage);
+//		buildWelcomePage(loadingStage);
 		bootstapSpringApplicationContext(stage, loadingStage);
 	}
 

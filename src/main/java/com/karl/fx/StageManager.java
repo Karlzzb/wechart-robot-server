@@ -126,6 +126,31 @@ public class StageManager {
 			}
 		});
 	}
+	
+	public void popLuckInfoWindow(RuntimeDomain runtimeDomain) {
+		Scene scene = new Scene(
+				loadViewNodeHierarchy(FxmlView.LUCKTABLE
+						.getFxmlFile()));
+		Stage luckInfoStage = runtimeDomain.getLuckInfoStage();
+		if (luckInfoStage == null) {
+			luckInfoStage = new Stage();
+			runtimeDomain.setLuckInfoStage(luckInfoStage);
+		}
+		luckInfoStage.close();
+		luckInfoStage.setTitle(FxmlView.LUCKTABLE.getTitle());
+		luckInfoStage.initModality(Modality.NONE);
+		luckInfoStage.initOwner(getPrimaryStage());
+		luckInfoStage.setScene(scene);
+		luckInfoStage.sizeToScene();
+		luckInfoStage.centerOnScreen();
+		try {
+			luckInfoStage.show();
+		} catch (Exception e) {
+			LOGGER.error(
+					"Uable to show scene for title "
+							+ FxmlView.MESSAGE.getTitle(), e);
+		}
+	}
 
     public void loadAnchorPaneMemu(AnchorPane ap, final FxmlView view) {
         try {

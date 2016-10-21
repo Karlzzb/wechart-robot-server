@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="456.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.LuckInfoTabController">
+	<children>
+		<TableView fx:id="luckInfoTable" depthTest="DISABLE" editable="true" layoutX="3.0" prefHeight="320.0" prefWidth="588.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<columns>
+            <TableColumn fx:id="packageOrderCol" minWidth="0.0" prefWidth="63.0" resizable="false" text="位置" />
+				<TableColumn fx:id="playerNameCol" editable="true" prefWidth="83.66665649414062" resizable="false" text="玩家" />
+				<TableColumn fx:id="packageInfoCol" editable="true" maxWidth="470.66668701171875" prefWidth="93.0" resizable="false" text="点数" />
+            <TableColumn fx:id="packageTimeCol" minWidth="4.0" prefWidth="97.0" text="时间" />
+            <TableColumn fx:id="playerRoleCol" prefWidth="118.66668701171875" text="角色" />
+			</columns>
+		</TableView>
+	</children>
+</AnchorPane>

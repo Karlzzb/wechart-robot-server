@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.Stage;
 
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import com.karl.db.domain.GameInfo;
 import com.karl.db.domain.Player;
 import com.karl.db.domain.PlayerTrace;
 import com.karl.fx.model.ChatGroupModel;
+import com.karl.fx.model.LuckInfoModel;
 import com.karl.fx.model.PlayRule;
 import com.karl.fx.model.PlayerApply;
 import com.karl.fx.model.PlayerModel;
@@ -73,6 +75,7 @@ public class RuntimeDomain implements Serializable {
 		mathPackageFeeC = 1L;
 		bankerWinCutRate = 5L;
 		currentRealPackageFee = 0L;
+		luckInfoModeList = FXCollections.observableArrayList();
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -255,6 +258,10 @@ public class RuntimeDomain implements Serializable {
 	private Long bankerWinCutRate;
 
 	private Long currentRealPackageFee;
+
+	private Stage luckInfoStage;
+
+	private ObservableList<LuckInfoModel> luckInfoModeList;
 
 	/**
 	 * key=remarkName
@@ -830,5 +837,21 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBeforeGameId(Long beforeGameId) {
 		this.beforeGameId = beforeGameId;
+	}
+
+	public Stage getLuckInfoStage() {
+		return this.luckInfoStage;
+	}
+
+	public void setLuckInfoStage(Stage luckInfoStage) {
+		this.luckInfoStage = luckInfoStage;
+	}
+
+	public ObservableList<LuckInfoModel> getLuckInfoModeList() {
+		return this.luckInfoModeList;
+	}
+
+	public void setLuckInfoModeList(ObservableList<LuckInfoModel> luckInfoModeList) {
+		this.luckInfoModeList = luckInfoModeList;
 	}
 }

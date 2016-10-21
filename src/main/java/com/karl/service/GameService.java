@@ -28,6 +28,8 @@ import com.karl.domain.LotteryRule;
 import com.karl.domain.RuntimeDomain;
 import com.karl.fx.controller.ApprovalTabController;
 import com.karl.fx.controller.GameRunningTabController;
+import com.karl.fx.controller.MainDeskController;
+import com.karl.fx.model.LuckInfoModel;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
 import com.karl.utils.DateUtils;
@@ -57,6 +59,10 @@ public class GameService {
 	@Lazy
 	private GameRunningTabController gameRunningTabController;
 
+	@Autowired
+	@Lazy
+	private MainDeskController mainDeskController;
+
 	public void mainSelfMessageHandle(String content) {
 		if (!runtimeDomain.getGlobalGameSignal()) {
 			return;
@@ -80,6 +86,11 @@ public class GameService {
 			Double luckInfo;
 			Date luckTime = null;
 			BigDecimal sumPackage = new BigDecimal(0);
+			ObservableList<LuckInfoModel> luckInfoModeList = runtimeDomain
+					.getLuckInfoModeList();
+			luckInfoModeList.clear();
+			String playerRole = LuckInfoModel.PLAYERROLENOMAL;
+
 			for (int i = 1; i < packageArray.length; i++) {
 				line = packageArray[i];
 				if (line == null || line.isEmpty()) {
@@ -102,19 +113,31 @@ public class GameService {
 						runtimeDomain.setcurrentFirstPacageTime(luckTime);
 						runtimeDomain.setcurrentLastPacageTime(luckTime);
 						sumPackage = sumPackage.add(new BigDecimal(luckInfo));
+
+						// for show luck table
+						if (runningPlayers().get(remarkName) == null) {
+							playerRole = LuckInfoModel.PLAYERROLENONE;
+						} else if (runningPlayers().get(remarkName).getPoints() == null
+								|| runningPlayers().get(remarkName).getPoints()
+										.compareTo(Long.valueOf(0)) == 0) {
+							playerRole = LuckInfoModel.PLAYERROLENOPOINT;
+						}
+						luckInfoModeList.add(new LuckInfoModel(index,
+								remarkName, luckInfo.toString(), m.group(4)
+										.trim(), playerRole));
 						LOGGER.debug("Self package single line【" + line
 								+ "】 analyze success!");
 					}
 				} catch (Exception e) {
 					LOGGER.error("Self package single line【" + line
-							+ "】 analyze failed!");
+							+ "】 analyze failed!",e);
 				}
 			}
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			gameRunningTabController.flushLuckInfo();
 			LOGGER.debug("Self package info【" + content + "】 analyze success!");
 		} catch (Exception e) {
-			LOGGER.error("Self package info【" + content + "】 analyze failed!");
+			LOGGER.error("Self package info【" + content + "】 analyze failed!",e);
 		}
 	}
 
@@ -231,8 +254,6 @@ public class GameService {
 					Player pEntity = putPlayerPoint(readyWechatId,
 							readyRemarkName, readyNickName, putPoint,
 							Boolean.TRUE);
-					//TODO
-					
 					// send feedback
 					if (pEntity != null) {
 						String replyTemplate = AppUtils.REPLYPOINTAPPLYPUT;
