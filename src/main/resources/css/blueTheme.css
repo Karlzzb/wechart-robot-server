@@ -250,7 +250,7 @@
 .table-view > .virtual-flow > .scroll-bar > .increment-button, 
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
-}*
+}
 
 .table-row-cell:empty {
     -fx-background-color: white;
