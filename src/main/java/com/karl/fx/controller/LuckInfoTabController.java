@@ -83,6 +83,7 @@ public class LuckInfoTabController extends FxmlController {
 									runtimeDomain.getBankerRemarkName())) {
 								currentRow
 										.setStyle("-fx-background-color: palevioletred");
+								luckInfoModel.setPlayerRole(LuckInfoModel.PLAYERROLEBANKER);
 							}
 							if (luckInfoModel.getPlayerRole().equals(
 									LuckInfoModel.PLAYERROLENOPOINT)) {

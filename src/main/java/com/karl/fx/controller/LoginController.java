@@ -81,10 +81,10 @@ public class LoginController extends FxmlController {
 			}
 		};
         service.start();
-        taskBar.progressProperty().bind(service.progressProperty());
-//        service.setOnRunning((WorkerStateEvent event) -> {
-//    		taskBar.setProgress(-1.0f);
-//        });
+//        taskBar.progressProperty().bind(service.progressProperty());
+        service.setOnRunning((WorkerStateEvent event) -> {
+    		taskBar.setProgress(-1.0f);
+        });
         service.setOnSucceeded((WorkerStateEvent event) -> {
 			stageManager.switchScene(FxmlView.MENU);
         });

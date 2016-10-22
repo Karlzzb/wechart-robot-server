@@ -12,7 +12,8 @@ public class LuckInfoModel {
     public static final String  PACKAGETIMECOL = "packageTime";
     public static final String PLAYERROLECOL = "playerRole";
     
-    public static final String  PLAYERROLENOMAL = "正常玩家";
+    public static final String  PLAYERROLEBANKER= "庄家玩家";
+    public static final String  PLAYERROLENOMAL = "玩家";
     public static final String  PLAYERROLENOPOINT = "无分";
     public static final String  PLAYERROLENONE = "非好友";
     public static final String  PLAYERROLENOBET = "未下注";
@@ -33,6 +34,39 @@ public class LuckInfoModel {
     private  SimpleStringProperty packageInfo;
     private  SimpleStringProperty packageTime;
     private SimpleStringProperty playerRole;
+    
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleIntegerProperty packageOrderProperty() {
+    	return packageOrder;
+    }
+    
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleStringProperty packageInfoProperty() {
+    	return packageInfo;
+    }
+    
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleStringProperty packageTimeProperty() {
+    	return packageTime;
+    }
+    
+    
+    /**
+     * very import for cell data auto fresh
+     * @return
+     */
+    public SimpleStringProperty playerRoleProperty() {
+    	return playerRole;
+    }
     
     
 	public Integer getPackageOrder() {

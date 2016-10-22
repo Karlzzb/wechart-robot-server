@@ -89,8 +89,6 @@ public class GameService {
 			ObservableList<LuckInfoModel> luckInfoModeList = runtimeDomain
 					.getLuckInfoModeList();
 			luckInfoModeList.clear();
-			String playerRole = LuckInfoModel.PLAYERROLENOMAL;
-
 			for (int i = 1; i < packageArray.length; i++) {
 				line = packageArray[i];
 				if (line == null || line.isEmpty()) {
@@ -115,6 +113,8 @@ public class GameService {
 						sumPackage = sumPackage.add(new BigDecimal(luckInfo));
 
 						// for show luck table
+						//TODO
+						String playerRole = LuckInfoModel.PLAYERROLENOMAL;
 						if (runningPlayers().get(remarkName) == null) {
 							playerRole = LuckInfoModel.PLAYERROLENONE;
 						} else if (runningPlayers().get(remarkName).getPoints() == null
@@ -134,11 +134,15 @@ public class GameService {
 				}
 			}
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
-			gameRunningTabController.flushLuckInfo();
+			recievedluckUIhandle();
 			LOGGER.debug("Self package info【" + content + "】 analyze success!");
 		} catch (Exception e) {
 			LOGGER.error("Self package info【" + content + "】 analyze failed!",e);
 		}
+	}
+	
+	private void recievedluckUIhandle() {
+		gameRunningTabController.openLuckInfo();
 	}
 
 	public void mainMessageHandle(String messageFrom, String webChatId,

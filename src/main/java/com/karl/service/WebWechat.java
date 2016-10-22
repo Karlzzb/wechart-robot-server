@@ -867,49 +867,6 @@ public class WebWechat {
 			}
 		}, "listenMsgMode").start();
 	}
-	
-	public void listenMsgMode2(final ConsoleController console) {
-				console.writeLog("[*] 获取联系人成功");
-				console.writeLog("[*] 共有 "
-						+ runtimeDomain.getAllUsrMap().size() + " 位联系人");
-				console.writeLog("[*] 共有 " + runtimeDomain.getGroupMap().size()
-						+ " 个群");
-				console.writeLog("[*] 进入消息监听模式 ...");
-				while (!stopRequested) {
-					try {
-						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
-					} catch (InterruptedException e) {
-						LOGGER.error("sleeping failed:", e);
-					}
-
-					int[] arr = syncCheck();
-
-					LOGGER.debug("[*] retcode={},selector={}", arr[0], arr[1]);
-
-					if (arr[0] == 1100) {
-					}
-
-					if (arr[0] == 0) {
-						JSONObject data = null;
-
-						switch (arr[1]) {
-						case 2:// 新的消息
-							data = webwxsync();
-							handleMsg(data, console);
-							break;
-						case 6:// 红包
-							data = webwxsync();
-							handleMsg(data, console);
-							break;
-						case 7:// 进入/离开聊天界面
-							data = webwxsync();
-							break;
-						default:
-							break;
-						}
-					}
-				}
-	}
 
 	public void loginWechat() throws InterruptedException {
 		String uuid = getUUID();

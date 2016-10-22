@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Optional;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -144,14 +143,12 @@ public class MainDeskController extends FxmlController {
 
 	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
-	
+
 	@Autowired
 	private ConsoleController consoleController;
 
 	@Override
 	public void initialize() {
-//		buildWechatList();
-		imgLoad.setVisible(Boolean.TRUE);
 		autoPlayerFlushContinue = Boolean.TRUE;
 		isInitializing = Boolean.TRUE;
 		buildGroupBox();
@@ -161,24 +158,6 @@ public class MainDeskController extends FxmlController {
 		buildGameQuicker();
 		buildFilterPlayer();
 		isInitializing = Boolean.FALSE;
-		imgLoad.setVisible(Boolean.FALSE);
-	}
-
-	private void buildWechatList() {
-		Service<Integer> service = new Service<Integer>() {
-			@Override
-			protected Task<Integer> createTask() {
-				return new Task<Integer>() {
-					@Override
-					public Integer call() throws InterruptedException {
-						webWechat.listenMsgMode2(consoleController);
-						return null;
-					}
-				};
-			}
-		};
-		Platform.setImplicitExit(false);
-        service.start();
 	}
 
 	private void buildFilterPlayer() {
@@ -455,6 +434,7 @@ public class MainDeskController extends FxmlController {
 				.setOnEditCommit(new EventHandler<CellEditEvent<PlayerModel, String>>() {
 					@Override
 					public void handle(CellEditEvent<PlayerModel, String> cell) {
+						autoPlayerFlushContinue = Boolean.FALSE;
 						PlayerModel pModel = cell.getTableView().getItems()
 								.get(cell.getTablePosition().getRow());
 						if (!StringUtils.matchLong(cell.getNewValue())) {
@@ -462,7 +442,6 @@ public class MainDeskController extends FxmlController {
 							autoPlayerFlushContinue = Boolean.TRUE;
 							return;
 						}
-						autoPlayerFlushContinue = Boolean.FALSE;
 						try {
 							pModel.setPlayerPoint(cell.getNewValue());
 							gameService.ryncPlayersPoint(pModel);
@@ -501,6 +480,7 @@ public class MainDeskController extends FxmlController {
 			}
 			playerTab.getItems().add(playerModle);
 		}
+		flushRadioCol();
 	}
 
 	private void flushRadioCol() {
@@ -520,7 +500,7 @@ public class MainDeskController extends FxmlController {
 	private void fillUpGroupBox() {
 		ObservableList<ChatGroupModel> groupList = groupBox.getItems();
 		ObservableList<ChatGroupModel> groupListFiniance = groupBoxM.getItems();
-		
+
 		if (groupList != null)
 			groupList.clear();
 		if (groupListFiniance != null) {
@@ -562,12 +542,11 @@ public class MainDeskController extends FxmlController {
 			alert.showAndWait();
 			return;
 		}
-		
+
 		if (selectedRow instanceof PlayerModel) {
 			PlayerModel pMode = (PlayerModel) selectedRow;
-			String content = MessageFormat.format(
-					AppUtils.SINGLEPLAYERINFO, pMode.getWechatName(),
-					pMode.getPlayerPoint());
+			String content = MessageFormat.format(AppUtils.SINGLEPLAYERINFO,
+					pMode.getWechatName(), pMode.getPlayerPoint());
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("信息发送");
 			alert.setHeaderText("确认发送");
@@ -582,17 +561,33 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void flushGroup(ActionEvent event) {
-		imgLoad.setVisible(true);
-		try {
-			webWechat.wxInit();
-			webWechat.getContact();
-			// webWechat.getGroupMembers();
-			fillUpGroupBox();
-		} catch (Exception e) {
-			LOGGER.error("wechart Group flush failed!", e);
-		} finally {
+		Service<Integer> service = new Service<Integer>() {
+			@Override
+			protected Task<Integer> createTask() {
+				return new Task<Integer>() {
+					@Override
+					protected Integer call() throws Exception {
+						try {
+							webWechat.wxInit();
+							webWechat.getContact();
+							// webWechat.getGroupMembers();
+						} catch (Exception e) {
+							LOGGER.error("wechart Group flush failed!", e);
+						}
+						return Integer.valueOf("0");
+					}
+				};
+			};
+		};
+		service.start();
+		bar.progressProperty().bind(service.progressProperty());
+		service.setOnRunning((WorkerStateEvent we) -> {
+			imgLoad.setVisible(true);
+		});
+		service.setOnSucceeded((WorkerStateEvent we) -> {
 			imgLoad.setVisible(false);
-		}
+			fillUpGroupBox();
+		});
 	}
 
 	@FXML
@@ -733,7 +728,7 @@ public class MainDeskController extends FxmlController {
 
 		// clean player && banker
 		gameService.cleanTraceInfo(runtimeDomain.getCurrentGameId());
-		gameRunningTabController.flushLuckInfo();
+		gameRunningTabController.clearLuckInfo();
 
 		// clean time
 		runtimeDomain.removeCurrentFirstPacageTime();
@@ -752,7 +747,6 @@ public class MainDeskController extends FxmlController {
 			messageController.changeMessage();
 		}
 	}
-
 
 	/**
 	 * auto rync player table
@@ -780,7 +774,7 @@ public class MainDeskController extends FxmlController {
 				playerFlushThread.setDaemon(Boolean.TRUE);
 				playerFlushThread.start();
 			}
-			LOGGER.info("Auto player flush Thread start");
+			LOGGER.debug("Auto player flush Thread start");
 		}
 	}
 
@@ -804,7 +798,6 @@ public class MainDeskController extends FxmlController {
 					pModel.setPlayerName(pEntity.getRemarkName());
 				}
 			}
-			this.flushRadioCol();
 		}
 	}
 
@@ -888,8 +881,6 @@ public class MainDeskController extends FxmlController {
 					radio.setSelected(items.get(getIndex()).getIsBanker());
 					setGraphic(radio);
 				}
-			}else {
-				setGraphic(null);
 			}
 		}
 	}

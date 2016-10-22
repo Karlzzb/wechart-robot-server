@@ -12,14 +12,12 @@ import javafx.stage.StageStyle;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Lazy;
 
 import com.karl.fx.FxmlView;
 import com.karl.fx.StageManager;
 import com.karl.service.WebWechat;
 
 @SpringBootApplication
-@Lazy
 public class Main extends Application {
 	private ConfigurableApplicationContext springContext;
 
@@ -73,6 +71,7 @@ public class Main extends Application {
 			loadingStage.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package com.karl.fx.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -98,22 +99,26 @@ public class GameRunningTabController extends FxmlController {
 						setText(empty ? null : getString());
 						setGraphic(null);
 						TableRow<PlayerTraceModel> currentRow = getTableRow();
-						PlayerTraceModel playerName = currentRow == null ? null : (PlayerTraceModel)currentRow.getItem();
-						if (playerName != null && !playerName.getPlayerName().isEmpty()) {
+						PlayerTraceModel playerName = currentRow == null ? null
+								: (PlayerTraceModel) currentRow.getItem();
+						if (playerName != null
+								&& !playerName.getPlayerName().isEmpty()) {
 							clearPriorityStyle();
-							if (playerName.getPlayerName().equals(runtimeDomain
-											.getBankerRemarkName())) {
-								currentRow.setStyle("-fx-background-color: palevioletred");  
+							if (playerName.getPlayerName().equals(
+									runtimeDomain.getBankerRemarkName())) {
+								currentRow
+										.setStyle("-fx-background-color: palevioletred");
 							}
 						}
 					}
-					
-			        private void clearPriorityStyle(){
-			        	getTableRow().setStyle("");
-			        }
-			        private String getString() {
-			            return getItem() == null ? "" : getItem().toString();
-			        }
+
+					private void clearPriorityStyle() {
+						getTableRow().setStyle("");
+					}
+
+					private String getString() {
+						return getItem() == null ? "" : getItem().toString();
+					}
 				});
 
 		playerPoint.setEditable(Boolean.FALSE);
@@ -173,8 +178,8 @@ public class GameRunningTabController extends FxmlController {
 		luckInfo.setOnEditCommit(new EventHandler<CellEditEvent<PlayerTraceModel, String>>() {
 			@Override
 			public void handle(CellEditEvent<PlayerTraceModel, String> cell) {
-				PlayerTraceModel traceModel = traceTab.getItems().get(cell
-						.getTablePosition().getRow());
+				PlayerTraceModel traceModel = traceTab.getItems().get(
+						cell.getTablePosition().getRow());
 				if (!StringUtils.matchDouble(cell.getNewValue())) {
 					fillTraceTab();
 					return;
@@ -231,44 +236,47 @@ public class GameRunningTabController extends FxmlController {
 	private void fillTraceTab() {
 		synchronized (this) {
 			try {
-			if (traceTab.getItems() != null) {
-				traceTab.getItems().clear();
-			}
-			GameInfo gameInfo = gameService.getGameById(runtimeDomain
-					.getCurrentGameId());
-			if (gameInfo == null || gameInfo.getIsUndo()) {
-				return;
-			}
-			List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
-			if (traceList != null) {
-				PlayerTrace trace = null;
-				Player pEntity = null;
-				String resultInfo;
-				for (int i = 0; i < traceList.size(); i++) {
-					trace = traceList.get(i);
-					pEntity = runtimeDomain.getRunningPlayeres().get(
-							trace.getRemarkName());
-					if (pEntity == null) {
-						continue;
-					}
-					resultInfo = "";
-					if (trace.getResultPoint() != null) {
-						resultInfo = trace.getResultPoint() > 0 ? "赢"
-								+ trace.getResultPoint() : "输"
-								+ Math.abs(trace.getResultPoint());
-					}
-
-					traceTab.getItems().add(new PlayerTraceModel(trace.getTraceId(),
-							trace.getPlayerId(), trace.getRemarkName(), pEntity
-									.getPoints(), trace.getBetInfo(), trace
-									.getLuckInfo().toString(), trace
-									.getResultRuleName(), resultInfo, trace
-									.getIsBanker()));
+				if (traceTab.getItems() != null) {
+					traceTab.getItems().clear();
 				}
-			}
-			flushDefiedCol();
-			LOGGER.info("Trace table flush secess, table size={}!", traceTab.getItems().size());
-			}catch(Exception e) {
+				GameInfo gameInfo = gameService.getGameById(runtimeDomain
+						.getCurrentGameId());
+				if (gameInfo == null || gameInfo.getIsUndo()) {
+					return;
+				}
+				List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
+				if (traceList != null) {
+					PlayerTrace trace = null;
+					Player pEntity = null;
+					String resultInfo;
+					for (int i = 0; i < traceList.size(); i++) {
+						trace = traceList.get(i);
+						pEntity = runtimeDomain.getRunningPlayeres().get(
+								trace.getRemarkName());
+						if (pEntity == null) {
+							continue;
+						}
+						resultInfo = "";
+						if (trace.getResultPoint() != null) {
+							resultInfo = trace.getResultPoint() > 0 ? "赢"
+									+ trace.getResultPoint() : "输"
+									+ Math.abs(trace.getResultPoint());
+						}
+
+						traceTab.getItems().add(
+								new PlayerTraceModel(trace.getTraceId(), trace
+										.getPlayerId(), trace.getRemarkName(),
+										pEntity.getPoints(),
+										trace.getBetInfo(), trace.getLuckInfo()
+												.toString(), trace
+												.getResultRuleName(),
+										resultInfo, trace.getIsBanker()));
+					}
+				}
+				flushDefiedCol();
+				LOGGER.debug("Trace table flush secess, table size={}!",
+						traceTab.getItems().size());
+			} catch (Exception e) {
 				LOGGER.error("Trace table flush failed!", e);
 			}
 		}
@@ -338,17 +346,29 @@ public class GameRunningTabController extends FxmlController {
 				}
 			};
 			if (traceFlushThread == null) {
-				 traceFlushThread = new Thread(traceFlushTask);
-				 traceFlushThread.setDaemon(Boolean.TRUE);
-				 traceFlushThread.start();
+				traceFlushThread = new Thread(traceFlushTask);
+				traceFlushThread.setDaemon(Boolean.TRUE);
+				traceFlushThread.start();
 			}
 			LOGGER.info("Auto trace flush Thread start");
 		}
 	}
 
-	public void flushLuckInfo() {
-		this.fillTraceTab();
-		stageManager.popLuckInfoWindow(runtimeDomain);
+	public void openLuckInfo() {
+		Task<Integer> mytask = new Task<Integer>() {
+			@Override
+			public Integer call() throws InterruptedException {
+				stageManager.popLuckInfoWindow(runtimeDomain);
+				fillTraceTab();
+				return 0;
+			}
+		};
+		Platform.setImplicitExit(false);
+		Platform.runLater(mytask);
+	}
+
+	public void clearLuckInfo() {
+		fillTraceTab();
 	}
 
 	public void flushBetInfo() {
@@ -420,7 +440,7 @@ public class GameRunningTabController extends FxmlController {
 				if (getIndex() < items.size()) {
 					setGraphic(gridPane);
 				}
-			}else {
+			} else {
 				setGraphic(null);
 			}
 		}

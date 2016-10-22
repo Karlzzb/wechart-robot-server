@@ -150,6 +150,11 @@ public class StageManager {
 					"Uable to show scene for title "
 							+ FxmlView.MESSAGE.getTitle(), e);
 		}
+		luckInfoStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				runtimeDomain.setLuckInfoStage(null);
+			}
+		});
 	}
 
     public void loadAnchorPaneMemu(AnchorPane ap, final FxmlView view) {
