@@ -204,17 +204,17 @@
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #f00;
+    -fx-background-color: transparent;/* 0 */  
     -fx-background-insets: 0;
     -fx-background-radius: 1;
 }
 
 .table-view:focused .table-row-cell:focused,.table-view:focused .table-row-cell:focused:odd {
-    -fx-background-color: -fx-box-border, #f00;
+    -fx-background-color: -fx-box-border, transparent;/* 0 */  
     -fx-background-insets: 0, 1, 2;
 }
 .table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: -fx-box-border, #ff0;
+    -fx-background-color: -fx-box-border, #ff0;/* 0 */  
 }
 .table-view:focused .table-row-cell:filled:selected, .table-view:row-selection .table-row-cell:filled:hover:selected {    
     -fx-background-color: #659cef;
