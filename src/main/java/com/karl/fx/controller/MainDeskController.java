@@ -20,7 +20,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -127,9 +126,6 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private TextField playerSearchText;
-
-	@FXML
-	private ProgressBar bar;
 
 	private Thread playerFlushThread;
 
@@ -580,7 +576,6 @@ public class MainDeskController extends FxmlController {
 			};
 		};
 		service.start();
-		bar.progressProperty().bind(service.progressProperty());
 		service.setOnRunning((WorkerStateEvent we) -> {
 			imgLoad.setVisible(true);
 		});
@@ -605,7 +600,6 @@ public class MainDeskController extends FxmlController {
 			};
 		};
 		service.start();
-		bar.progressProperty().bind(service.progressProperty());
 		service.setOnRunning((WorkerStateEvent we) -> {
 			imgLoad.setVisible(true);
 		});
@@ -699,7 +693,6 @@ public class MainDeskController extends FxmlController {
 			};
 		};
 		service.start();
-		bar.progressProperty().bind(service.progressProperty());
 		service.setOnRunning((WorkerStateEvent we) -> {
 			imgLoad.setVisible(true);
 		});
