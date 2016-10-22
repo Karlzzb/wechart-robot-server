@@ -65,7 +65,7 @@ public class AppConfiguration {
     @Lazy(value = true)
     // stage only created after Spring context bootstrap
     public StageManager stageManager(Stage stage) {
-        return new StageManager(stage, springFXMLLoader, webWechat, null);
+        return new StageManager(stage, springFXMLLoader, webWechat);
     }
     
 //    @Bean

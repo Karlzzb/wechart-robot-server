@@ -1,13 +1,7 @@
 package com.karl;
 
-import java.io.IOException;
-
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -27,20 +21,9 @@ public class Main extends Application {
 		Application.launch(args);
 	}
 
-	private void buildWelcomePage(Stage stage) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource(
-				"/fxml/splash.fxml"));
-		Scene scene = new Scene(root);
-		stage.setScene(scene);
-		stage.initStyle(StageStyle.UNDECORATED);
-		stage.show();
-	}
-
 	@Override
 	public void start(Stage stage) throws Exception {
-		Stage loadingStage = new Stage();
-//		buildWelcomePage(loadingStage);
-		bootstapSpringApplicationContext(stage, loadingStage);
+		bootstapSpringApplicationContext(stage);
 	}
 
 	@Override
@@ -53,12 +36,12 @@ public class Main extends Application {
 	}
 
 	protected void displayINitialScene() {
-		stageManager.switchScene(FxmlView.LOGIN);
+		stageManager.switchSceneLogin(FxmlView.BLUELOGIN);
+		// stageManager.switchSceneLogin(FxmlView.LOGIN);
 		// stageManager.switchScene(FxmlView.MENU);
 	}
 
-	private void bootstapSpringApplicationContext(Stage stage,
-			Stage loadingStage) {
+	private void bootstapSpringApplicationContext(Stage stage) {
 		try {
 			SpringApplicationBuilder builder = new SpringApplicationBuilder(
 					Main.class);
@@ -68,7 +51,6 @@ public class Main extends Application {
 			springContext = builder.run(args);
 			stageManager = springContext.getBean(StageManager.class, stage);
 			displayINitialScene();
-			loadingStage.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

@@ -2,6 +2,8 @@ package com.karl.fx;
 
 import java.util.ResourceBundle;
 
+import javafx.stage.StageStyle;
+
 public enum FxmlView {
     MAIN {
         @Override
@@ -76,11 +78,30 @@ public enum FxmlView {
         public String getFxmlFile() {
             return "/fxml/LuckInfo.fxml";
         }    	
+    }, BLUELOGIN{
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("bluelogin.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/BlueLogin.fxml";
+        }
+        
+        @Override
+        public StageStyle getStageStyle() {
+        	return StageStyle.UNDECORATED;
+        }
     };
 
     public abstract String getTitle();
 
     public abstract String getFxmlFile();
+    
+    public StageStyle getStageStyle() {
+    	return StageStyle.DECORATED;
+    }
 
     String getStringFromResourceBundle(String key) {
         return ResourceBundle.getBundle("Bundle").getString(key);

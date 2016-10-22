@@ -1,0 +1,117 @@
+package com.karl.fx.controller;
+
+import static org.slf4j.LoggerFactory.getLogger;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import com.karl.fx.FxmlView;
+import com.karl.fx.StageManager;
+import com.karl.fx.animations.FadeInLeftTransition;
+import com.karl.fx.animations.FadeInRightTransition;
+import com.karl.fx.animations.FadeInTransition;
+import com.karl.utils.AppUtils;
+
+@Component
+public class BlueLoginController extends FxmlController {
+
+	private static final Logger LOGGER = getLogger(BlueLoginController.class);
+
+	@FXML
+	private Text lblWelcome;
+	@FXML
+	private Text lblRudy;
+	@FXML
+	private VBox vboxBottom;
+	@FXML
+	private Label lblClose;
+	@FXML
+	private ImageView imgLoading;
+
+	@FXML
+	private AnchorPane root;
+
+	@FXML
+	private ImageView qrImgeView;
+
+	private ConsoleController consoleController;
+
+	@Autowired
+	@Lazy(value = true)
+	public BlueLoginController(StageManager stageManager,
+			ConsoleController consoleController) {
+		super();
+		this.stageManager = stageManager;
+		this.consoleController = consoleController;
+	}
+
+	@Override
+	public void initialize() {
+		longStart();
+		lblClose.setOnMouseClicked((MouseEvent event) -> {
+			Platform.exit();
+			System.exit(0);
+		});
+	}
+
+	private void longStart() {
+		Service<Integer> service = new Service<Integer>() {
+			@Override
+			protected Task<Integer> createTask() {
+				return new Task<Integer>() {
+					@Override
+					public Integer call() throws InterruptedException {
+						String uuid = webWechat.getUUID();
+						if (null == uuid || uuid.isEmpty()) {
+							LOGGER.info("[*] uuid获取失败");
+							return 1;
+						}
+						LOGGER.info("[*] 获取到uuid为 [{}]",
+								runtimeDomain.getUuid());
+						webWechat.showQrCode();
+						String path = runtimeDomain.getQrCodeFile().toURI()
+								.toString();
+						LOGGER.info("Longin image path :{}", path);
+						Image qrImge = new Image(path);
+						qrImgeView.setImage(qrImge);
+						Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
+						while (!"200".equals(webWechat.waitForLogin())) {
+							updateProgress(10, 100);
+							Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
+						}
+						if (!webWechat.login()) {
+							LOGGER.info("微信登录失败");
+						}
+						LOGGER.info("[*] 微信登录成功");
+						webWechat.buildWechat();
+						webWechat.listenMsgMode(consoleController);
+						return 0;
+					}
+				};
+			}
+		};
+		service.start();
+		service.setOnRunning((WorkerStateEvent event) -> {
+			new FadeInLeftTransition(lblWelcome).play();
+			new FadeInRightTransition(lblRudy).play();
+			new FadeInTransition(vboxBottom).play();
+		});
+		service.setOnSucceeded((WorkerStateEvent event) -> {
+			stageManager.switchScene(FxmlView.MENU);
+		});
+	}
+}

@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import org.springframework.context.annotation.Lazy;
@@ -22,7 +23,11 @@ public class MessageController extends FxmlController {
     
 	@Override
 	public void initialize() {
-		messageBoard.setText(runtimeDomain.getSentOutMessage());
+		Font font = Font.font ("微软雅黑", 14);
+		messageBoard.setFont(font);
+		String content  =runtimeDomain.getSentOutMessage();
+//		messageBoard.setMinHeight(JavaFXUtile.computeTextHeight(messageBoard.getFont(), content,messageBoard.getWidth()));
+		messageBoard.setText(content);
 	}
     
     @FXML
