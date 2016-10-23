@@ -81,8 +81,11 @@ public class AppTest {
 							.getWebchatId(),
 					runtimeDomain.getRunningPlayeres().get(remarkName)
 							.getRemarkName(),
-					String.valueOf(Math.abs(r.nextInt(20))+"/"+runtimeDomain.getRunningPlayeres()
-							.get(remarkName).getPoints() / 5), Boolean.FALSE);
+					String.valueOf(Math.abs(r.nextInt(20))
+							+ "/"
+							+ runtimeDomain.getRunningPlayeres()
+									.get(remarkName).getPoints() / 5),
+					Boolean.FALSE);
 		}
 		runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
 		content = gameService.declareGame();
@@ -98,7 +101,7 @@ public class AppTest {
 		}
 		System.out.println(gameService.openLottery());
 	}
-	
+
 	@Test
 	public void testGameRoundAuto() {
 		Random r = new Random();
@@ -118,8 +121,7 @@ public class AppTest {
 		String content = gameService.declareBetStar();
 		System.out.println(gameService.publishRanking());
 		System.out.println(content);
-		
-		
+
 		runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
 		content = gameService.declareGame();
 		System.out.println(content);
@@ -134,8 +136,51 @@ public class AppTest {
 		}
 		System.out.println(gameService.openLottery());
 		System.out.println(gameService.publishRanking());
+	}
+
+	@Test
+	public void testGameRoundAuto2() {
+		runtimeDomain.setCurrentGameKey(AppUtils.PLAYLUCKWAY);
+		runtimeDomain.setCurrentLotteryRule(AppUtils.LOTTERYRULE2);
+		Player pEntity = new Player();
+		pEntity.setRemarkName("test1");
+		pEntity.setPoints(10000L);
+		gameService.savePlayEntity(pEntity);
+		pEntity = new Player();
+		pEntity.setRemarkName("test2");
+		pEntity.setPoints(10000L);
+		gameService.savePlayEntity(pEntity);
+		pEntity = new Player();
+		pEntity.setRemarkName("test3");
+		pEntity.setPoints(3180L);
+		gameService.savePlayEntity(pEntity);
+			
+			
+		runtimeDomain.setBankerRemarkName("test3");
+		runtimeDomain.setBankerBetPoint(3180L);
+		runtimeDomain.setBankerIndex(3);
+		runtimeDomain.setPackageNumber(10);
+		runtimeDomain.setDefiendBet(100L);
+		String content = gameService.declareBetStar();
+		runtimeDomain.setGlobalGameSignal(true);
+		System.out.println(gameService.publishRanking());
+		System.out.println(content);
+		gameService.puttingLuckInfo(1, "test1", Double.valueOf(0.06),
+				new Date());
+		gameService.puttingLuckInfo(2, "test2", Double.valueOf(0.4),
+				new Date());
+		gameService.puttingLuckInfo(3, "test3", Double.valueOf(0.54),
+				new Date());
+		runtimeDomain.setcurrentFirstPacageTime(new Date());
+		runtimeDomain.setcurrentLastPacageTime(new Date());
+
+		
+		runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
+		content = gameService.declareGame();
+		System.out.println(content);
+		System.out.println(gameService.openLottery());
+		System.out.println(gameService.publishRanking());
 		
 	}
-	
 
 }

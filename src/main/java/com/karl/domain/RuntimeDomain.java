@@ -75,6 +75,7 @@ public class RuntimeDomain implements Serializable {
 		mathPackageFeeC = 1L;
 		bankerWinCutRate = 5L;
 		currentRealPackageFee = 0L;
+		firstBankerFee = 0L;
 		luckInfoModeList = FXCollections.observableArrayList();
 	}
 
@@ -183,9 +184,9 @@ public class RuntimeDomain implements Serializable {
 	public Long currentGameId;
 	
 	/**
-	 * game serial No. for play(before current)
+	 * game entity. for play(before current)
 	 */
-	public Long beforeGameId;
+	public GameInfo beforeGameInfo;
 
 	/**
      * 
@@ -212,7 +213,7 @@ public class RuntimeDomain implements Serializable {
 	 */
 	private Boolean allowInvainPlayer;
 
-	private String sentOutMessage;
+	private String[] sentOutMessage;
 
 	private String skey, synckey, wxsid, wxuin, passTicket, deviceId = "e"
 			+ DateKit.getCurrentUnixTime();
@@ -262,6 +263,8 @@ public class RuntimeDomain implements Serializable {
 	private Stage luckInfoStage;
 
 	private ObservableList<LuckInfoModel> luckInfoModeList;
+
+	private Long firstBankerFee;
 
 	/**
 	 * key=remarkName
@@ -643,12 +646,12 @@ public class RuntimeDomain implements Serializable {
 		this.defiendBet = defiendBet;
 	}
 
-	public String getSentOutMessage() {
+	public String[] getSentOutMessage() {
 		return sentOutMessage;
 	}
 
-	public void setSentOutMessage(String sentOutMessage) {
-		this.sentOutMessage = sentOutMessage;
+	public void setSentOutMessage(String[] content) {
+		this.sentOutMessage = content;
 	}
 
 	public ObservableList<ChatGroupModel> getGroupListFiniance() {
@@ -831,14 +834,6 @@ public class RuntimeDomain implements Serializable {
 		this.currentRealPackageFee = currentRealPackageFee;
 	}
 
-	public Long getBeforeGameId() {
-		return beforeGameId;
-	}
-
-	public void setBeforeGameId(Long beforeGameId) {
-		this.beforeGameId = beforeGameId;
-	}
-
 	public Stage getLuckInfoStage() {
 		return this.luckInfoStage;
 	}
@@ -853,5 +848,21 @@ public class RuntimeDomain implements Serializable {
 
 	public void setLuckInfoModeList(ObservableList<LuckInfoModel> luckInfoModeList) {
 		this.luckInfoModeList = luckInfoModeList;
+	}
+
+	public GameInfo getBeforeGameInfo() {
+		return beforeGameInfo;
+	}
+
+	public void setBeforeGameInfo(GameInfo beforeGameInfo) {
+		this.beforeGameInfo = beforeGameInfo;
+	}
+
+	public Long getFirstBankerFee() {
+		return this.firstBankerFee;
+	}
+
+	public void setFirstBankerFee(Long firstBankerFee) {
+		this.firstBankerFee = firstBankerFee;
 	}
 }

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.shape.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -14,8 +10,14 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
 	<children>
       <BorderPane prefHeight="634.0" prefWidth="880.0">
          <center>
@@ -102,9 +104,9 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Pane>
-                        <Pane id="config-fee-panel" prefHeight="240.0" prefWidth="319.0">
+                        <Pane id="config-fee-panel" prefHeight="271.0" prefWidth="319.0">
                            <children>
-                              <VBox prefHeight="214.0" prefWidth="321.0" styleClass="colorPanel">
+                              <VBox prefHeight="260.0" prefWidth="321.0" styleClass="colorPanel">
                                  <children>
                                     <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费">
                                        <VBox.margin>
@@ -132,14 +134,14 @@
                                     <HBox>
                                        <children>
                                           <RadioButton fx:id="mathPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="公式包费" />
-                                          <TextField fx:id="mathPackageFeeB" prefHeight="28.0" prefWidth="76.0" />
-                                          <Label alignment="CENTER" prefHeight="25.0" prefWidth="12.0" text="+" textAlignment="CENTER">
+                                          <Label alignment="CENTER" prefHeight="25.0" prefWidth="21.0" text="+" textAlignment="CENTER">
                                              <HBox.margin>
                                                 <Insets left="5.0" right="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <TextField fx:id="mathPackageFeeC" prefHeight="25.0" prefWidth="76.0" />
+                                          <TextField fx:id="mathPackageFeeB" prefHeight="28.0" prefWidth="76.0" />
                                           <Label alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="16.0" style="-fx-text-fill: red;" text="*" textFill="#ff0e0e" />
+                                          <TextField fx:id="mathPackageFeeC" prefHeight="25.0" prefWidth="76.0" />
                                        </children>
                                        <VBox.margin>
                                           <Insets bottom="10.0" />
@@ -158,6 +160,12 @@
                                        <VBox.margin>
                                           <Insets bottom="10.0" />
                                        </VBox.margin>
+                                    </HBox>
+                                    <HBox>
+                                       <children>
+                                          <Label prefHeight="30.0" prefWidth="140.0" text="上庄费用：" />
+                                          <TextField fx:id="firstBankerFee" prefHeight="28.0" prefWidth="170.0" />
+                                       </children>
                                     </HBox>
                                  </children>
                                  <padding>

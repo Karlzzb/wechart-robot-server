@@ -66,6 +66,8 @@ public class ConfigController extends FxmlController {
     @FXML private TextField mathPackageFeeC;
     @FXML private RadioButton realPackageFeeModel;
     @FXML private TextField bankerWinCut;
+    @FXML private TextField firstBankerFee;
+    
     
     
     private ObservableList<PlayRule> ruleList;
@@ -240,6 +242,26 @@ public class ConfigController extends FxmlController {
 				}
 				}catch(Exception e) {
 					bankerWinCut.setText(oldValue);
+				}
+			}
+    	});
+    	
+    	/*  first banker fee  */ 
+   	    firstBankerFee.setText(String.valueOf(runtimeDomain.getFirstBankerFee()));
+   	    firstBankerFee.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+				Matcher matcher = StringUtils.LONG.matcher(newValue);
+				if (matcher.find()) {
+					firstBankerFee.setText(newValue);
+					runtimeDomain.setFirstBankerFee(Long.valueOf(matcher.group()));
+				}else {
+					firstBankerFee.setText(oldValue);
+				}
+				}catch(Exception e) {
+					firstBankerFee.setText(oldValue);
 				}
 			}
     	});

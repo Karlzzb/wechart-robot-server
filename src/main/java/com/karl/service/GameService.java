@@ -113,7 +113,7 @@ public class GameService {
 						sumPackage = sumPackage.add(new BigDecimal(luckInfo));
 
 						// for show luck table
-						//TODO
+						// TODO
 						String playerRole = LuckInfoModel.PLAYERROLENOMAL;
 						if (runningPlayers().get(remarkName) == null) {
 							playerRole = LuckInfoModel.PLAYERROLENONE;
@@ -130,17 +130,18 @@ public class GameService {
 					}
 				} catch (Exception e) {
 					LOGGER.error("Self package single line【" + line
-							+ "】 analyze failed!",e);
+							+ "】 analyze failed!", e);
 				}
 			}
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			recievedluckUIhandle();
 			LOGGER.debug("Self package info【" + content + "】 analyze success!");
 		} catch (Exception e) {
-			LOGGER.error("Self package info【" + content + "】 analyze failed!",e);
+			LOGGER.error("Self package info【" + content + "】 analyze failed!",
+					e);
 		}
 	}
-	
+
 	private void recievedluckUIhandle() {
 		gameRunningTabController.openLuckInfo();
 	}
@@ -327,17 +328,12 @@ public class GameService {
 	}
 
 	@Transactional
-	public GameInfo undoTheGame(Long gameId) {
-		if (gameId == null || gameId.compareTo(0L) < 0) {
-			return null;
-		}
+	public GameInfo undoTheGame(GameInfo gameInfo) {
 		List<PlayerTrace> traceList = playerService
-				.getPlayerTraceListByGameId(gameId);
-		GameInfo gameInfo = playerService.getGameById(gameId);
+				.getPlayerTraceListByGameId(gameInfo.getGameSerialNo());
 		if (gameInfo == null || traceList == null) {
 			return gameInfo;
 		}
-
 		// write the data to db
 		for (int i = 0; i < traceList.size(); i++) {
 			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
@@ -395,6 +391,12 @@ public class GameService {
 		Long packageFee = runtimeDomain.getCurrentPackageFee(traceList,
 				gameInfo);
 		bankerState -= packageFee;
+		if (runtimeDomain.getBeforeGameInfo() == null
+				|| (runtimeDomain.getBeforeGameInfo().getGameSerialNo() > 0 && !runtimeDomain
+						.getBeforeGameInfo().getBankerRemarkName()
+						.equals(gameInfo.getBankerRemarkName()))) {
+			bankerState -= runtimeDomain.getFirstBankerFee();
+		}
 
 		// caculate win or lose
 		PlayerTrace trace = null;
@@ -655,12 +657,11 @@ public class GameService {
 				timeoutStr,
 				runtimeDomain.getShowManageFee() ? "管理费： "
 						+ runtimeDomain.getManageFee() + "\n" : "",
-				gameInfo.getResultPoint() + runtimeDomain.getManageFee()
-						+ packageFee + bankerWinCut,
+				gameInfo.getResultPoint(),
 				(bankerLuckTime - firstPackgeTime > runtimeDomain
 						.getCurrentTimeOut() * 1000) ? "庄家超时: "
 						+ DateUtils.timeStamp(bankerLuckTime) + "\n" : "");
-
+		runtimeDomain.setBeforeGameInfo(gameInfo);
 		return content;
 	}
 

@@ -26,8 +26,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -92,7 +90,7 @@ public class MainDeskController extends FxmlController {
 	private TextField definedBet;
 
 	@FXML
-	private ToggleButton gameSingal;
+	private Button gameSingal;
 
 	@FXML
 	private Label bankerLabel;
@@ -108,8 +106,6 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Button cleanAllTraceBut;
-
-	final ToggleGroup gameSingalGroup = new ToggleGroup();
 
 	ToggleGroup playerGroup = new ToggleGroup();
 
@@ -173,22 +169,43 @@ public class MainDeskController extends FxmlController {
 			alert.showAndWait();
 			return;
 		}
-
-		if (runtimeDomain.getBeforeGameId() != null
-				&& runtimeDomain.getBeforeGameId() > 0) {
+		
+		if(runtimeDomain.getBeforeGameInfo() == null) {
+			Alert alert2 = new Alert(AlertType.WARNING);
+			alert2.setTitle("错误操作");
+			alert2.setContentText("未找到上局信息，请确认已完成计算操作！");
+			alert2.showAndWait();
+			return;			
+		}
+		
+		if (runtimeDomain.getBeforeGameInfo() != null && runtimeDomain.getBeforeGameInfo().getIsUndo()) {
+			Alert alert2 = new Alert(AlertType.WARNING);
+			alert2.setTitle("错误操作");
+			alert2.setContentText("第【"
+					+ runtimeDomain.getBeforeGameInfo().getGameSerialNo()
+					+ "】期 已作废，请勿重复操作！");
+			alert2.showAndWait();
+			return;
+		}
+		
+		if (runtimeDomain.getBeforeGameInfo() != null
+				&& runtimeDomain.getBeforeGameInfo().getGameSerialNo() > 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("作废 第【" + runtimeDomain.getBeforeGameId() + "】期");
+			alert.setTitle("作废 第【"
+					+ runtimeDomain.getBeforeGameInfo().getGameSerialNo()
+					+ "】期");
 			alert.setContentText("本操作用于恢复最近一次完成计算的游戏局！ 是否确定作废 第【"
-					+ runtimeDomain.getBeforeGameId() + "】期？");
+					+ runtimeDomain.getBeforeGameInfo().getGameSerialNo()
+					+ "】期？");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
-				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain
-						.getCurrentGameId());
+				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain.getBeforeGameInfo());
 				runtimeDomain.setBankerBetPoint(runtimeDomain
 						.getBankerBetPoint() - gameInfo.getResultPoint());
 				bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
 						.toString());
 				gameRunningTabController.cleanCurrentTrace();
+				runtimeDomain.setBeforeGameInfo(gameInfo);
 			}
 		}
 	}
@@ -216,14 +233,22 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void buildGameQuicker() {
-		gameSingal.setToggleGroup(gameSingalGroup);
-		gameSingal.setUserData(Boolean.TRUE);
-		gameSingal.setSelected(runtimeDomain.getGlobalGameSignal());
 		if (runtimeDomain.getGlobalGameSignal()) {
+			gameSingal.getStyleClass().clear();
+			gameSingal.getStyleClass().add("end-button");
 			gameSingal.setText("结束");
 		} else {
+			gameSingal.getStyleClass().clear();
+			gameSingal.getStyleClass().add("start-button");
 			gameSingal.setText("开局");
 		}
+
+		gameSingal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				gameSingalHandle();
+			}
+		});
 
 		bankerBetPoint.setText(runtimeDomain.getBankerBetPoint().toString());
 		bankerBetPoint.textProperty().addListener(new ChangeListener<String>() {
@@ -247,69 +272,6 @@ public class MainDeskController extends FxmlController {
 		});
 
 		setCurrentBankSign(runtimeDomain.getBankerRemarkName());
-		gameSingalGroup.selectedToggleProperty().addListener(
-				new ChangeListener<Toggle>() {
-					public void changed(ObservableValue<? extends Toggle> ov,
-							Toggle toggle, Toggle new_toggle) {
-						if (isInitializing) {
-							return;
-						}
-
-						Boolean selected = Boolean.FALSE;
-						if (new_toggle != null) {
-							selected = (Boolean) new_toggle.getUserData();
-						}
-
-						if (selected) {
-							if (runtimeDomain.getBankerRemarkName() == null
-									|| runtimeDomain.getBankerRemarkName()
-											.isEmpty()) {
-								Alert alert = new Alert(AlertType.WARNING);
-								alert.setTitle("错误操作");
-								alert.setContentText("请先选择庄家，再开局！");
-								alert.showAndWait();
-								gameSingal.setSelected(Boolean.FALSE);
-								return;
-							}
-							if (runtimeDomain.getBankerBetPoint().compareTo(
-									Long.valueOf(0)) <= 0) {
-								Alert alert = new Alert(AlertType.WARNING);
-								alert.setTitle("错误操作");
-								alert.setContentText("请确认庄家的上庄积分大于0，再开局！");
-								alert.showAndWait();
-								gameSingal.setSelected(Boolean.FALSE);
-								return;
-							}
-						}
-
-						runtimeDomain.setGlobalGameSignal(selected);
-						// start/end game, the view actions
-						if (runtimeDomain.getGlobalGameSignal()) {
-							gameService.ryncPlayersPoint(playerTab.getItems());
-							startGameViewAction();
-							gameRunningTabController.gameStartFlush();
-							gameSingal.setText("结束");
-							openMessageBoard(gameService.declareGame());
-						} else {
-							gameSingal.setText("开局");
-							if (runtimeDomain.getBankerRemarkName() == null
-									|| runtimeDomain.getBankerRemarkName()
-											.isEmpty()) {
-								return;
-							}
-							if (runtimeDomain.getBankerBetPoint().compareTo(
-									Long.valueOf(0)) <= 0) {
-								return;
-							}
-							endGameViewAction();
-							if (!AppUtils.PLAYLUCKWAY.equals(runtimeDomain
-									.getCurrentGameKey())) {
-								openMessageBoard(gameService.declareGame());
-							}
-						}
-
-					}
-				});
 
 		definedBet.setText(runtimeDomain.getDefiendBet().toString());
 		definedBet.textProperty().addListener(new ChangeListener<String>() {
@@ -325,6 +287,48 @@ public class MainDeskController extends FxmlController {
 				}
 			}
 		});
+	}
+
+	private void gameSingalHandle() {
+		Boolean currentGameSignal = !runtimeDomain.getGlobalGameSignal();
+		// game start condition check
+		if (currentGameSignal) {
+			if (runtimeDomain.getBankerRemarkName() == null
+					|| runtimeDomain.getBankerRemarkName().isEmpty()) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("错误操作");
+				alert.setContentText("请先选择庄家，再开局！");
+				alert.showAndWait();
+				return;
+			}
+			if (runtimeDomain.getBankerBetPoint().compareTo(Long.valueOf(0)) <= 0) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("错误操作");
+				alert.setContentText("请确认庄家的上庄积分大于0，再开局！");
+				alert.showAndWait();
+				return;
+			}
+		}
+		// change the game status
+		runtimeDomain.setGlobalGameSignal(currentGameSignal);
+		// start/end game, the view actions
+		if (runtimeDomain.getGlobalGameSignal()) {
+			gameService.ryncPlayersPoint(playerTab.getItems());
+			startGameViewAction();
+			gameSingal.getStyleClass().clear();
+			gameSingal.getStyleClass().add("end-button");
+			gameSingal.setText("结束");
+			openMessageBoard(gameService.declareGame());
+			gameRunningTabController.gameStartFlush();
+		} else {
+			gameSingal.setText("开局");
+			gameSingal.getStyleClass().clear();
+			gameSingal.getStyleClass().add("start-button");
+			endGameViewAction();
+			if (!AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())) {
+				openMessageBoard(gameService.declareGame());
+			}
+		}
 	}
 
 	private void setCurrentBankSign(String bankerName) {
@@ -628,9 +632,9 @@ public class MainDeskController extends FxmlController {
 			return;
 		}
 
-		if (runtimeDomain.getBeforeGameId() != null
-				&& runtimeDomain.getBeforeGameId().compareTo(
-						runtimeDomain.getCurrentGameId()) == 0) {
+		if (runtimeDomain.getBeforeGameInfo() != null
+				&& runtimeDomain.getBeforeGameInfo().getGameSerialNo()
+						.compareTo(runtimeDomain.getCurrentGameId()) == 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("重复操作");
 			alert.setContentText("本局已完成计算，继续操作会导致重复扣分。是否继续？");
@@ -656,17 +660,18 @@ public class MainDeskController extends FxmlController {
 			}
 		}
 
-		if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())) {
-			gameSingal.setSelected(Boolean.FALSE);
+		if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())
+				&& runtimeDomain.getGlobalGameSignal()) {
+			gameSingalHandle();
 		}
 
 		// DO it
 		String content = gameService.openLottery();
-		openMessageBoard(content);
+		openMessageBoard(new String[] { content,
+				gameService.publishPointRanks() });
 		bankerBetPoint
 				.setText(runtimeDomain.getBankerBetPoint() > 0 ? runtimeDomain
 						.getBankerBetPoint().toString() : "0");
-		runtimeDomain.setBeforeGameId(runtimeDomain.getCurrentGameId());
 		gameRunningTabController.flushResult();
 	}
 
@@ -729,6 +734,19 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void openMessageBoard(String content) {
+		if (isInitializing) {
+			return;
+		}
+		runtimeDomain.setSentOutMessage(new String[] { content });
+		if (runtimeDomain.getMessageBoardCount() < 1) {
+			stageManager.popMessageWindow(runtimeDomain);
+			runtimeDomain.setMessageBoardCount(1);
+		} else {
+			messageController.changeMessage();
+		}
+	}
+
+	private void openMessageBoard(String[] content) {
 		if (isInitializing) {
 			return;
 		}
