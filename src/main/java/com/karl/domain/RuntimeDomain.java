@@ -37,8 +37,8 @@ public class RuntimeDomain implements Serializable {
 	public RuntimeDomain() {
 		groupMap = new HashMap<String, JSONObject>();
 		allUsrMap = new HashMap<String, JSONObject>();
-//		publicUsrMap = new HashMap<String, JSONObject>();
-//		specialUsrMap = new HashMap<String, JSONObject>();
+		// publicUsrMap = new HashMap<String, JSONObject>();
+		// specialUsrMap = new HashMap<String, JSONObject>();
 		runningPlayeres = new HashMap<String, Player>();
 		qrCodeFile = new File("data/temp.jpg");
 		imagePath = "file:data/temp.jpg";
@@ -106,11 +106,11 @@ public class RuntimeDomain implements Serializable {
 	// 所有用戶信息
 	private Map<String, JSONObject> allUsrMap;
 
-//	// 公众号／服务号
-//	private Map<String, JSONObject> publicUsrMap;
+	// // 公众号／服务号
+	// private Map<String, JSONObject> publicUsrMap;
 
-//	// 特殊账号
-//	private Map<String, JSONObject> specialUsrMap;
+	// // 特殊账号
+	// private Map<String, JSONObject> specialUsrMap;
 
 	/**
 	 * The latest player info(key= remarkName)
@@ -182,7 +182,7 @@ public class RuntimeDomain implements Serializable {
 	 * game serial No. for play
 	 */
 	public Long currentGameId;
-	
+
 	/**
 	 * game entity. for play(before current)
 	 */
@@ -293,7 +293,7 @@ public class RuntimeDomain implements Serializable {
 			contact = memberList.getJSONObject(i);
 			if (contact.getString("UserName").equals(
 					getUser().getString("UserName"))) {
-				//exclude self
+				// exclude self
 				continue;
 			}
 			remarkName = getUserRemarkName(contact.getString("UserName"));
@@ -783,11 +783,12 @@ public class RuntimeDomain implements Serializable {
 		return packageFeeModel;
 	}
 
-	public Long getCurrentPackageFee(List<PlayerTrace> traceList, GameInfo gameInfo) {
+	public Long getCurrentPackageFee(List<PlayerTrace> traceList,
+			GameInfo gameInfo) {
 		if (packageFeeModel.equals(AppUtils.FIXEDPACKAGEFEEMODEL)) {
 			return fixedPackageFee;
 		} else if (packageFeeModel.equals(AppUtils.MATHPACKAGEFEEMODEL)) {
-			return (traceList.size() + 1)* mathPackageFeeB + mathPackageFeeC;
+			return (traceList.size() + 1) * mathPackageFeeB + mathPackageFeeC;
 		} else if (packageFeeModel.equals(AppUtils.REALPACKAGEFEEMODEL)) {
 			return currentRealPackageFee;
 		}
@@ -839,14 +840,27 @@ public class RuntimeDomain implements Serializable {
 	}
 
 	public void setLuckInfoStage(Stage luckInfoStage) {
+		clearLuckInfoStage();
 		this.luckInfoStage = luckInfoStage;
+	}
+
+	public void clearLuckInfoStage() {
+		try {
+			if (luckInfoStage != null) {
+
+				luckInfoStage.close();
+				luckInfoStage = null;
+			}
+		} catch (Exception e) {
+		}
 	}
 
 	public ObservableList<LuckInfoModel> getLuckInfoModeList() {
 		return this.luckInfoModeList;
 	}
 
-	public void setLuckInfoModeList(ObservableList<LuckInfoModel> luckInfoModeList) {
+	public void setLuckInfoModeList(
+			ObservableList<LuckInfoModel> luckInfoModeList) {
 		this.luckInfoModeList = luckInfoModeList;
 	}
 

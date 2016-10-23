@@ -169,12 +169,8 @@ public class StageManager {
 	public void popLuckInfoWindow(RuntimeDomain runtimeDomain) {
 		Scene scene = new Scene(
 				loadViewNodeHierarchy(FxmlView.LUCKTABLE.getFxmlFile()));
+		runtimeDomain.setLuckInfoStage(new Stage());
 		Stage luckInfoStage = runtimeDomain.getLuckInfoStage();
-		if (luckInfoStage == null) {
-			luckInfoStage = new Stage();
-			runtimeDomain.setLuckInfoStage(luckInfoStage);
-		}
-		luckInfoStage.close();
 		luckInfoStage.setTitle(FxmlView.LUCKTABLE.getTitle());
 		luckInfoStage.initModality(Modality.NONE);
 		luckInfoStage.initOwner(getPrimaryStage());
@@ -190,7 +186,7 @@ public class StageManager {
 		}
 		luckInfoStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent we) {
-				runtimeDomain.setLuckInfoStage(null);
+				runtimeDomain.clearLuckInfoStage();
 			}
 		});
 	}

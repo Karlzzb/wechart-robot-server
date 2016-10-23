@@ -499,7 +499,6 @@ public class WebWechat {
 		for (int i = 0; i < AppUtils.webpush_url.length; i++) {
 			String url = AppUtils.webpush_url[i];
 
-
 			JSONObject body = new JSONObject();
 			body.put("BaseRequest", runtimeDomain.getBaseRequest());
 
@@ -531,6 +530,7 @@ public class WebWechat {
 			if (arr[0] == 0) {
 				break;
 			}
+			LOGGER.info("Message syncCheck channel【" + url + "】 is unvailable!");
 		}
 		return arr;
 	}
@@ -711,7 +711,7 @@ public class WebWechat {
 			if (recommendInfo != null) {
 				recommendWechatId = recommendInfo.getString("UserName");
 				recommendWechatName = recommendInfo.getString("NickName");
-				
+
 			} else {
 				LOGGER.debug(
 						"FromUserName{} message's recommendInfo is empty!",
@@ -723,8 +723,8 @@ public class WebWechat {
 					jsonMsg.getString("FromUserName"),
 					runtimeDomain.getCurrentMGroupId());
 		}
-		
-		if(runtimeDomain.getAllUsrMap().get(recommendWechatId) == null) {
+
+		if (runtimeDomain.getAllUsrMap().get(recommendWechatId) == null) {
 			String content = MessageFormat.format(AppUtils.ASKRECOMMENDUNKNOWN,
 					recommendWechatName);
 			webwxsendmsgM(content);

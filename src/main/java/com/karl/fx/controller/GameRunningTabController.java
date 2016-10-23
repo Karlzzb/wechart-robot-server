@@ -34,7 +34,6 @@ import com.karl.db.domain.Player;
 import com.karl.db.domain.PlayerTrace;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerTraceModel;
-import com.karl.utils.AppUtils;
 import com.karl.utils.ResouceUtils;
 import com.karl.utils.StringUtils;
 
@@ -73,10 +72,6 @@ public class GameRunningTabController extends FxmlController {
 	private Button bulkApproveButton;
 	@FXML
 	private Button bulkRejectButton;
-
-	private Thread traceFlushThread;
-
-	private Task<Void> traceFlushTask;
 
 	@Override
 	public void initialize() {
@@ -282,84 +277,16 @@ public class GameRunningTabController extends FxmlController {
 		}
 	}
 
-	/**
-	 * auto rync player table
-	 */
-	private void traceAutoFlush() {
-		if (traceFlushTask == null) {
-			traceFlushTask = new Task<Void>() {
-				@Override
-				public Void call() {
-					while (true) {
-						try {
-							Thread.sleep(AppUtils.TRACE_TAB_FLSH_TERVAL);
-							if (runtimeDomain.getGlobalGameSignal()) {
-								List<PlayerTrace> traceList = gameService
-										.getCurrentPlayTrace();
-								if (traceList != null) {
-									if (traceTab.getItems() == null) {
-										return null;
-									}
-									if (traceTab.getItems().size() > 0) {
-										traceTab.getItems().clear();
-									}
-									GameInfo gameInfo = gameService
-											.getGameById(runtimeDomain
-													.getCurrentGameId());
-									if (gameInfo == null
-											|| gameInfo.getIsUndo()) {
-										continue;
-									}
-									PlayerTrace trace = null;
-									for (int i = 0; i < traceList.size(); i++) {
-										trace = traceList.get(i);
-										traceTab.getItems()
-												.add(new PlayerTraceModel(
-														trace.getTraceId(),
-														trace.getPlayerId(),
-														trace.getRemarkName(),
-														runtimeDomain
-																.getRunningPlayeres()
-																.get(trace
-																		.getRemarkName())
-																.getPoints(),
-														trace.getBetInfo(),
-														trace.getLuckInfo()
-																.toString(),
-														trace.getResultRuleName() == null ? ""
-																: trace.getResultRuleName(),
-														trace.getResultPoint() == null ? ""
-																: trace.getResultPoint() > 0 ? "赢"
-																		+ trace.getResultPoint()
-																		: "输"
-																				+ Math.abs(trace
-																						.getResultPoint()),
-														trace.getIsBanker()));
-									}
-								}
-								flushDefiedCol();
-							}
-						} catch (Exception e) {
-							LOGGER.error("player table auto change failed!", e);
-						}
-					}
-				}
-			};
-			if (traceFlushThread == null) {
-				traceFlushThread = new Thread(traceFlushTask);
-				traceFlushThread.setDaemon(Boolean.TRUE);
-				traceFlushThread.start();
-			}
-			LOGGER.info("Auto trace flush Thread start");
-		}
-	}
-
 	public void openLuckInfo() {
 		Task<Integer> mytask = new Task<Integer>() {
 			@Override
 			public Integer call() throws InterruptedException {
-				stageManager.popLuckInfoWindow(runtimeDomain);
-				fillTraceTab();
+				try {
+					stageManager.popLuckInfoWindow(runtimeDomain);
+					fillTraceTab();
+				}catch(Exception e) {
+					LOGGER.error("Can not open luckinfo board!", e);
+				}
 				return 0;
 			}
 		};
