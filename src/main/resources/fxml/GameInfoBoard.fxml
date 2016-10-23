@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="864.0"
+	style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.GameInfoController">
+	<children>
+		<Pane prefHeight="55.0" prefWidth="1072.0">
+			<children>
+				<Label styleClass="header-title" text="游戏信息窗" />
+				<Label prefHeight="48.0" prefWidth="100.0" styleClass="header-title"
+					text="" />
+			</children>
+		</Pane>
+		<Separator layoutY="67.0" prefWidth="1100.0"
+			AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true"
+			layoutX="24.0" layoutY="73.0" prefHeight="565.0" prefWidth="400.0"
+			styleClass="test">
+			<columns>
+				<TableColumn fx:id="ruleCheck" prefWidth="86.66665649414062"
+					resizable="false" text="选择" />
+				<TableColumn fx:id="ruleName" prefWidth="160.0"
+					resizable="false" text="名称" />
+				<TableColumn fx:id="ruleDetail" prefWidth="286.0"
+					resizable="false" text="倍数" />
+			</columns>
+		</TableView>
+	</children>
+	<stylesheets>
+		<URL value="@../css/Metro-UI.css" />
+		<URL value="@../css/blueTheme.css" />
+	</stylesheets>
+</AnchorPane>

@@ -430,17 +430,17 @@ public class GameService {
 						AppUtils.TIMEOUTPAIDALL)) {
 					trace.setResultPoint(trace.getResultTimes()
 							* trace.getBetPoint());
+					winnerList.add(trace);
+					bankerState -= trace.getResultPoint();
 				} else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
 						AppUtils.TIMEOUTPAIDONETIME)) {
 					trace.setResultPoint(trace.getBetPoint());
+					winnerList.add(trace);
+					bankerState -= trace.getResultPoint();
 				} else if (runtimeDomain.getCurrentTimeOutRuleBanker().equals(
 						AppUtils.TIMEOUTPAIDNONE)) {
 					trace.setResultPoint(Long.valueOf(0));
-					continue;
 				}
-
-				winnerList.add(trace);
-				bankerState -= trace.getResultPoint();
 				continue;
 			}
 
@@ -520,11 +520,9 @@ public class GameService {
 		// write the data to db
 		playerTraceBanker.setResultPoint(bankerState);
 		for (int i = 0; i < traceList.size(); i++) {
-			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
-				continue;
-			}
-			if (!traceList.get(i).getRemarkName()
-					.equals(runtimeDomain.getBankerRemarkName())) {
+			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) != 0
+					&& !traceList.get(i).getRemarkName()
+							.equals(runtimeDomain.getBankerRemarkName())) {
 				ryncPlayerPoint(traceList.get(i).getPlayerId(), traceList
 						.get(i).getResultPoint() > 0, Math.abs(traceList.get(i)
 						.getResultPoint()));
@@ -622,9 +620,7 @@ public class GameService {
 							.get(i).getRemarkName(),
 					traceList.get(i).getResultRuleName() + "("
 							+ traceList.get(i).getLuckInfo() + ")",
-					runtimeDomain.getCurrentTimeOutRule().equals(
-							AppUtils.TIMEOUTPAIDNONE) ? "0" : Math
-							.abs(traceList.get(i).getResultPoint())).toString();
+							traceList.get(i).getResultPoint());
 		}
 
 		String content = MessageFormat.format(
