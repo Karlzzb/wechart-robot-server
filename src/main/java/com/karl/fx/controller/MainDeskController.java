@@ -61,6 +61,9 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Button syncPlayer;
+	
+	@FXML
+    private Button clearBankerBut;
 
 	@FXML
 	private ChoiceBox<ChatGroupModel> groupBox;
@@ -158,6 +161,23 @@ public class MainDeskController extends FxmlController {
 				.addListener(
 						(ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(
 								oldVal, newVal));
+	}
+	
+	@FXML
+	private void clearBanker(ActionEvent event) {
+		if (runtimeDomain.getGlobalGameSignal()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请勿在开局过程中操作, 本操作用于清空当前庄家信息！");
+			alert.showAndWait();
+			return;
+		}
+		runtimeDomain.setBankerBetPoint(Long.valueOf(0));
+		this.bankerBetPoint.setText("0");
+		runtimeDomain.setBankerRemarkName(null);
+		bankerLabel.setText("当前庄家： 【 】");
+		playerGroup.selectToggle(null);
+		gameRunningTabController.cleanCurrentTrace();
 	}
 
 	@FXML

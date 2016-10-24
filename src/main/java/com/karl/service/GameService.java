@@ -1277,6 +1277,11 @@ public class GameService {
 	}
 
 	public String publishPointRanks() {
+		String bankerReMarkerName = runtimeDomain.getBankerRemarkName();
+		Player banker = null;
+
+		
+		
 		List<Player> playerList = playerService.getPlayerListDescPoint();
 		if (playerList == null) {
 			return null;
@@ -1290,6 +1295,11 @@ public class GameService {
 					playerList.get(i).getRemarkName()) == null) {
 				continue;
 			}
+			
+			if (bankerReMarkerName != null && bankerReMarkerName.equals(playerList.get(i).getRemarkName())) {
+				banker = playerList.get(i);
+				continue;
+			}
 
 			shotRemarkName = playerList.get(i).getRemarkName();
 			body += MessageFormat.format(
@@ -1300,6 +1310,16 @@ public class GameService {
 							.get(i).getPoints());
 			sumPoint += playerList.get(i).getPoints();
 		}
+		if (banker != null) {
+			sumPoint += banker.getPoints();
+			shotRemarkName = banker.getRemarkName();
+			body = MessageFormat.format(
+					AppUtils.PUBLICPOINTRANKLINEBANKER,
+					shotRemarkName.length() > 8 ? shotRemarkName
+							.substring(0, 8) : shotRemarkName, banker.getPoints())+body;
+			order += 1;
+		}
+		
 
 		String head = MessageFormat.format(AppUtils.PUBLICPOINTRANKHEAD,
 				order - 1, sumPoint);

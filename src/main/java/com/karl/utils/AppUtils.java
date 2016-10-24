@@ -126,6 +126,7 @@ public class AppUtils {
 	public static final String PUBLICPOINTRANKHEAD = "---------[富豪榜]---------\n"
 			+ "玩家:{0} 总分:{1,number,#}\n" + "--------------------------\n";
 
+	public static final String PUBLICPOINTRANKLINEBANKER = "庄家 {0} 积分：{1,number,#}\n";
 	public static final String PUBLICPOINTRANKLINE = "第{0} {1} 积分：{2,number,#}\n";
 
 	public static final String PUBLICPOINTRANKTAIL = "--------------------------\n"
