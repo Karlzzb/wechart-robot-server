@@ -49,7 +49,7 @@ public class AppUtils {
 
 	public static final String PLAYLONGSPLIT = "分数下注玩法";
 
-	public static final String PLAYLUCKWAY = "拼抢红包玩法";
+	public static final String PLAYLUCKWAY = "3秒抢包";
 
 	public static final String BETRESULTHEAD = "--------[停止下注]--------\n";
 
@@ -61,10 +61,10 @@ public class AppUtils {
 			+ "自定义梭哈下注：{5}\n" + "--------------------------\n"
 			+ "请发包手核对无误再发包\n" + "机器统计    对错勿怪\n";
 
-	public static final String GAMESTART = "--------[开始下注]--------\n"
-			+ "◆◆◆◆◆[第{8}期]◆◆◆◆◆\n" + "{0}\n" + "--------[庄家列表]--------\n"
-			+ "本局庄家：{1}\n" + "庄家积分：{2,number,#}\n" + "自定义金额梭哈最高下：{3}\n" + "最低下注：{4}\n"
-			+ "包数量：{5}\n" + "庄家位置：{6}\n" + "当前玩法：{7}\n";
+	public static final String GAMESTART = "--------[开局信息]--------\n"+"{0}\n"
+			+ "◆◆◆◆◆[第{1,number,#}期]◆◆◆◆◆\n"+ "--------[庄家列表]--------\n"
+			+ "本局庄家：{2}\n" + "庄家积分：{3,number,#}\n"
+			+ "包数量：{4}\n" + "每点：{5}\n" + "当前玩法：{6}\n" + "超时时间: {7,number,#}秒";
 
 	public static final String GAMERESULT = "◆◆◆◆◆[第{0}期]◆◆◆◆◆\n" + "{1}！{2}\n"
 			+ "-----------[赢]-----------\n" + "{3}"
@@ -99,9 +99,9 @@ public class AppUtils {
 	public static final String SINGLEPLAYERINFO = "@{0} 剩余积分： {1}";
 
 
-	public static final String ASKRECOMMEND = "你要对{0}做点什么呢！";
+	public static final String ASKRECOMMEND = "玩家{0}目前积分{1,number,#}，您要修改吗？";
 	
-	public static final String ASKRECOMMENDUNKNOWN = "{0}不是好友，什么都做不了！";
+	public static final String ASKRECOMMENDUNKNOWN = "{0}不是好友，请先添加！";
 
 
 	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");

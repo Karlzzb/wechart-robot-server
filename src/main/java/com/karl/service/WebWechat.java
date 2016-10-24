@@ -14,6 +14,7 @@ import blade.kit.json.JSON;
 import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
+import com.karl.db.domain.Player;
 import com.karl.domain.RuntimeDomain;
 import com.karl.fx.controller.ConsoleController;
 import com.karl.utils.AppUtils;
@@ -495,10 +496,29 @@ public class WebWechat {
 	 */
 	public int[] syncCheck() {
 		int[] arr = new int[2];
-
+		if (runtimeDomain.getBestSyncCheckChannel() != null
+				&& !runtimeDomain.getBestSyncCheckChannel().isEmpty()) {
+			arr = syncCheckSingle(runtimeDomain.getBestSyncCheckChannel());
+			if (arr[0] == 0) {
+				return arr;
+			}
+		}
 		for (int i = 0; i < AppUtils.webpush_url.length; i++) {
 			String url = AppUtils.webpush_url[i];
+			arr = syncCheckSingle(url);
+			if (arr[0] == 0) {
+				runtimeDomain.setBestSyncCheckChannel(url);
+				break;
+			}
+			LOGGER.debug("Message syncCheck channel【" + url
+					+ "】 is unvailable!");
+		}
+		return arr;
+	}
 
+	private int[] syncCheckSingle(String url) {
+		int[] arr = new int[2];
+		try {
 			JSONObject body = new JSONObject();
 			body.put("BaseRequest", runtimeDomain.getBaseRequest());
 
@@ -527,10 +547,9 @@ public class WebWechat {
 				arr[0] = Integer.parseInt(retcode);
 				arr[1] = Integer.parseInt(selector);
 			}
-			if (arr[0] == 0) {
-				break;
-			}
-			LOGGER.info("Message syncCheck channel【" + url + "】 is unvailable!");
+		} catch (Exception e) {
+			LOGGER.error("Message syncCheck channel【" + url
+					+ "】 is sync failed!", e);
 		}
 		return arr;
 	}
@@ -739,8 +758,17 @@ public class WebWechat {
 		}
 
 		runtimeDomain.setReadyWechatId(recommendWechatId);
+		//TODO get
+		String remarkName = runtimeDomain.getUserRemarkName(recommendWechatId);
+		Long nowPoint = 0L;
+		if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
+			Player pEntity = runtimeDomain.getRunningPlayeres().get(remarkName);
+			if (pEntity != null) {
+				nowPoint = pEntity.getPoints();
+			}
+		}
 		String content = MessageFormat.format(AppUtils.ASKRECOMMEND,
-				recommendWechatName);
+				recommendWechatName, nowPoint);
 		webwxsendmsgM(content);
 	}
 

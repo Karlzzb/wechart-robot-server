@@ -77,6 +77,7 @@ public class RuntimeDomain implements Serializable {
 		currentRealPackageFee = 0L;
 		firstBankerFee = 0L;
 		luckInfoModeList = FXCollections.observableArrayList();
+		definedStartInfo = "3秒玩法，新鲜上市!";
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -97,6 +98,8 @@ public class RuntimeDomain implements Serializable {
 	private int tip = 0;
 
 	private String cookie;
+	
+	private String bestSyncCheckChannel;
 
 	private JSONObject syncKeyJNode, User, baseRequest;
 
@@ -265,6 +268,8 @@ public class RuntimeDomain implements Serializable {
 	private ObservableList<LuckInfoModel> luckInfoModeList;
 
 	private Long firstBankerFee;
+
+	private String definedStartInfo;
 
 	/**
 	 * key=remarkName
@@ -878,5 +883,21 @@ public class RuntimeDomain implements Serializable {
 
 	public void setFirstBankerFee(Long firstBankerFee) {
 		this.firstBankerFee = firstBankerFee;
+	}
+
+	public String getBestSyncCheckChannel() {
+		return bestSyncCheckChannel;
+	}
+
+	public void setBestSyncCheckChannel(String bestSyncCheckChannel) {
+		this.bestSyncCheckChannel = bestSyncCheckChannel;
+	}
+
+	public String getDefinedStartInfo() {
+		return this.definedStartInfo;
+	}
+
+	public void setDefinedStartInfo(String definedStartInfo) {
+		this.definedStartInfo = definedStartInfo;
 	}
 }

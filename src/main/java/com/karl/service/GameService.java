@@ -391,12 +391,14 @@ public class GameService {
 		Long packageFee = runtimeDomain.getCurrentPackageFee(traceList,
 				gameInfo);
 		bankerState -= packageFee;
+		Long firstBankerFee = 0L;
 		if (runtimeDomain.getBeforeGameInfo() == null
 				|| (runtimeDomain.getBeforeGameInfo().getGameSerialNo() > 0 && !runtimeDomain
 						.getBeforeGameInfo().getBankerRemarkName()
 						.equals(gameInfo.getBankerRemarkName()))) {
-			bankerState -= runtimeDomain.getFirstBankerFee();
+			firstBankerFee = runtimeDomain.getFirstBankerFee();
 		}
+		bankerState -= firstBankerFee;
 
 		// caculate win or lose
 		PlayerTrace trace = null;
@@ -534,7 +536,12 @@ public class GameService {
 		ryncPlayerPoint(gameInfo.getPlayerId(),
 				bankerState.compareTo(Long.valueOf(0)) > 0,
 				Math.abs(bankerState));
+		//game info rync to db
 		gameInfo.setResultPoint(bankerState);
+		gameInfo.setManageFee(runtimeDomain.getManageFee());
+		gameInfo.setPackageFee(packageFee);
+		gameInfo.setFirstBankerFee(firstBankerFee);
+		gameInfo.setBankerWinCut(bankerWinCut);
 		playerService.save(gameInfo);
 
 		// sync banker betpoint on the view
@@ -613,14 +620,14 @@ public class GameService {
 					.getCurrentTimeOut() * 1000) {
 				continue;
 			}
-			timeoutStr += MessageFormat.format(
-					AppUtils.GAMERESULTTIMEOUT,
+			timeoutStr += MessageFormat.format(AppUtils.GAMERESULTTIMEOUT,
 					traceList.get(i).getRemarkName().length() > 5 ? traceList
 							.get(i).getRemarkName().substring(0, 5) : traceList
-							.get(i).getRemarkName(),
-					traceList.get(i).getResultRuleName() + "("
-							+ traceList.get(i).getLuckInfo() + ")",
-							traceList.get(i).getResultPoint());
+							.get(i).getRemarkName(), traceList.get(i)
+							.getResultRuleName()
+							+ "("
+							+ traceList.get(i).getLuckInfo() + ")", Math
+							.abs(traceList.get(i).getResultPoint()));
 		}
 
 		String content = MessageFormat.format(
@@ -631,12 +638,13 @@ public class GameService {
 				winListStr,
 				loseListStr,
 				allInListStr,
-				DateUtils.timeStamp(runtimeDomain.getCurrentLastPackegeTime()
-						.getTime()),
-				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
-						.getTime() + runtimeDomain.getCurrentTimeOut() * 1000),
-				DateUtils.timeStamp(runtimeDomain.getCurrentFirstPackegeTime()
-						.getTime()),
+				DateUtils.timeStampTimeFormat(runtimeDomain
+						.getCurrentLastPackegeTime().getTime()),
+				DateUtils.timeStampTimeFormat(runtimeDomain
+						.getCurrentFirstPackegeTime().getTime()
+						+ runtimeDomain.getCurrentTimeOut() * 1000),
+				DateUtils.timeStampTimeFormat(runtimeDomain
+						.getCurrentFirstPackegeTime().getTime()),
 				gameInfo.getBankerRemarkName(),
 				gameInfo.getLuckInfo(),
 				gameInfo.getResultRuleName(),
@@ -653,7 +661,8 @@ public class GameService {
 				timeoutStr,
 				runtimeDomain.getShowManageFee() ? "管理费： "
 						+ runtimeDomain.getManageFee() + "\n" : "",
-				gameInfo.getResultPoint(),
+				(gameInfo.getResultPoint() + runtimeDomain.getManageFee()
+						+ packageFee + firstBankerFee + bankerWinCut),// 23
 				(bankerLuckTime - firstPackgeTime > runtimeDomain
 						.getCurrentTimeOut() * 1000) ? "庄家超时: "
 						+ DateUtils.timeStamp(bankerLuckTime) + "\n" : "");
@@ -1057,20 +1066,14 @@ public class GameService {
 
 		String content = MessageFormat.format(
 				AppUtils.GAMESTART,
-				runtimeDomain.getCurrentGroupName(),
-				runtimeDomain.getBankerRemarkName(),
-				runtimeDomain.getBankerBetPoint(),
-				runtimeDomain.getMaximumBet(),
-				runtimeDomain.getMinimumBet(),
-				runtimeDomain.getPackageNumber(),
-				runtimeDomain.getBankerIndex(),
-				runtimeDomain.getCurrentGameKey()
-						+ (runtimeDomain.getAllowAllIn() ? "+梭哈" : ""),
-				gameInfo.getGameSerialNo());
-
-		if (runtimeDomain.getCurrentGameKey().equals(AppUtils.PLAYLUCKWAY)) {
-			content += "默认下注：" + runtimeDomain.getDefiendBet();
-		}
+				runtimeDomain.getDefinedStartInfo(),//0
+				gameInfo.getGameSerialNo(),//1
+				runtimeDomain.getBankerRemarkName(),//2
+				runtimeDomain.getBankerBetPoint(),//3
+				runtimeDomain.getPackageNumber(),//4
+				runtimeDomain.getDefiendBet(),//5
+				runtimeDomain.getCurrentGameKey(),//6
+				runtimeDomain.getCurrentTimeOut());//7
 
 		return content;
 	}

@@ -25,7 +25,6 @@
                <children>
                   <VBox prefHeight="572.0" prefWidth="513.0">
                      <children>
-                        <Line endX="400.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" styleClass="table-title-line" />
                   		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true" prefHeight="565.0" prefWidth="400.0" styleClass="test">
                   			<columns>
                   				<TableColumn fx:id="ruleCheck" prefWidth="86.66665649414062" resizable="false" text="选择" />
@@ -36,6 +35,7 @@
                               <Insets top="2.0" />
                            </VBox.margin>
                   		</TableView>
+                        <Line endX="400.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" styleClass="table-title-line" />
                      </children>
                   </VBox>
                   <Region prefHeight="594.0" prefWidth="120.0" HBox.hgrow="ALWAYS" />
@@ -104,10 +104,16 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Pane>
-                        <Pane id="config-fee-panel" prefHeight="271.0" prefWidth="319.0">
+                        <Pane id="config-fee-panel" prefHeight="332.0" prefWidth="319.0">
                            <children>
-                              <VBox prefHeight="260.0" prefWidth="321.0" styleClass="colorPanel">
+                              <VBox prefHeight="329.0" prefWidth="321.0" styleClass="colorPanel">
                                  <children>
+                                    <HBox>
+                                       <children>
+                                          <Label prefHeight="30.0" prefWidth="140.0" text="广告：" />
+                                          <TextField fx:id="definedStart" prefHeight="28.0" prefWidth="348.0" />
+                                       </children>
+                                    </HBox>
                                     <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费">
                                        <VBox.margin>
                                           <Insets bottom="10.0" />

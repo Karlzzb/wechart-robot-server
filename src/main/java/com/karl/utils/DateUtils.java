@@ -12,7 +12,8 @@ public class DateUtils {
 	    public static final String NORMAL_DATE_FORMAT = "yyyy-MM-dd";  
 	    public static final String NORMAL_DATE_FORMAT_NEW = "yyyy-mm-dd hh24:mi:ss";  
 	    public static final String DATE_FORMAT = "yyyy-MM-dd";  
-	    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";  
+	    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	    public static final String TIME_FORMAT = "HH:mm:ss";  
 	    public static final String DATE_ALL = "yyyyMMddHHmmssS";  
 	  
 	    public static Long strDateToNum(String paramString) throws Exception {  
@@ -278,6 +279,15 @@ public class DateUtils {
 	     */
 		public static Object timeStamp(Long maxLuckTime) {
 			return dateToString(new Date(maxLuckTime), DATETIME_FORMAT);
+		}
+		
+	    /**
+	     * HH:mm:ss
+	     * @param maxLuckTime
+	     * @return
+	     */
+		public static Object timeStampTimeFormat(Long maxLuckTime) {
+			return dateToString(new Date(maxLuckTime), TIME_FORMAT);
 		}
 	  
 

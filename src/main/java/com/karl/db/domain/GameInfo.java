@@ -49,6 +49,19 @@ public class GameInfo implements Serializable {
     
     @Column(columnDefinition="tinyint(1) default 0")
     private Boolean isUndo;
+    
+   
+    @Column(nullable = true)
+    private Long manageFee;
+    
+    @Column(nullable = true)
+    private Long packageFee;
+     
+    @Column(nullable = true)
+    private Long firstBankerFee;
+    
+    @Column(nullable = true)
+    private Long bankerWinCut;
 
 
 	public Long getGameSerialNo() {
@@ -137,6 +150,38 @@ public class GameInfo implements Serializable {
 
 	public void setIsUndo(Boolean isUndo) {
 		this.isUndo = isUndo;
+	}
+
+	public Long getManageFee() {
+		return manageFee;
+	}
+
+	public void setManageFee(Long manageFee) {
+		this.manageFee = manageFee;
+	}
+
+	public Long getPackageFee() {
+		return packageFee;
+	}
+
+	public void setPackageFee(Long packageFee) {
+		this.packageFee = packageFee;
+	}
+
+	public Long getFirstBankerFee() {
+		return firstBankerFee;
+	}
+
+	public void setFirstBankerFee(Long firstBankerFee) {
+		this.firstBankerFee = firstBankerFee;
+	}
+
+	public Long getBankerWinCut() {
+		return bankerWinCut;
+	}
+
+	public void setBankerWinCut(Long bankerWinCut) {
+		this.bankerWinCut = bankerWinCut;
 	}
 	
 
