@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -21,19 +29,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" style="-fx-background-color: white;"
-	xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.karl.fx.controller.MainDeskController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MainDeskController">
 	<children>
 		<BorderPane prefHeight="692.0" prefWidth="1072.0">
 			<top>
-				<Pane prefHeight="55.0" prefWidth="1072.0"
-					BorderPane.alignment="CENTER">
+				<Pane prefHeight="55.0" prefWidth="1072.0" BorderPane.alignment="CENTER">
 					<children>
-						<Label styleClass="header-title" text="工作台" />
-						<ImageView fx:id="imgLoad" fitHeight="43.0" fitWidth="30.0"
-							layoutX="105.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true"
-							visible="false">
+						<Label layoutX="10.0" layoutY="5.0" styleClass="header-title" text="工作台" />
+						<ImageView fx:id="imgLoad" fitHeight="43.0" fitWidth="30.0" layoutX="105.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" visible="false">
 							<image>
 								<Image url="@../img/301.GIF" />
 							</image>
@@ -54,30 +57,25 @@
 				</Pane>
 			</top>
 			<left>
-				<VBox prefHeight="423.0" prefWidth="456.0"
-					BorderPane.alignment="CENTER">
+				<VBox prefHeight="423.0" prefWidth="456.0" BorderPane.alignment="CENTER">
 					<children>
-						<HBox id="desk-main-panel" prefHeight="154.0" prefWidth="456.0"
-							styleClass="colorPanel">
+						<HBox id="desk-main-panel" prefHeight="154.0" prefWidth="456.0" styleClass="colorPanel">
 							<children>
 								<VBox prefHeight="154.0" prefWidth="256.0">
 									<children>
-										<Label fx:id="bankerLabel" prefHeight="20.0" prefWidth="248.0"
-											styleClass="txt" text="当前庄家：                         ">
+										<Label fx:id="bankerLabel" prefHeight="20.0" prefWidth="248.0" styleClass="txt" text="当前庄家：                         ">
 											<font>
 												<Font size="14.0" />
 											</font>
 										</Label>
 										<HBox>
 											<children>
-												<Label prefHeight="30.0" prefWidth="79.0" styleClass="txt"
-													text="玩法选择：">
+												<Label prefHeight="30.0" prefWidth="79.0" styleClass="txt" text="玩法选择：">
 													<font>
 														<Font size="14.0" />
 													</font>
 												</Label>
-												<ChoiceBox fx:id="gamekeyBox" prefHeight="36.0"
-													prefWidth="170.0" styleClass="select" />
+												<ChoiceBox fx:id="gamekeyBox" prefHeight="36.0" prefWidth="170.0" styleClass="select" />
 											</children>
 											<VBox.margin>
 												<Insets bottom="10.0" />
@@ -85,14 +83,12 @@
 										</HBox>
 										<HBox>
 											<children>
-												<Label prefHeight="30.0" prefWidth="78.0" styleClass="txt"
-													text="锁定积分 :">
+												<Label prefHeight="30.0" prefWidth="78.0" styleClass="txt" text="锁定积分 :">
 													<font>
 														<Font size="14.0" />
 													</font>
 												</Label>
-												<TextField fx:id="bankerBetPoint" prefHeight="25.0"
-													prefWidth="170.0" styleClass="text-input" />
+												<TextField fx:id="bankerBetPoint" prefHeight="25.0" prefWidth="170.0" styleClass="text-input" />
 											</children>
 											<VBox.margin>
 												<Insets bottom="10.0" />
@@ -100,14 +96,12 @@
 										</HBox>
 										<HBox>
 											<children>
-												<Label prefHeight="30.0" prefWidth="111.0" styleClass="txt"
-													text="拼抢玩法下注：">
+												<Label prefHeight="30.0" prefWidth="111.0" styleClass="txt" text="拼抢玩法下注：">
 													<font>
 														<Font size="14.0" />
 													</font>
 												</Label>
-												<TextField fx:id="definedBet" prefHeight="25.0"
-													prefWidth="137.0" style="-fx-border-radius: 0;" styleClass="text-input" />
+												<TextField fx:id="definedBet" prefHeight="25.0" prefWidth="137.0" style="-fx-border-radius: 0;" styleClass="text-input" />
 											</children>
 											<VBox.margin>
 												<Insets bottom="10.0" />
@@ -117,9 +111,7 @@
 								</VBox>
 								<Pane prefHeight="154.0" prefWidth="197.0">
 									<children>
-										<Button fx:id="gameSingal" layoutX="7.0" layoutY="14.0"
-											mnemonicParsing="false" prefHeight="28.0" prefWidth="85.0"
-											text="开始">
+										<Button fx:id="gameSingal" layoutX="7.0" layoutY="14.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="85.0" text="开始">
 											<font>
 												<Font size="12.0" />
 											</font>
@@ -127,9 +119,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="publishBut" layoutX="7.0" layoutY="73.0"
-											mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0"
-											prefWidth="85.0" text="发布榜单">
+										<Button fx:id="publishBut" layoutX="7.0" layoutY="73.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="85.0" text="发布榜单">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -138,9 +128,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="openLotteryBut" layoutX="103.0" layoutY="38.0"
-											mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0"
-											prefWidth="78.0" text="计算">
+										<Button fx:id="openLotteryBut" layoutX="103.0" layoutY="38.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0" prefWidth="78.0" text="计算">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -149,9 +137,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="108.0"
-											mnemonicParsing="false" onAction="#confirmUndoGame"
-											prefHeight="28.0" prefWidth="85.0" text="作废上一局">
+										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="108.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="85.0" text="作废上一局">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -160,9 +146,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="manualFlushBut" layoutX="104.0" layoutY="73.0"
-											mnemonicParsing="false" onAction="#manuallyFlushTraceTab"
-											prefHeight="28.0" prefWidth="78.0" text="手动刷新">
+										<Button fx:id="manualFlushBut" layoutX="104.0" layoutY="73.0" mnemonicParsing="false" onAction="#manuallyFlushTraceTab" prefHeight="28.0" prefWidth="78.0" text="手动刷新">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -171,9 +155,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="cleanAllTraceBut" layoutX="104.0"
-											layoutY="108.0" mnemonicParsing="false" onAction="#cleanAllTrace"
-											prefHeight="28.0" prefWidth="78.0" text="清空">
+										<Button fx:id="cleanAllTraceBut" layoutX="104.0" layoutY="108.0" mnemonicParsing="false" onAction="#cleanAllTrace" prefHeight="28.0" prefWidth="78.0" text="清空">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -182,9 +164,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="clearBankerBut" layoutX="103.0" layoutY="3.0"
-											mnemonicParsing="false" onAction="#clearBanker" prefHeight="28.0"
-											prefWidth="78.0" text="下庄">
+										<Button fx:id="clearBankerBut" layoutX="103.0" layoutY="3.0" mnemonicParsing="false" onAction="#clearBanker" prefHeight="28.0" prefWidth="78.0" text="下庄">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -225,17 +205,14 @@
 											<children>
 												<HBox>
 													<children>
-														<Label prefHeight="31.0" prefWidth="90.0"
-															styleClass="txt" text="当前玩家群：" textFill="WHITE" />
-														<ChoiceBox fx:id="groupBox" prefHeight="26.0"
-															prefWidth="167.0" styleClass="select" />
+														<Label prefHeight="31.0" prefWidth="90.0" styleClass="txt" text="当前玩家群：" textFill="WHITE" />
+														<ChoiceBox fx:id="groupBox" prefHeight="26.0" prefWidth="167.0" styleClass="select" />
 													</children>
 													<VBox.margin>
 														<Insets bottom="10.0" />
 													</VBox.margin>
 												</HBox>
-												<Label fx:id="groupSizeLable" prefHeight="21.0"
-													prefWidth="246.0" text="当前群人数 :0" textFill="WHITE">
+												<Label fx:id="groupSizeLable" prefHeight="21.0" prefWidth="246.0" text="当前群人数 :0" textFill="WHITE">
 													<font>
 														<Font size="14.0" />
 													</font>
@@ -245,10 +222,7 @@
 												</Label>
 												<HBox prefHeight="100.0" prefWidth="200.0" styleClass="colorPanel">
 													<children>
-														<Button fx:id="singlePlayerInfoSend"
-															mnemonicParsing="false" onAction="#singleInfoSentOut"
-															prefHeight="27.0" prefWidth="79.0" styleClass="btnBlock"
-															text="发送积分">
+														<Button fx:id="singlePlayerInfoSend" mnemonicParsing="false" onAction="#singleInfoSentOut" prefHeight="28.0" prefWidth="87.0" styleClass="btnBlock" text="发送积分">
 															<cursor>
 																<Cursor fx:constant="HAND" />
 															</cursor>
@@ -256,9 +230,7 @@
 																<Insets right="10.0" />
 															</HBox.margin>
 														</Button>
-														<Button fx:id="groupFlush" mnemonicParsing="false"
-															onAction="#flushGroup" prefHeight="27.0" prefWidth="77.0"
-															styleClass="btnBlock" text="刷新">
+														<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="27.0" prefWidth="77.0" styleClass="btnBlock" text="刷新">
 															<HBox.margin>
 																<Insets right="10.0" />
 															</HBox.margin>
@@ -266,9 +238,7 @@
 																<Cursor fx:constant="HAND" />
 															</cursor>
 														</Button>
-														<Button fx:id="syncPlayer" mnemonicParsing="false"
-															onAction="#savePlayerPoint" prefHeight="27.0" prefWidth="77.0"
-															styleClass="btnBlock" text="保存">
+														<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="27.0" prefWidth="77.0" styleClass="btnBlock" text="保存">
 															<HBox.margin>
 																<Insets />
 															</HBox.margin>
@@ -291,8 +261,7 @@
 										</VBox>
 										<Pane minHeight="-Infinity" prefHeight="29.0" prefWidth="255.0">
 											<children>
-												<TextField fx:id="playerSearchText" prefHeight="28.0"
-													prefWidth="255.0" styleClass="searchBox" />
+												<TextField fx:id="playerSearchText" prefHeight="28.0" prefWidth="255.0" styleClass="searchBox" />
 												<!-- <Button fx:id="playerSearch" layoutX="230.0" layoutY="6.0" 
 													minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#searchPlayer" 
 													prefHeight="14.0" prefWidth="8.0" styleClass="search-btn"> <cursor> <Cursor 
@@ -302,17 +271,11 @@
 												<Insets top="2.0" />
 											</VBox.margin>
 										</Pane>
-										<TableView fx:id="playerTab" depthTest="DISABLE"
-											editable="true" prefHeight="543.0" prefWidth="255.0">
+										<TableView fx:id="playerTab" depthTest="DISABLE" editable="true" prefHeight="543.0" prefWidth="255.0">
 											<columns>
-												<TableColumn fx:id="colBankerSgin" prefWidth="43.0"
-													styleClass="column-header" text="选庄" />
-												<TableColumn fx:id="colPlayerName" editable="false"
-													minWidth="0.0" prefWidth="115.0" resizable="false"
-													styleClass="column-header" text="玩家" />
-												<TableColumn fx:id="colPlayerPoint" editable="true"
-													prefWidth="96.0" resizable="false" styleClass="column-header"
-													text="积分" />
+												<TableColumn fx:id="colBankerSgin" prefWidth="43.0" styleClass="column-header" text="选庄" />
+												<TableColumn fx:id="colPlayerName" editable="false" minWidth="0.0" prefWidth="115.0" resizable="false" styleClass="column-header" text="玩家" />
+												<TableColumn fx:id="colPlayerPoint" editable="true" prefWidth="96.0" resizable="false" styleClass="column-header" text="积分" />
 											</columns>
 											<VBox.margin>
 												<Insets top="2.0" />
@@ -327,10 +290,8 @@
 											<children>
 												<HBox>
 													<children>
-														<Label prefHeight="34.0" prefWidth="90.0"
-															styleClass="txt" text="当前财务群：" textFill="WHITE" />
-														<ChoiceBox fx:id="groupBoxM" prefHeight="25.0"
-															prefWidth="163.0" />
+														<Label prefHeight="34.0" prefWidth="90.0" styleClass="txt" text="当前财务群：" textFill="WHITE" />
+														<ChoiceBox fx:id="groupBoxM" prefHeight="25.0" prefWidth="163.0" />
 													</children>
 													<VBox.margin>
 														<Insets bottom="10.0" />
