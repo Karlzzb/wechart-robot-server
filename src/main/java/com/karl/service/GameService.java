@@ -536,7 +536,7 @@ public class GameService {
 		ryncPlayerPoint(gameInfo.getPlayerId(),
 				bankerState.compareTo(Long.valueOf(0)) > 0,
 				Math.abs(bankerState));
-		//game info rync to db
+		// game info rync to db
 		gameInfo.setResultPoint(bankerState);
 		gameInfo.setManageFee(runtimeDomain.getManageFee());
 		gameInfo.setPackageFee(packageFee);
@@ -620,14 +620,31 @@ public class GameService {
 					.getCurrentTimeOut() * 1000) {
 				continue;
 			}
-			timeoutStr += MessageFormat.format(AppUtils.GAMERESULTTIMEOUT,
-					traceList.get(i).getRemarkName().length() > 5 ? traceList
-							.get(i).getRemarkName().substring(0, 5) : traceList
-							.get(i).getRemarkName(), traceList.get(i)
-							.getResultRuleName()
-							+ "("
-							+ traceList.get(i).getLuckInfo() + ")", Math
-							.abs(traceList.get(i).getResultPoint()));
+
+			if (traceList.get(i).getRemarkName()
+					.equals(gameInfo.getBankerRemarkName())) {
+				timeoutStr += MessageFormat
+						.format(AppUtils.GAMERESULTTIMEOUT,
+								traceList.get(i).getRemarkName().length() > 5 ? traceList
+										.get(i).getRemarkName().substring(0, 5)
+										: traceList.get(i).getRemarkName(),
+								traceList.get(i).getResultRuleName() + "("
+										+ traceList.get(i).getLuckInfo() + ")",
+								(gameInfo.getResultPoint()
+										+ runtimeDomain.getManageFee()
+										+ packageFee + firstBankerFee + bankerWinCut));
+
+			} else {
+				timeoutStr += MessageFormat
+						.format(AppUtils.GAMERESULTTIMEOUT, traceList.get(i)
+								.getRemarkName().length() > 5 ? traceList
+								.get(i).getRemarkName().substring(0, 5)
+								: traceList.get(i).getRemarkName(), traceList
+								.get(i).getResultRuleName()
+								+ "("
+								+ traceList.get(i).getLuckInfo() + ")", Math
+								.abs(traceList.get(i).getResultPoint()));
+			}
 		}
 
 		String content = MessageFormat.format(
@@ -665,7 +682,8 @@ public class GameService {
 						+ packageFee + firstBankerFee + bankerWinCut),// 23
 				(bankerLuckTime - firstPackgeTime > runtimeDomain
 						.getCurrentTimeOut() * 1000) ? "庄家超时: "
-						+ DateUtils.timeStamp(bankerLuckTime) + "\n" : "");
+						+ DateUtils.timeStampTimeFormat(bankerLuckTime) + "\n"
+						: "");
 		runtimeDomain.setBeforeGameInfo(gameInfo);
 		return content;
 	}
@@ -1064,16 +1082,15 @@ public class GameService {
 		runtimeDomain.removeCurrentFirstPacageTime();
 		runtimeDomain.removeCurrentLastPackegeTime();
 
-		String content = MessageFormat.format(
-				AppUtils.GAMESTART,
-				runtimeDomain.getDefinedStartInfo(),//0
-				gameInfo.getGameSerialNo(),//1
-				runtimeDomain.getBankerRemarkName(),//2
-				runtimeDomain.getBankerBetPoint(),//3
-				runtimeDomain.getPackageNumber(),//4
-				runtimeDomain.getDefiendBet(),//5
-				runtimeDomain.getCurrentGameKey(),//6
-				runtimeDomain.getCurrentTimeOut());//7
+		String content = MessageFormat.format(AppUtils.GAMESTART,
+				runtimeDomain.getDefinedStartInfo(),// 0
+				gameInfo.getGameSerialNo(),// 1
+				runtimeDomain.getBankerRemarkName(),// 2
+				runtimeDomain.getBankerBetPoint(),// 3
+				runtimeDomain.getPackageNumber(),// 4
+				runtimeDomain.getDefiendBet(),// 5
+				runtimeDomain.getCurrentGameKey(),// 6
+				runtimeDomain.getCurrentTimeOut());// 7
 
 		return content;
 	}
@@ -1280,8 +1297,6 @@ public class GameService {
 		String bankerReMarkerName = runtimeDomain.getBankerRemarkName();
 		Player banker = null;
 
-		
-		
 		List<Player> playerList = playerService.getPlayerListDescPoint();
 		if (playerList == null) {
 			return null;
@@ -1295,8 +1310,10 @@ public class GameService {
 					playerList.get(i).getRemarkName()) == null) {
 				continue;
 			}
-			
-			if (bankerReMarkerName != null && bankerReMarkerName.equals(playerList.get(i).getRemarkName())) {
+
+			if (bankerReMarkerName != null
+					&& bankerReMarkerName.equals(playerList.get(i)
+							.getRemarkName())) {
 				banker = playerList.get(i);
 				continue;
 			}
@@ -1316,10 +1333,11 @@ public class GameService {
 			body = MessageFormat.format(
 					AppUtils.PUBLICPOINTRANKLINEBANKER,
 					shotRemarkName.length() > 8 ? shotRemarkName
-							.substring(0, 8) : shotRemarkName, banker.getPoints())+body;
+							.substring(0, 8) : shotRemarkName, banker
+							.getPoints())
+					+ body;
 			order += 1;
 		}
-		
 
 		String head = MessageFormat.format(AppUtils.PUBLICPOINTRANKHEAD,
 				order - 1, sumPoint);

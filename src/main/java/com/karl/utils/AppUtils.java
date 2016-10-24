@@ -16,7 +16,7 @@ public class AppUtils {
 	public static String base_uri,
 			redirect_uri = "https://wx.qq.com/cgi-bin/mmwebwx-bin";
 
-	public static String[] webpush_url = {
+	public static String[] WEBPUSH_URL = {
 			"https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck",
 			"https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
 			"https://webpush2.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
@@ -25,7 +25,7 @@ public class AppUtils {
 			deviceId = "e" + (new Date()).getTime();
 
 	// 微信特殊账号
-	public static List<String> specialUsers = Arrays.asList("newsapp",
+	public static List<String> SPECIALUSERS = Arrays.asList("newsapp",
 			"fmessage", "filehelper", "weibo", "qqmail", "fmessage",
 			"tmessage", "qmessage", "qqsync", "floatbottle", "lbsapp",
 			"shakeapp", "medianote", "qqfriend", "readerapp", "blogapp",

@@ -352,7 +352,7 @@ public class WebWechat {
 				continue;
 			}
 			// 特殊联系人
-			if (AppUtils.specialUsers.contains(contact.getString("UserName"))) {
+			if (AppUtils.SPECIALUSERS.contains(contact.getString("UserName"))) {
 				continue;
 			}
 			// 群
@@ -503,8 +503,8 @@ public class WebWechat {
 				return arr;
 			}
 		}
-		for (int i = 0; i < AppUtils.webpush_url.length; i++) {
-			String url = AppUtils.webpush_url[i];
+		for (int i = 0; i < AppUtils.WEBPUSH_URL.length; i++) {
+			String url = AppUtils.WEBPUSH_URL[i];
 			arr = syncCheckSingle(url);
 			if (arr[0] == 0) {
 				runtimeDomain.setBestSyncCheckChannel(url);
