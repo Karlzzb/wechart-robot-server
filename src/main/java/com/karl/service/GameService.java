@@ -240,7 +240,7 @@ public class GameService {
 		}
 
 		// Match put point
-		if (messageFrom.equals(runtimeDomain.getCurrentGroupId())) {
+		if (messageFrom.equals(runtimeDomain.getCurrentMGroupId())) {
 			Matcher putPointMatcher = StringUtils.PUTPOINT.matcher(content);
 			while (putPointMatcher.find()) {
 				try {
@@ -514,8 +514,8 @@ public class GameService {
 		// banker win cut
 		Long bankerWinCut = 0L;
 		if (bankerState.compareTo(Long.valueOf(0)) > 0) {
-			bankerWinCut = bankerState * runtimeDomain.getBankerWinCutRate()
-					/ 100L;
+			bankerWinCut = (bankerState + runtimeDomain.getManageFee() + packageFee)
+					* runtimeDomain.getBankerWinCutRate() / 100L;
 			bankerState -= bankerWinCut;
 		}
 

@@ -44,7 +44,6 @@ import com.karl.fx.model.ChatGroupModel;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
-import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
@@ -459,7 +458,8 @@ public class MainDeskController extends FxmlController {
 						autoPlayerFlushContinue = Boolean.FALSE;
 						PlayerModel pModel = cell.getTableView().getItems()
 								.get(cell.getTablePosition().getRow());
-						if (!StringUtils.matchLong(cell.getNewValue())) {
+						//TODO allow to zero
+						if (!cell.getNewValue().matches("\\d*")) {
 							flushPlayerList();
 							autoPlayerFlushContinue = Boolean.TRUE;
 							return;
