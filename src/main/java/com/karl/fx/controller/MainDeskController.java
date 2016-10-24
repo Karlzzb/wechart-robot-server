@@ -61,9 +61,9 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Button syncPlayer;
-	
+
 	@FXML
-    private Button clearBankerBut;
+	private Button clearBankerBut;
 
 	@FXML
 	private ChoiceBox<ChatGroupModel> groupBox;
@@ -162,7 +162,7 @@ public class MainDeskController extends FxmlController {
 						(ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(
 								oldVal, newVal));
 	}
-	
+
 	@FXML
 	private void clearBanker(ActionEvent event) {
 		if (runtimeDomain.getGlobalGameSignal()) {
@@ -189,16 +189,17 @@ public class MainDeskController extends FxmlController {
 			alert.showAndWait();
 			return;
 		}
-		
-		if(runtimeDomain.getBeforeGameInfo() == null) {
+
+		if (runtimeDomain.getBeforeGameInfo() == null) {
 			Alert alert2 = new Alert(AlertType.WARNING);
 			alert2.setTitle("错误操作");
 			alert2.setContentText("未找到上局信息，请确认已完成计算操作！");
 			alert2.showAndWait();
-			return;			
+			return;
 		}
-		
-		if (runtimeDomain.getBeforeGameInfo() != null && runtimeDomain.getBeforeGameInfo().getIsUndo()) {
+
+		if (runtimeDomain.getBeforeGameInfo() != null
+				&& runtimeDomain.getBeforeGameInfo().getIsUndo()) {
 			Alert alert2 = new Alert(AlertType.WARNING);
 			alert2.setTitle("错误操作");
 			alert2.setContentText("第【"
@@ -207,7 +208,7 @@ public class MainDeskController extends FxmlController {
 			alert2.showAndWait();
 			return;
 		}
-		
+
 		if (runtimeDomain.getBeforeGameInfo() != null
 				&& runtimeDomain.getBeforeGameInfo().getGameSerialNo() > 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -219,7 +220,8 @@ public class MainDeskController extends FxmlController {
 					+ "】期？");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
-				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain.getBeforeGameInfo());
+				GameInfo gameInfo = gameService.undoTheGame(runtimeDomain
+						.getBeforeGameInfo());
 				runtimeDomain.setBankerBetPoint(runtimeDomain
 						.getBankerBetPoint() - gameInfo.getResultPoint());
 				bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
@@ -673,11 +675,14 @@ public class MainDeskController extends FxmlController {
 				|| gameInfo.getLuckTime().compareTo(Long.valueOf(0)) <= 0) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("庄家无包信息");
-			alert.setContentText("庄家无包信息，继续操作仅仅扣除管理费。是否继续？");
+			alert.setContentText("庄家无包信息，继续操作仅仅扣除管理费。是否按照超时处理，默认点数牛一？");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.CANCEL) {
 				return;
 			}
+			gameInfo.setLuckInfo(0.01);
+			gameInfo.setLuckTime(runtimeDomain.getCurrentLastPackegeTime()
+					.getTime() + runtimeDomain.getCurrentTimeOut());
 		}
 
 		if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())
