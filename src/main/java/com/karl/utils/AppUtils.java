@@ -57,24 +57,25 @@ public class AppUtils {
 
 	public static final String BETRESULTTAIL = "--------------------------\n"
 			+ "有效下注：{0}\n" + "应发包数：{1}\n" + "应发金额：{2}\n"
-			+ "--------------------------\n" + "总下注额：{3,number,#}\n" + "普通下注：{4}\n"
-			+ "自定义梭哈下注：{5}\n" + "--------------------------\n"
+			+ "--------------------------\n" + "总下注额：{3,number,#}\n"
+			+ "普通下注：{4}\n" + "自定义梭哈下注：{5}\n" + "--------------------------\n"
 			+ "请发包手核对无误再发包\n" + "机器统计    对错勿怪\n";
 
-	public static final String GAMESTART = "--------[开局信息]--------\n"+"{0}\n"
-			+ "◆◆◆◆◆[第{1,number,#}期]◆◆◆◆◆\n"+ "--------[庄家列表]--------\n"
-			+ "本局庄家：{2}\n" + "庄家积分：{3,number,#}\n"
-			+ "包数量：{4}\n" + "每点：{5}\n" + "当前玩法：{6}\n" + "超时时间: {7,number,#}秒";
+	public static final String GAMESTART = "--------[开局信息]--------\n" + "{0}\n"
+			+ "◆◆◆◆◆[第{1,number,#}期]◆◆◆◆◆\n" + "--------[庄家列表]--------\n"
+			+ "本局庄家：{2}\n" + "庄家积分：{3,number,#}\n" + "包数量：{4}\n" + "每点：{5}\n"
+			+ "当前玩法：{6}\n" + "超时时间: {7,number,#}秒";
 
 	public static final String GAMERESULT = "◆◆◆◆◆[第{0}期]◆◆◆◆◆\n" + "{1}！{2}\n"
 			+ "-----------[赢]-----------\n" + "{3}"
-			+ "-----------[输]-----------\n" + "{4}"
+			+ "-----------[输]-----------\n" + "{4}" + "{25}"
 			+ "----------[梭哈]----------\n" + "{5}" + "{21}"
 			+ "--------------------------\n" + "尾包时间：{6}\n" + "超时时间：{7}\n"
 			+ "首包时间：{8}\n" + "--------------------------\n" + "本局庄家：{9}\n"
 			+ "庄家抢包：{10} {11} 赔率：{12}\n" + "庄家输赢：输{13}家/赢{14}家 /和{15}家\n"
-			+ "{24}" + "庄上积分：{16,number,#}\n" + "本局下注：{17,number,#}\n" + "{22}" + "发包费用：{18,number,#}\n"
-			+ "本局基金：{19,number,#}\n" + "本局盈亏：{23,number,#}\n" + "庄总积分：{20,number,#}\n"
+			+ "{24}" + "庄上积分：{16,number,#}\n" + "本局下注：{17,number,#}\n" + "{22}"
+			+ "发包费用：{18,number,#}\n" + "本局基金：{19,number,#}\n"
+			+ "本局盈亏：{23,number,#}\n" + "庄总积分：{20,number,#}\n"
 			+ "--------[翱翔出品]--------";
 
 	public static final String RANKINGLAYOUT = "---------[富豪榜]---------\n{0}\n可用积分：{1} 锁定：{2}\n玩家:{3} 总分:{4}\n"
@@ -87,7 +88,7 @@ public class AppUtils {
 	public static final String GAMERESULTINVAIN = "{0} {1} {2} 喝水";
 	public static final String GAMERESULTLOSE = "{0} {1} {2} 输 {3,number,#}";
 	public static final String GAMERESULTTIMEOUT = "{0} {1} 超时 输 {2,number,#}\n";
-	public static final String GAMERESULTESAME = "{0} {1} {2} 和 {3}";
+	public static final String GAMERESULTESAME = "{0} {1} 和\n ";
 
 	public static final String REPLYPOINTAPPLYPUT = "给{0} 已上[{1}] 剩余积分： {2,number,#}";
 	public static final String REPLYPOINTAPPLYDRAW = "给{0} 已下[{1}] 剩余积分： {2,number,#}";
@@ -95,14 +96,12 @@ public class AppUtils {
 	public static final String REPLYPOINTAPPLYERROR2 = "@{3} {0}剩余积分： {1}, 不足以完成下{2}积分操作!!";
 	public static final String REPLYPOINTAPPLYADD = "@{0} 已上[{1}] 剩余积分： {2,number,#}";
 	public static final String REPLYPOINTAPPLYSUB = "@{0} 已下[{1}] 剩余积分： {2,number,#}";
-	
+
 	public static final String SINGLEPLAYERINFO = "@{0} 剩余积分： {1}";
 
-
 	public static final String ASKRECOMMEND = "玩家{0}目前积分{1,number,#}，您要修改吗？";
-	
-	public static final String ASKRECOMMENDUNKNOWN = "{0}不是好友，请先添加！";
 
+	public static final String ASKRECOMMENDUNKNOWN = "{0}不是好友，请先添加！";
 
 	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");
 	public static final Long DEFAULT_MINBET = Long.valueOf("10");

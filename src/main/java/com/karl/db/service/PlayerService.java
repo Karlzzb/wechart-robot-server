@@ -11,10 +11,12 @@ import org.springframework.util.Assert;
 
 import com.karl.db.domain.ApplyPoints;
 import com.karl.db.domain.GameInfo;
+import com.karl.db.domain.GameStats;
 import com.karl.db.domain.Player;
 import com.karl.db.domain.PlayerTrace;
 import com.karl.db.repositories.ApplyRepository;
 import com.karl.db.repositories.GameRepository;
+import com.karl.db.repositories.GameStatsRepository;
 import com.karl.db.repositories.PlayerRepository;
 import com.karl.db.repositories.PlayerTraceRepository;
 import com.karl.utils.AppUtils;
@@ -27,11 +29,12 @@ public class PlayerService {
 	@Autowired
 	public PlayerService(PlayerRepository playerRepository,
 			ApplyRepository applyRepository, GameRepository gameRepository,
-			PlayerTraceRepository playerTraceRepository) {
+			PlayerTraceRepository playerTraceRepository, GameStatsRepository gameStatsRepository) {
 		this.playerRepository = playerRepository;
 		this.applyRepository = applyRepository;
 		this.gameRepository = gameRepository;
 		this.playerTraceRepository = playerTraceRepository;
+		this.gameStatsRepository = gameStatsRepository;
 	}
 
 	private final PlayerRepository playerRepository;
@@ -41,6 +44,17 @@ public class PlayerService {
 	private final GameRepository gameRepository;
 
 	private final PlayerTraceRepository playerTraceRepository;
+	
+	private final GameStatsRepository gameStatsRepository;
+	
+	public GameStats save(GameStats gameStats) {
+		Assert.notNull(gameStats, "gameStats must not be null");
+		return gameStatsRepository.save(gameStats);
+	}
+	
+	public List<GameStats> getGameStatsList() {
+		return gameStatsRepository.search();
+	}
 
 	public Player save(Player player) {
 		if (player.getPlayerId() == null || player.getPlayerId().isEmpty()) {
@@ -242,6 +256,17 @@ public class PlayerService {
 	public void deleteTraceByGameId(Long gameId) {
 		Assert.notNull(gameId, "gameId must not be null");
 		playerTraceRepository.deleteTraceByGameId(gameId);
+	}
+
+	public List<GameInfo> getVaiidGameInfoList() {
+		return gameRepository.getValidList();
+	}
+
+	public void removeAllGameInfo() {
+		gameRepository.deleteAll();
+		gameRepository.clearIncrement();
+		playerTraceRepository.deleteAll();
+		playerTraceRepository.clearIncrement();
 	}
 
 }

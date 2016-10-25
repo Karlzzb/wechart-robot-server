@@ -93,6 +93,16 @@ public enum FxmlView {
         public StageStyle getStageStyle() {
         	return StageStyle.UNDECORATED;
         }
+    }, STATS{
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("stats.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/GameStatsBoard.fxml";
+        }
     };
 
     public abstract String getTitle();

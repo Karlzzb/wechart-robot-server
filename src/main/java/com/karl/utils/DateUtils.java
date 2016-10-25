@@ -13,6 +13,7 @@ public class DateUtils {
 	    public static final String NORMAL_DATE_FORMAT_NEW = "yyyy-mm-dd hh24:mi:ss";  
 	    public static final String DATE_FORMAT = "yyyy-MM-dd";  
 	    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	    public static final String DATETIMEHH_FORMAT = "yyyy-MM-dd:HH";
 	    public static final String TIME_FORMAT = "HH:mm:ss";  
 	    public static final String DATE_ALL = "yyyyMMddHHmmssS";  
 	  
@@ -277,8 +278,17 @@ public class DateUtils {
 	     * @param maxLuckTime
 	     * @return
 	     */
-		public static Object timeStamp(Long maxLuckTime) {
+		public static String timeStamp(Long maxLuckTime) {
 			return dateToString(new Date(maxLuckTime), DATETIME_FORMAT);
+		}
+		
+	    /**
+	     * yyyy-MM-dd HH:mm:ss
+	     * @param maxLuckTime
+	     * @return
+	     */
+		public static String timeStampHH(Long maxLuckTime) {
+			return dateToString(new Date(maxLuckTime), DATETIMEHH_FORMAT);
 		}
 		
 	    /**
@@ -286,7 +296,7 @@ public class DateUtils {
 	     * @param maxLuckTime
 	     * @return
 	     */
-		public static Object timeStampTimeFormat(Long maxLuckTime) {
+		public static String timeStampTimeFormat(Long maxLuckTime) {
 			return dateToString(new Date(maxLuckTime), TIME_FORMAT);
 		}
 	  

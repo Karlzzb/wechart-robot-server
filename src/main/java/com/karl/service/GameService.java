@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.karl.db.domain.ApplyPoints;
 import com.karl.db.domain.GameInfo;
+import com.karl.db.domain.GameStats;
 import com.karl.db.domain.Player;
 import com.karl.db.domain.PlayerTrace;
 import com.karl.db.service.PlayerService;
@@ -113,7 +114,6 @@ public class GameService {
 						sumPackage = sumPackage.add(new BigDecimal(luckInfo));
 
 						// for show luck table
-						// TODO
 						String playerRole = LuckInfoModel.PLAYERROLENOMAL;
 						if (runningPlayers().get(remarkName) == null) {
 							playerRole = LuckInfoModel.PLAYERROLENONE;
@@ -647,6 +647,20 @@ public class GameService {
 			}
 		}
 
+		String pacesStr = "";
+		if (paceList.size() > 0) {
+			pacesStr = "---------[和]---------\n";
+			for (int i = 0; i < paceList.size(); i++) {
+				pacesStr += MessageFormat.format(AppUtils.GAMERESULTESAME,
+						paceList.get(i).getRemarkName().length() > 5 ? paceList
+								.get(i).getRemarkName().substring(0, 5)
+								: paceList.get(i).getRemarkName(), paceList
+								.get(i).getResultRuleName()
+								+ "("
+								+ paceList.get(i).getLuckInfo() + ")");
+			}
+		}
+
 		String content = MessageFormat.format(
 				AppUtils.GAMERESULT,
 				runtimeDomain.getCurrentGameId(),
@@ -683,7 +697,7 @@ public class GameService {
 				(bankerLuckTime - firstPackgeTime > runtimeDomain
 						.getCurrentTimeOut() * 1000) ? "庄家超时: "
 						+ DateUtils.timeStampTimeFormat(bankerLuckTime) + "\n"
-						: "");
+						: "", pacesStr);
 		runtimeDomain.setBeforeGameInfo(gameInfo);
 		return content;
 	}
@@ -1041,7 +1055,8 @@ public class GameService {
 				playEntity = newPlayerHandle(webchatId, remarkName, nickName);
 			}
 			if (playEntity == null) {
-				LOGGER.error("User{} remarkName Failed!", remarkName);
+				LOGGER.error("User{} remarkName{} initi Failed!", nickName,
+						remarkName);
 				return;
 			}
 			playEntity.setWebchatId(webchatId);
@@ -1157,23 +1172,21 @@ public class GameService {
 	private Player putPlayerPoint(String webchatId, String remarkName,
 			String nickName, Long newPointvel, Boolean plusOrMinus) {
 		Player playEntity = null;
-		synchronized (this) {
-			playEntity = playerService.getPlayerByRemarkName(remarkName);
-			if (playEntity == null) {
-				playEntity = newPlayerHandle(webchatId, remarkName, nickName);
-			}
-			if (playEntity == null) {
-				LOGGER.error("User{} remarkName Failed!", remarkName);
-				return null;
-			}
-
-			Long oldPointVel = playEntity.getPoints();
-			playEntity.setWebchatId(webchatId);
-			playEntity.setWechatName(nickName);
-			playEntity.setPoints(plusOrMinus ? oldPointVel + newPointvel
-					: oldPointVel - newPointvel);
-			savePlayEntity(playEntity);
+		playEntity = playerService.getPlayerByRemarkName(remarkName);
+		if (playEntity == null) {
+			playEntity = newPlayerHandle(webchatId, remarkName, nickName);
 		}
+		if (playEntity == null) {
+			LOGGER.error("User{} remarkName Failed!", remarkName);
+			return null;
+		}
+
+		Long oldPointVel = playEntity.getPoints();
+		playEntity.setWebchatId(webchatId);
+		playEntity.setWechatName(nickName);
+		playEntity.setPoints(plusOrMinus ? oldPointVel + newPointvel
+				: oldPointVel - newPointvel);
+		savePlayEntity(playEntity);
 
 		return playEntity;
 	}
@@ -1182,24 +1195,29 @@ public class GameService {
 			String nickName) {
 		Player playEntity = null;
 
-		remarkName = StringUtils.replaceHtml(remarkName.trim());
-		remarkName = remarkName.length() > 10 ? remarkName.substring(0, 9)
-				: remarkName;
+		Boolean remarkNameOk = true;
+		if (remarkName.equals(nickName)) {
+			remarkNameOk = false;
+			remarkName = StringUtils.replaceHtml(remarkName.trim());
+			remarkName = remarkName.length() > 10 ? remarkName.substring(0, 9)
+					: remarkName;
 
-		Boolean remarkNameOk = false;
-		Player existEntity = playerService.getPlayerByRemarkName(remarkName);
-		String shotRemarkName = remarkName;
-		for (int i = 0; i < 10; i++) {
-			if (existEntity == null) {
-				remarkNameOk = true;
-				break;
+			Player existEntity = playerService
+					.getPlayerByRemarkName(remarkName);
+			String shotRemarkName = remarkName;
+			for (int i = 0; i < 10; i++) {
+				if (existEntity == null) {
+					remarkNameOk = true;
+					break;
+				}
+				remarkName = shotRemarkName + i;
+				existEntity = playerService.getPlayerByRemarkName(remarkName);
 			}
-			remarkName = shotRemarkName + i;
-			existEntity = playerService.getPlayerByRemarkName(remarkName);
+			remarkNameOk = webWechat.changeRemarkName(nickName, webchatId,
+					remarkName);
 		}
 
-		if (remarkNameOk
-				&& webWechat.changeRemarkName(nickName, webchatId, remarkName)) {
+		if (remarkNameOk) {
 			playEntity = new Player();
 			playEntity.setRemarkName(remarkName);
 			playEntity.setPoints(Long.valueOf(0));
@@ -1308,6 +1326,9 @@ public class GameService {
 		for (int i = 0; i < playerList.size(); i++) {
 			if (runtimeDomain.getRunningPlayeres().get(
 					playerList.get(i).getRemarkName()) == null) {
+				continue;
+			}
+			if (playerList.get(i).getPoints().compareTo(Long.valueOf(0)) == 0) {
 				continue;
 			}
 
@@ -1452,5 +1473,82 @@ public class GameService {
 
 		return gameInfo;
 
+	}
+
+	@Transactional
+	public Boolean archievGameInfo() {
+		Boolean result = Boolean.FALSE;
+		try {
+			List<GameInfo> currentGameInfo = playerService
+					.getVaiidGameInfoList();
+			if (currentGameInfo != null && currentGameInfo.size() > 0) {
+				Long statsTime = new Date().getTime();
+				Long manageFee = 0L;
+				Long packageFee = 0L;
+				Long firstBankerFee = 0L;
+				Long bankerWinCut = 0L;
+				Integer gameNum = currentGameInfo.size();
+				for (int i = 0; i < currentGameInfo.size(); i++) {
+					manageFee += currentGameInfo.get(i).getManageFee() == null ? 0L
+							: currentGameInfo.get(i).getManageFee();
+					packageFee += currentGameInfo.get(i).getPackageFee() == null ? 0L
+							: currentGameInfo.get(i).getPackageFee();
+					firstBankerFee += currentGameInfo.get(i)
+							.getFirstBankerFee() == null ? 0L : currentGameInfo
+							.get(i).getFirstBankerFee();
+					bankerWinCut += currentGameInfo.get(i).getBankerWinCut() == null ? 0L
+							: currentGameInfo.get(i).getBankerWinCut();
+				}
+				GameStats currentStats = new GameStats();
+				currentStats.setStatsTime(statsTime);
+				currentStats.setManageFee(manageFee);
+				currentStats.setPackageFee(packageFee);
+				currentStats.setFirstBankerFee(firstBankerFee);
+				currentStats.setBankerWinCut(bankerWinCut);
+				currentStats.setGameNum(gameNum);
+				currentStats = playerService.save(currentStats);
+			}
+			playerService.removeAllGameInfo();
+			result = Boolean.TRUE;
+		} catch (Exception e) {
+			LOGGER.error("Achieve Game Data failed!", e);
+		}
+
+		return result;
+	}
+
+	public GameStats getCurrentGameStats() {
+		GameStats currentStats = null;
+		List<GameInfo> currentGameInfo = playerService.getVaiidGameInfoList();
+		if (currentGameInfo != null && currentGameInfo.size() > 0) {
+			Long statsTime = new Date().getTime();
+			Long manageFee = 0L;
+			Long packageFee = 0L;
+			Long firstBankerFee = 0L;
+			Long bankerWinCut = 0L;
+			Integer gameNum = currentGameInfo.size();
+			for (int i = 0; i < currentGameInfo.size(); i++) {
+				manageFee += currentGameInfo.get(i).getManageFee() == null ? 0L
+						: currentGameInfo.get(i).getManageFee();
+				packageFee += currentGameInfo.get(i).getPackageFee() == null ? 0L
+						: currentGameInfo.get(i).getPackageFee();
+				firstBankerFee += currentGameInfo.get(i).getFirstBankerFee() == null ? 0L
+						: currentGameInfo.get(i).getFirstBankerFee();
+				bankerWinCut += currentGameInfo.get(i).getBankerWinCut() == null ? 0L
+						: currentGameInfo.get(i).getBankerWinCut();
+			}
+			currentStats = new GameStats();
+			currentStats.setStatsTime(statsTime);
+			currentStats.setManageFee(manageFee);
+			currentStats.setPackageFee(packageFee);
+			currentStats.setFirstBankerFee(firstBankerFee);
+			currentStats.setBankerWinCut(bankerWinCut);
+			currentStats.setGameNum(gameNum);
+		}
+		return currentStats;
+	}
+
+	public List<GameStats> getGameStatsList() {
+		return playerService.getGameStatsList();
 	}
 }

@@ -15,55 +15,53 @@ public class GameInfo implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long gameSerialNo;
+
+	@Column(nullable = false)
+	private String playerId;
+
+	@Column(nullable = false)
+	private String bankerRemarkName;
+
+	@Column(nullable = false)
+	private Long bankerPoint;
+
+	@Column(nullable = false)
+	private Integer betIndex;
+
+	@Column(nullable = true)
+	private Double luckInfo;
+
+	@Column(nullable = true)
+	private Long luckTime;
+
+	@Column(nullable = true)
+	private String resultRuleName;
+
+	@Column(nullable = true)
+	private Integer resultTimes;
+
+	@Column(nullable = true)
+	private Long resultPoint;
+
+	@Column(columnDefinition = "tinyint(1) default 0")
+	private Boolean isUndo;
+
+	@Column(nullable = true)
+	private Long manageFee;
+
+	@Column(nullable = true)
+	private Long packageFee;
+
+	@Column(nullable = true)
+	private Long firstBankerFee;
+
+	@Column(nullable = true)
+	private Long bankerWinCut;
 	
-    @Column(nullable = false)
-    private String playerId;
-    
-    @Column(nullable = false)
-    private String bankerRemarkName;
-
-    @Column(nullable = false)
-    private Long bankerPoint;
-
-    @Column(nullable = false)
-    private Integer betIndex;
-    
-    @Column(nullable = true)
-    private Double luckInfo;
-    
-    @Column(nullable = true)
-   private Long luckTime;
-    
-    @Column(nullable = true)
-    private String resultRuleName;
-    
-    @Column(nullable = true)
-    private Integer resultTimes;
-
-    @Column(nullable = true)
-    private Long resultPoint;
-    
-    @Column(columnDefinition="tinyint(1) default 0")
-    private Boolean isUndo;
-    
-   
-    @Column(nullable = true)
-    private Long manageFee;
-    
-    @Column(nullable = true)
-    private Long packageFee;
-     
-    @Column(nullable = true)
-    private Long firstBankerFee;
-    
-    @Column(nullable = true)
-    private Long bankerWinCut;
-
-
 	public Long getGameSerialNo() {
 		return gameSerialNo;
 	}
@@ -145,7 +143,7 @@ public class GameInfo implements Serializable {
 	}
 
 	public Boolean getIsUndo() {
-		return isUndo==null?Boolean.FALSE:isUndo;
+		return isUndo == null ? Boolean.FALSE : isUndo;
 	}
 
 	public void setIsUndo(Boolean isUndo) {
@@ -183,6 +181,5 @@ public class GameInfo implements Serializable {
 	public void setBankerWinCut(Long bankerWinCut) {
 		this.bankerWinCut = bankerWinCut;
 	}
-	
 
 }

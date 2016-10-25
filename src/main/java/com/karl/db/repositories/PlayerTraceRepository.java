@@ -47,6 +47,10 @@ public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Long>
 
     @Modifying
     @Query("delete from PlayerTrace p where p.gameSerialNo = ?1")
-	void deleteTraceByGameId(Long gameId);    
+	void deleteTraceByGameId(Long gameId);
+
+    @Modifying
+    @Query(value="alter table PLAYER_TRACE ALTER COLUMN TRACE_ID RESTART WITH 1", nativeQuery =true)
+	void clearIncrement();    
 
 }
