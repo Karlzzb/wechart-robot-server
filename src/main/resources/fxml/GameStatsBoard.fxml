@@ -61,7 +61,7 @@
          <center>
             <VBox prefHeight="600.0" prefWidth="432.0" BorderPane.alignment="CENTER">
                <children>
-                  <StackedBarChart fx:id="sbc" prefHeight="343.0" prefWidth="434.0">
+                  <StackedBarChart fx:id="sbc" prefHeight="300.0" prefWidth="434.0">
                     <xAxis>
                       <CategoryAxis side="BOTTOM" />
                     </xAxis>
@@ -69,7 +69,7 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </StackedBarChart>
-                  <PieChart fx:id="pieChart" layoutY="329.0" prefHeight="290.0" prefWidth="434.0" />
+                  <PieChart fx:id="pieChart" layoutY="329.0" prefHeight="300.0" prefWidth="434.0" />
                </children>
             </VBox>
          </center>

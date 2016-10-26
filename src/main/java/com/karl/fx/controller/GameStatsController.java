@@ -27,7 +27,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -82,7 +81,7 @@ public class GameStatsController extends FxmlController {
 	@Override
 	public void initialize() {
 		buidlStatsTable();
-		buildBarChar();
+		buildBarChart();
 		buildArchiveAction();
 	}
 
@@ -121,7 +120,7 @@ public class GameStatsController extends FxmlController {
 					service.setOnSucceeded((WorkerStateEvent we) -> {
 						imgLoad.setVisible(false);
 						fillStatsTable();
-						buildBarChar();
+						buildBarChart();
 						clearPieBarChar();
 					});
 				}
@@ -130,7 +129,7 @@ public class GameStatsController extends FxmlController {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void buildBarChar() {
+	private void buildBarChart() {
 		if (sbc.getData() != null) {
 			sbc.getData().clear();
 		}
@@ -173,8 +172,8 @@ public class GameStatsController extends FxmlController {
 		}
 	}
 
-	private void buildpieBarChar(GameStatsModel statsModel) {
-
+	private void buildpieBarChart(GameStatsModel statsModel) {
+		pieChart.getData().clear();
 		ObservableList<PieChart.Data> pieChartData = FXCollections
 				.observableArrayList(
 						new PieChart.Data("分成", statsModel.getBankerWinCut()),
@@ -185,17 +184,17 @@ public class GameStatsController extends FxmlController {
 		pieChart.setTitle("收益分布图");
 		pieChart.setLabelLineLength(10);
 		pieChart.setLegendSide(Side.LEFT);
+		pieChart.setLabelsVisible(Boolean.TRUE);
+		
 		final Label caption = new Label("");
-		caption.setTextFill(Color.DARKORANGE);
+		caption.setStyle("-fx-background-color: white");
 		caption.setStyle("-fx-font: 18 arial;");
 
 		for (final PieChart.Data data : pieChart.getData()) {
-			data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED,
+			data.getNode().addEventFilter(MouseEvent.MOUSE_MOVED,
 					new EventHandler<MouseEvent>() {
 						@Override
-						public void handle(MouseEvent e) {
-							caption.setTranslateX(e.getSceneX());
-							caption.setTranslateY(e.getSceneY());
+						public void handle(MouseEvent event) {
 							caption.setText(String.valueOf(data.getPieValue())
 									+ "%");
 						}
@@ -239,7 +238,7 @@ public class GameStatsController extends FxmlController {
 		gameStatsTab.getSelectionModel().selectedItemProperty()
 				.addListener((obs, oldSelection, selectedPModel) -> {
 					if (selectedPModel != null) {
-						buildpieBarChar(selectedPModel);
+						buildpieBarChart(selectedPModel);
 					} else {
 						clearPieBarChar();
 					}

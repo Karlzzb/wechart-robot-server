@@ -249,6 +249,10 @@ public class MainDeskController extends FxmlController {
 				filterPlayer.add(playerModle);
 			}
 		}
+		if (filterPlayer == null || filterPlayer.size() < 1) {
+			fillPlayerTab();
+			return;
+		}
 		playerTab.setItems(filterPlayer);
 		this.flushRadioCol();
 	}
@@ -458,7 +462,6 @@ public class MainDeskController extends FxmlController {
 						autoPlayerFlushContinue = Boolean.FALSE;
 						PlayerModel pModel = cell.getTableView().getItems()
 								.get(cell.getTablePosition().getRow());
-						//TODO allow to zero
 						if (!cell.getNewValue().matches("\\d*")) {
 							flushPlayerList();
 							autoPlayerFlushContinue = Boolean.TRUE;

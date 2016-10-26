@@ -1287,9 +1287,10 @@ public class GameService {
 		Player pEntity = null;
 		Long sumPoint = Long.valueOf(0);
 		int i = 1;
-		for (String remarkName : runningPlayers().keySet()) {
-			pEntity = runningPlayers().get(remarkName);
-			body += MessageFormat.format(AppUtils.RANKINGLINE, i++, remarkName,
+		List<Player> allPlayers = playerService.getPlayerListDescPoint();
+		for (int j = 0; j < allPlayers.size(); j++) {
+			pEntity = allPlayers.get(j);
+			body += MessageFormat.format(AppUtils.RANKINGLINE, i++, pEntity.getRemarkName(),
 					pEntity.getPoints());
 		}
 
@@ -1324,10 +1325,10 @@ public class GameService {
 		Long sumPoint = 0L;
 		String shotRemarkName = null;
 		for (int i = 0; i < playerList.size(); i++) {
-			if (runtimeDomain.getRunningPlayeres().get(
-					playerList.get(i).getRemarkName()) == null) {
-				continue;
-			}
+//			if (runtimeDomain.getRunningPlayeres().get(
+//					playerList.get(i).getRemarkName()) == null) {
+//				continue;
+//			}
 			if (playerList.get(i).getPoints().compareTo(Long.valueOf(0)) == 0) {
 				continue;
 			}
