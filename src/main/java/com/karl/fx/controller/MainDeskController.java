@@ -1,7 +1,7 @@
 package com.karl.fx.controller;
 
 import java.text.MessageFormat;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -240,21 +240,27 @@ public class MainDeskController extends FxmlController {
 
 		ObservableList<PlayerModel> filterPlayer = FXCollections
 				.observableArrayList();
-		Map<String, PlayerModel> currentPlayers = runtimeDomain
-				.getCurrentPlayers();
-		PlayerModel playerModle = null;
-		for (String remarkName : currentPlayers.keySet()) {
-			if (remarkName.matches(".*" + newVal + ".*")) {
-				playerModle = currentPlayers.get(remarkName);
-				if (playerModle.getPlayerName().equals(
-						runtimeDomain.getBankerRemarkName())) {
-					playerModle.setIsBanker(Boolean.TRUE);
+		List<Player> pEntityList = gameService.getAllPlayers();
+		if (pEntityList != null && pEntityList.size() > 0) {
+			PlayerModel playerModle = null;
+			for (int i = 0; i < pEntityList.size(); i++) {
+				if (pEntityList.get(i).getRemarkName()
+						.matches(".*" + newVal + ".*")) {
+					playerModle = new PlayerModel(i, pEntityList.get(i)
+							.getRemarkName(), pEntityList.get(i).getPoints()
+							.intValue(), pEntityList.get(i).getWebchatId(),
+							pEntityList.get(i).getWechatName());
+					if (playerModle.getPlayerName().equals(
+							runtimeDomain.getBankerRemarkName())) {
+						playerModle.setIsBanker(Boolean.TRUE);
+					}
+					filterPlayer.add(playerModle);
 				}
-				playerTab.getItems().add(playerModle);
-				filterPlayer.add(playerModle);
 			}
+			playerTab.setItems(filterPlayer);
+
+			flushRadioCol();
 		}
-		playerTab.setItems(filterPlayer);
 		this.flushRadioCol();
 	}
 
@@ -403,7 +409,7 @@ public class MainDeskController extends FxmlController {
 									.getGroupName());
 							groupSizeLable.setText("群人数 :"
 									+ String.valueOf(newValue.getGroupSize()));
-							fillPlayerTab();
+//							fillPlayerTab();
 						}
 					}
 				});
@@ -491,20 +497,42 @@ public class MainDeskController extends FxmlController {
 
 	private void fillPlayerTab() {
 		playerTab.getItems().clear();
-		PlayerModel playerModle = null;
-		Map<String, PlayerModel> currentPlayers = runtimeDomain
-				.getCurrentPlayers();
-		for (String remarkName : currentPlayers.keySet()) {
-			playerModle = currentPlayers.get(remarkName);
-			gameService.initialCurrentPlayer(playerModle);
-			if (playerModle.getPlayerName().equals(
-					runtimeDomain.getBankerRemarkName())) {
-				playerModle.setIsBanker(Boolean.TRUE);
+		List<Player> pEntityList = gameService.getAllPlayers();
+		if (pEntityList != null && pEntityList.size() > 0) {
+			PlayerModel playerModle = null;
+			for (int i = 0; i < pEntityList.size(); i++) {
+				playerModle = new PlayerModel(i, pEntityList.get(i)
+						.getRemarkName(), pEntityList.get(i).getPoints()
+						.intValue(), pEntityList.get(i).getWebchatId(),
+						pEntityList.get(i).getWechatName());
+				if (playerModle.getPlayerName().equals(
+						runtimeDomain.getBankerRemarkName())) {
+					playerModle.setIsBanker(Boolean.TRUE);
+				}
+				playerTab.getItems().add(playerModle);
+				runtimeDomain.putRunningPlayeres(pEntityList.get(i)
+						.getRemarkName(), pEntityList.get(i));
 			}
-			playerTab.getItems().add(playerModle);
+			flushRadioCol();
 		}
-		flushRadioCol();
 	}
+
+	// private void fillPlayerTab() {
+	// playerTab.getItems().clear();
+	// PlayerModel playerModle = null;
+	// Map<String, PlayerModel> currentPlayers = gameService
+	// .getCurrentPlayers();
+	// for (String remarkName : currentPlayers.keySet()) {
+	// playerModle = currentPlayers.get(remarkName);
+	// gameService.initialCurrentPlayer(playerModle);
+	// if (playerModle.getPlayerName().equals(
+	// runtimeDomain.getBankerRemarkName())) {
+	// playerModle.setIsBanker(Boolean.TRUE);
+	// }
+	// playerTab.getItems().add(playerModle);
+	// }
+	// flushRadioCol();
+	// }
 
 	private void flushRadioCol() {
 		Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {

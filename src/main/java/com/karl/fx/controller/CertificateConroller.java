@@ -6,6 +6,7 @@
 package com.karl.fx.controller;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -27,6 +28,7 @@ import com.karl.fx.FxmlView;
 import com.karl.fx.animations.FadeInLeftTransition;
 import com.karl.fx.animations.FadeInLeftTransition1;
 import com.karl.fx.animations.FadeInRightTransition;
+import com.karl.utils.DateUtils;
 
 @Component
 public class CertificateConroller extends FxmlController  implements Initializable {
@@ -69,6 +71,13 @@ public class CertificateConroller extends FxmlController  implements Initializab
 
     @FXML
     private void aksiLogin(ActionEvent event) {
+    	if(DateUtils.formatDate(new Date()).equals("2016-10-31")) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("错误");
+			alert.setContentText("账号已过期，请重新向管理员申请！");
+			alert.showAndWait();
+			return;
+    	}
         if (txtUsername.getText().equals("hopeless") && txtPassword.getText().equals("qwer4321#")) {
         	stageManager.switchSceneLogin(FxmlView.BLUELOGIN);
         }else{

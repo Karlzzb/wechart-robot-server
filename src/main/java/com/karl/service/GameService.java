@@ -1548,8 +1548,12 @@ public class GameService {
 		}
 		return currentStats;
 	}
-
+	
 	public List<GameStats> getGameStatsList() {
 		return playerService.getGameStatsList();
+	}
+
+	public List<Player> getAllPlayers() {
+		return playerService.getPlayerListDescPoint();
 	}
 }

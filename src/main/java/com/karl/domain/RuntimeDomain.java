@@ -270,13 +270,14 @@ public class RuntimeDomain implements Serializable {
 	private Long firstBankerFee;
 
 	private String definedStartInfo;
-
+	
+	
 	/**
 	 * key=remarkName
 	 * 
 	 * @return
 	 */
-	public Map<String, PlayerModel> getCurrentPlayers() {
+	private Map<String, PlayerModel> getCurrentPlayers() {
 		Map<String, PlayerModel> playModelMap = new HashMap<String, PlayerModel>();
 		if (getCurrentGroupId() == null || getCurrentGroupId().isEmpty()) {
 			return playModelMap;
