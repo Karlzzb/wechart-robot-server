@@ -16,17 +16,6 @@ public enum FxmlView {
             return "/fxml/MainDesk.fxml";
         }
     },
-    LOGIN {
-        @Override
-        public String getTitle() {
-            return getStringFromResourceBundle("login.title");
-        }
-
-        @Override
-        public String getFxmlFile() {
-            return "/fxml/RawLogin.fxml";
-        }
-    },
     MENU {
         @Override
         public String getTitle() {
@@ -102,6 +91,21 @@ public enum FxmlView {
         @Override
         public String getFxmlFile() {
             return "/fxml/GameStatsBoard.fxml";
+        }
+    },CERTIFICATE{
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("certificate.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/Certificate.fxml";
+        };
+        
+        @Override
+        public StageStyle getStageStyle() {
+        	return StageStyle.UNDECORATED;
         }
     };
 

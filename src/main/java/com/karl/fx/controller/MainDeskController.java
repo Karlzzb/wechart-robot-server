@@ -240,18 +240,19 @@ public class MainDeskController extends FxmlController {
 
 		ObservableList<PlayerModel> filterPlayer = FXCollections
 				.observableArrayList();
-		for (PlayerModel playerModle : playerTab.getItems()) {
-			if (playerModle.getPlayerName().matches(".*" + newVal + ".*")) {
+		Map<String, PlayerModel> currentPlayers = runtimeDomain
+				.getCurrentPlayers();
+		PlayerModel playerModle = null;
+		for (String remarkName : currentPlayers.keySet()) {
+			if (remarkName.matches(".*" + newVal + ".*")) {
+				playerModle = currentPlayers.get(remarkName);
 				if (playerModle.getPlayerName().equals(
 						runtimeDomain.getBankerRemarkName())) {
 					playerModle.setIsBanker(Boolean.TRUE);
 				}
+				playerTab.getItems().add(playerModle);
 				filterPlayer.add(playerModle);
 			}
-		}
-		if (filterPlayer == null || filterPlayer.size() < 1) {
-			fillPlayerTab();
-			return;
 		}
 		playerTab.setItems(filterPlayer);
 		this.flushRadioCol();
@@ -489,9 +490,6 @@ public class MainDeskController extends FxmlController {
 	}
 
 	private void fillPlayerTab() {
-		if (playerTab.getItems() != null) {
-			playerTab.getItems().clear();
-		}
 		playerTab.getItems().clear();
 		PlayerModel playerModle = null;
 		Map<String, PlayerModel> currentPlayers = runtimeDomain

@@ -759,6 +759,7 @@ private void handleRecomendMsg(JSONObject jsonMsg, ConsoleController console) {
 				"FromUserName[{}] message is not come from specific manage group[{}]!",
 				jsonMsg.getString("FromUserName"),
 				runtimeDomain.getCurrentMGroupId());
+		return;
 	}
 
 	if (runtimeDomain.getAllUsrMap().get(recommendWechatId) == null) {
@@ -776,7 +777,6 @@ private void handleRecomendMsg(JSONObject jsonMsg, ConsoleController console) {
 	}
 
 	runtimeDomain.setReadyWechatId(recommendWechatId);
-	//TODO get
 	String remarkName = runtimeDomain.getUserRemarkName(recommendWechatId);
 	Long nowPoint = 0L;
 	if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {

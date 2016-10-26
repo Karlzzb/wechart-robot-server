@@ -57,6 +57,10 @@ public class StageManager {
 
 	public void switchSceneLogin(final FxmlView view) {
 		try {
+			if (loginStage != null) {
+				loginStage.close();
+				loginStage = null;
+			}
 			Parent rootNode = springFXMLLoader.load(view.getFxmlFile());
 			loginStage = new Stage();
 			Scene scene = loginStage.getScene();
