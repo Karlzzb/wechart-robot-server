@@ -119,7 +119,7 @@ public class AppTest {
 		runtimeDomain.setBankerIndex(0);
 		runtimeDomain.setPackageNumber(20);
 		String content = gameService.declareBetStar();
-		System.out.println(gameService.publishRanking());
+		System.out.println(gameService.publishPointRanks());
 		System.out.println(content);
 
 		runtimeDomain.setGlobalGameSignal(Boolean.FALSE);
@@ -135,7 +135,7 @@ public class AppTest {
 							new Date());
 		}
 		System.out.println(gameService.openLottery());
-		System.out.println(gameService.publishRanking());
+		System.out.println(gameService.publishPointRanks());
 	}
 
 	@Test
@@ -163,7 +163,7 @@ public class AppTest {
 		runtimeDomain.setDefiendBet(100L);
 		String content = gameService.declareBetStar();
 		runtimeDomain.setGlobalGameSignal(true);
-		System.out.println(gameService.publishRanking());
+		System.out.println(gameService.publishPointRanks());
 		System.out.println(content);
 		gameService.puttingLuckInfo(1, "test1", Double.valueOf(0.06),
 				new Date());
@@ -179,7 +179,7 @@ public class AppTest {
 		content = gameService.declareGame();
 		System.out.println(content);
 		System.out.println(gameService.openLottery());
-		System.out.println(gameService.publishRanking());
+		System.out.println(gameService.publishPointRanks());
 		
 	}
 

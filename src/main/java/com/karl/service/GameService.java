@@ -615,26 +615,19 @@ public class GameService {
 			allInListStr += "\n";
 		}
 		String timeoutStr = "---------[超时]---------\n";
-		for (int i = 0; i < traceList.size(); i++) {
-			if (traceList.get(i).getLuckTime() - firstPackgeTime <= runtimeDomain
-					.getCurrentTimeOut() * 1000) {
-				continue;
-			}
+		if ((bankerLuckTime - firstPackgeTime <= runtimeDomain
+				.getCurrentTimeOut() * 1000)) {
+			for (int i = 0; i < traceList.size(); i++) {
+				if (traceList.get(i).getLuckTime() - firstPackgeTime <= runtimeDomain
+						.getCurrentTimeOut() * 1000) {
+					continue;
+				}
 
-			if (traceList.get(i).getRemarkName()
-					.equals(gameInfo.getBankerRemarkName())) {
-				timeoutStr += MessageFormat
-						.format(AppUtils.GAMERESULTTIMEOUT,
-								traceList.get(i).getRemarkName().length() > 5 ? traceList
-										.get(i).getRemarkName().substring(0, 5)
-										: traceList.get(i).getRemarkName(),
-								traceList.get(i).getResultRuleName() + "("
-										+ traceList.get(i).getLuckInfo() + ")",
-								(gameInfo.getResultPoint()
-										+ runtimeDomain.getManageFee()
-										+ packageFee + firstBankerFee + bankerWinCut));
+				if (traceList.get(i).getRemarkName()
+						.equals(gameInfo.getBankerRemarkName())) {
+					continue;
+				}
 
-			} else {
 				timeoutStr += MessageFormat
 						.format(AppUtils.GAMERESULTTIMEOUT, traceList.get(i)
 								.getRemarkName().length() > 5 ? traceList
@@ -1000,6 +993,33 @@ public class GameService {
 		return runtimeDomain.getCurrentRule();
 	}
 
+	/**
+	 * 
+	 * @param remarkName
+	 * @param wechatId
+	 * @param wechatName
+	 */
+	public void rsynPlayerEntityWechatInfo(String remarkName, String wechatId,
+			String wechatName) {
+		if (remarkName == null || remarkName.isEmpty()) {
+			return;
+		}
+		try {
+			Player playerEntity = playerService
+					.getPlayerByRemarkName(remarkName);
+			if (playerEntity != null) {
+				playerEntity.setWebchatId(wechatId);
+				playerEntity.setWechatName(wechatName);
+				playerEntity = playerService.save(playerEntity);
+				runningPlayers()
+						.put(playerEntity.getRemarkName(), playerEntity);
+			}
+		} catch (Exception e) {
+			LOGGER.error("remarkName=" + remarkName
+					+ "flush wechat info failed!", e);
+		}
+	}
+
 	public void initialCurrentPlayer(PlayerModel playerModle) {
 		String remarkName = playerModle.getPlayerName();
 		if (playerModle == null || remarkName == null || remarkName.isEmpty()) {
@@ -1229,6 +1249,11 @@ public class GameService {
 		player.setWechatName(runtimeDomain.getUserNickName(player
 				.getWebchatId()));
 		playerService.save(player);
+
+		// update view
+		if (runningPlayers().get(player.getRemarkName()) == null) {
+			mainDeskController.addNewPlayer(player);
+		}
 		runningPlayers().put(player.getRemarkName(), player);
 	}
 
@@ -1282,27 +1307,6 @@ public class GameService {
 		return null;
 	}
 
-	public String publishRanking() {
-		String body = "";
-		Player pEntity = null;
-		Long sumPoint = Long.valueOf(0);
-		int i = 1;
-		List<Player> allPlayers = playerService.getPlayerListDescPoint();
-		for (int j = 0; j < allPlayers.size(); j++) {
-			pEntity = allPlayers.get(j);
-			body += MessageFormat.format(AppUtils.RANKINGLINE, i++, pEntity.getRemarkName(),
-					pEntity.getPoints());
-		}
-
-		return MessageFormat.format(
-				AppUtils.RANKINGLAYOUT,
-				runtimeDomain.getBankerRemarkName(),
-				runtimeDomain.getRunningPlayeres()
-						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
-				runtimeDomain.getBankerBetPoint(), runningPlayers().size(),
-				sumPoint, body);
-	}
-
 	public List<PlayerTrace> getCurrentPlayTrace() {
 		Long currentGameId = runtimeDomain.getCurrentGameId();
 		if (currentGameId == null
@@ -1325,10 +1329,10 @@ public class GameService {
 		Long sumPoint = 0L;
 		String shotRemarkName = null;
 		for (int i = 0; i < playerList.size(); i++) {
-//			if (runtimeDomain.getRunningPlayeres().get(
-//					playerList.get(i).getRemarkName()) == null) {
-//				continue;
-//			}
+			// if (runtimeDomain.getRunningPlayeres().get(
+			// playerList.get(i).getRemarkName()) == null) {
+			// continue;
+			// }
 			if (playerList.get(i).getPoints().compareTo(Long.valueOf(0)) == 0) {
 				continue;
 			}
@@ -1548,7 +1552,7 @@ public class GameService {
 		}
 		return currentStats;
 	}
-	
+
 	public List<GameStats> getGameStatsList() {
 		return playerService.getGameStatsList();
 	}

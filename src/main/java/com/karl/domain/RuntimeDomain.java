@@ -330,9 +330,7 @@ public class RuntimeDomain implements Serializable {
 		String name = AppUtils.UNCONTACTUSRNAME;
 		JSONObject member = getAllUsrMap().get(id);
 		if (member != null && member.getString("UserName").equals(id)) {
-			if (StringKit.isNotBlank(member.getString("RemarkName"))) {
-				name = member.getString("RemarkName");
-			} else {
+			if (StringKit.isNotBlank(member.getString("NickName"))) {
 				name = member.getString("NickName");
 			}
 		}

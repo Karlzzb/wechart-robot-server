@@ -70,7 +70,7 @@ public enum LotteryRule {
 
 		@Override
 		public Boolean getRuleResult3(Double luckInfo) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 1; i < 10; i++) {
 				if (Double.compare(luckInfo * 10, Double.valueOf(i)) == 0) {
 					return Boolean.TRUE;
 				}
@@ -112,6 +112,11 @@ public enum LotteryRule {
 		
 		@Override
 		public Boolean getRuleResult2(Double luckInfo) {
+			for (int i = 1; i < 10; i++) {
+				if (Double.compare(luckInfo, Double.valueOf(i)) == 0) {
+					return Boolean.TRUE;
+				}
+			}
 			return DigitalUtils.getSumFromDoubleTwo(luckInfo).compareTo(Integer.valueOf(0)) == 0;
 		}
 	},

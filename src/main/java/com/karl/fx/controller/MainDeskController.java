@@ -2,6 +2,7 @@ package com.karl.fx.controller;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -137,9 +138,6 @@ public class MainDeskController extends FxmlController {
 
 	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
-
-	@Autowired
-	private ConsoleController consoleController;
 
 	@Override
 	public void initialize() {
@@ -327,20 +325,29 @@ public class MainDeskController extends FxmlController {
 		if (currentGameSignal) {
 			if (runtimeDomain.getBankerRemarkName() == null
 					|| runtimeDomain.getBankerRemarkName().isEmpty()) {
-				Alert alert = new Alert(AlertType.WARNING);
+				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("错误操作");
 				alert.setContentText("请先选择庄家，再开局！");
 				alert.showAndWait();
 				return;
 			}
 			if (runtimeDomain.getBankerBetPoint().compareTo(Long.valueOf(0)) <= 0) {
-				Alert alert = new Alert(AlertType.WARNING);
+				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("错误操作");
 				alert.setContentText("请确认庄家的上庄积分大于0，再开局！");
 				alert.showAndWait();
 				return;
 			}
 		}
+		
+		if (runtimeDomain.getCurrentGroupId() == null || runtimeDomain.getCurrentGroupId().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("错误操作");
+			alert.setContentText("请先选择玩家群，再开局！");
+			alert.showAndWait();
+			return;
+		}
+		
 		// change the game status
 		runtimeDomain.setGlobalGameSignal(currentGameSignal);
 		// start/end game, the view actions
@@ -409,7 +416,7 @@ public class MainDeskController extends FxmlController {
 									.getGroupName());
 							groupSizeLable.setText("群人数 :"
 									+ String.valueOf(newValue.getGroupSize()));
-//							fillPlayerTab();
+							// fillPlayerTab();
 						}
 					}
 				});
@@ -497,24 +504,39 @@ public class MainDeskController extends FxmlController {
 
 	private void fillPlayerTab() {
 		playerTab.getItems().clear();
-		List<Player> pEntityList = gameService.getAllPlayers();
-		if (pEntityList != null && pEntityList.size() > 0) {
+		Map<String, Player> currentPlayers = runtimeDomain.getRunningPlayeres();
+
+		if (currentPlayers != null && currentPlayers.size() > 0) {
 			PlayerModel playerModle = null;
-			for (int i = 0; i < pEntityList.size(); i++) {
-				playerModle = new PlayerModel(i, pEntityList.get(i)
-						.getRemarkName(), pEntityList.get(i).getPoints()
-						.intValue(), pEntityList.get(i).getWebchatId(),
-						pEntityList.get(i).getWechatName());
+			Player pEntity = null;
+			int i = 1;
+			for (String remarkName : currentPlayers.keySet()) {
+				pEntity = currentPlayers.get(remarkName);
+				
+				playerModle = new PlayerModel(i, pEntity
+						.getRemarkName(), pEntity.getPoints()
+						.intValue(), pEntity.getWebchatId(),
+						pEntity.getWechatName());
 				if (playerModle.getPlayerName().equals(
 						runtimeDomain.getBankerRemarkName())) {
 					playerModle.setIsBanker(Boolean.TRUE);
 				}
 				playerTab.getItems().add(playerModle);
-				runtimeDomain.putRunningPlayeres(pEntityList.get(i)
-						.getRemarkName(), pEntityList.get(i));
+				runtimeDomain.putRunningPlayeres(pEntity
+						.getRemarkName(), pEntity);
+				i++;
 			}
 			flushRadioCol();
 		}
+	}
+	
+	public void addNewPlayer(Player pEntity) {
+		PlayerModel playerModle = new PlayerModel(0, pEntity
+				.getRemarkName(), pEntity.getPoints()
+				.intValue(), pEntity.getWebchatId(),
+				pEntity.getWechatName());
+		playerTab.getItems().add(playerModle);
+		flushRadioCol();
 	}
 
 	// private void fillPlayerTab() {
@@ -622,6 +644,7 @@ public class MainDeskController extends FxmlController {
 							webWechat.wxInit();
 							webWechat.getContact();
 							// webWechat.getGroupMembers();
+							fillPlayerTab();
 						} catch (Exception e) {
 							LOGGER.error("wechart Group flush failed!", e);
 						}
