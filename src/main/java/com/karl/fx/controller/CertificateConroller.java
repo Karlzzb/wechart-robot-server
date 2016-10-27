@@ -7,6 +7,8 @@ package com.karl.fx.controller;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -24,6 +26,7 @@ import javafx.scene.text.Text;
 
 import org.springframework.stereotype.Component;
 
+import com.karl.domain.CertificateRule;
 import com.karl.fx.FxmlView;
 import com.karl.fx.animations.FadeInLeftTransition;
 import com.karl.fx.animations.FadeInLeftTransition1;
@@ -31,62 +34,77 @@ import com.karl.fx.animations.FadeInRightTransition;
 import com.karl.utils.DateUtils;
 
 @Component
-public class CertificateConroller extends FxmlController  implements Initializable {
-    @FXML
-    private TextField txtUsername;
-    @FXML
-    private PasswordField txtPassword;
-    @FXML
-    private Text lblWelcome;
-    @FXML
-    private Text lblUsername;
-    @FXML
-    private Text lblPassword;
-    @FXML
-    private Button btnLogin;
-    @FXML
-    private Text lblRudyCom;
-    @FXML 
-    private Label lblClose;        
-    /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        Platform.runLater(() -> {
-            new FadeInLeftTransition(lblWelcome).play();
-            new FadeInLeftTransition1(lblPassword).play();
-            new FadeInLeftTransition1(lblUsername).play();
-            new FadeInLeftTransition1(txtUsername).play();
-            new FadeInLeftTransition1(txtPassword).play();
-            new FadeInRightTransition(btnLogin).play();
-            lblClose.setOnMouseClicked((MouseEvent event) -> {
-                Platform.exit();
-                System.exit(0);
-            });
-        });
-    }    
+public class CertificateConroller extends FxmlController implements
+		Initializable {
+	@FXML
+	private TextField txtUsername;
+	@FXML
+	private PasswordField txtPassword;
+	@FXML
+	private Text lblWelcome;
+	@FXML
+	private Text lblUsername;
+	@FXML
+	private Text lblPassword;
+	@FXML
+	private Button btnLogin;
+	@FXML
+	private Text lblRudyCom;
+	@FXML
+	private Label lblClose;
 
-    @FXML
-    private void aksiLogin(ActionEvent event) {
-    	if(DateUtils.formatDate(new Date()).equals("2016-10-31")) {
+	/**
+	 * Initializes the controller class.
+	 * 
+	 * @param url
+	 * @param rb
+	 */
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		Platform.runLater(() -> {
+			new FadeInLeftTransition(lblWelcome).play();
+			new FadeInLeftTransition1(lblPassword).play();
+			new FadeInLeftTransition1(lblUsername).play();
+			new FadeInLeftTransition1(txtUsername).play();
+			new FadeInLeftTransition1(txtPassword).play();
+			new FadeInRightTransition(btnLogin).play();
+			lblClose.setOnMouseClicked((MouseEvent event) -> {
+				Platform.exit();
+				System.exit(0);
+			});
+		});
+	}
+
+	@FXML
+	private void aksiLogin(ActionEvent event) {
+		if (DateUtils.formatDate(new Date()).equals("2016-10-31")) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("错误");
 			alert.setContentText("账号已过期，请重新向管理员申请！");
 			alert.showAndWait();
 			return;
-    	}
-        if (txtUsername.getText().equals("hopeless") && txtPassword.getText().equals("qwer4321#")) {
-        	stageManager.switchSceneLogin(FxmlView.BLUELOGIN);
-        }else{
+		}
+		Boolean pass = Boolean.FALSE;
+		EnumSet<CertificateRule> theRule = EnumSet.allOf(CertificateRule.class);
+		CertificateRule certificateRule = null;
+		for (Iterator<CertificateRule> iterator = theRule.iterator(); iterator
+				.hasNext();) {
+			certificateRule = (CertificateRule) iterator.next();
+			if (certificateRule.check(txtUsername.getText(),
+					txtPassword.getText())) {
+				pass = Boolean.TRUE;
+				break;
+			}
+		}
+		if (pass) {
+			stageManager.switchSceneLogin(FxmlView.BLUELOGIN);
+		} else {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("错误");
 			alert.setContentText("用户名/密码错误");
 			alert.showAndWait();
 			return;
-        }
-    }
-    
+		}
+	}
+
 }

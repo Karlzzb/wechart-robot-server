@@ -59,13 +59,13 @@ public class DateUtils {
 	    }  
 	   
 	  
-	    public static java.util.Date stringToDate(String paramString1,  
-	            String paramString2) throws Exception {  
+	    public static java.util.Date stringToDate(String dateString,  
+	            String format) throws Exception {  
 	        SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat(  
-	                paramString2);  
+	        		format);  
 	        localSimpleDateFormat.setLenient(false);  
 	        try {  
-	            return localSimpleDateFormat.parse(paramString1);  
+	            return localSimpleDateFormat.parse(dateString);  
 	        } catch (ParseException localParseException) {  
 	            throw new Exception("解析日期字符串时出错！");  
 	        }  
