@@ -306,7 +306,7 @@ public class RuntimeDomain implements Serializable {
 			wechatName = getUserNickName(contact.getString("UserName"));
 			wechatId = contact.getString("UserName");
 			if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
-				playModelMap.put(remarkName, new PlayerModel(i, remarkName, 0,
+				playModelMap.put(remarkName, new PlayerModel(i, remarkName, 0L,
 						wechatId, wechatName));
 			}
 		}

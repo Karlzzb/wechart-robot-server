@@ -133,7 +133,7 @@ public class GameRunningTabController extends FxmlController {
 		Callback<TableColumn<PlayerTraceModel, String>, TableCell<PlayerTraceModel, String>> cellFactory = new Callback<TableColumn<PlayerTraceModel, String>, TableCell<PlayerTraceModel, String>>() {
 			public TableCell<PlayerTraceModel, String> call(
 					TableColumn<PlayerTraceModel, String> p) {
-				return new EditingCell<PlayerTraceModel>();
+				return new EditingCell<PlayerTraceModel,String>("");
 			}
 		};
 		betInfo.setEditable(Boolean.TRUE);

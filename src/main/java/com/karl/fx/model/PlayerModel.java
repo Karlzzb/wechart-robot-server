@@ -2,6 +2,7 @@ package com.karl.fx.model;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import com.karl.utils.StringUtils;
@@ -19,15 +20,15 @@ public class PlayerModel{
     private  SimpleStringProperty playerId;
     private  SimpleStringProperty wechatId;
     private  SimpleStringProperty playerName;
-    private  SimpleStringProperty playerPoint;
+    private  SimpleLongProperty playerPoint;
     private SimpleStringProperty playerLatestBet;
     private SimpleStringProperty wechatName;
 
-    public PlayerModel(Integer autoID, String playerName, Integer playerPoint, String wechatId, String wechatName) {
+    public PlayerModel(Integer autoID, String playerName, Long playerPoint, String wechatId, String wechatName) {
         this.autoID =  new SimpleIntegerProperty(autoID);;
         this.playerId = new SimpleStringProperty(StringUtils.getMD5(playerName));
         this.playerName = new SimpleStringProperty(playerName);
-        this.playerPoint = new SimpleStringProperty(String.valueOf(playerPoint));
+        this.playerPoint = new SimpleLongProperty(playerPoint);
         this.wechatId = new SimpleStringProperty(wechatId);
         this.isBanker = new SimpleBooleanProperty(Boolean.FALSE);
         this.playerLatestBet = new SimpleStringProperty("");
@@ -55,7 +56,7 @@ public class PlayerModel{
      * very import for cell data auto fresh
      * @return
      */
-    public SimpleStringProperty playerPointProperty() {
+    public SimpleLongProperty playerPointProperty() {
     	return playerPoint;
     }
 
@@ -71,7 +72,7 @@ public class PlayerModel{
         return playerName.getValue();
     }
 
-    public String getPlayerPoint() {
+    public Long getPlayerPoint() {
         return playerPoint.getValue();
     }
 
@@ -88,7 +89,7 @@ public class PlayerModel{
 		this.playerName.set(playerName);
 	}
 
-	public void setPlayerPoint(String playerPoint) {
+	public void setPlayerPoint(Long playerPoint) {
 		this.playerPoint.set(playerPoint);
 	}
 

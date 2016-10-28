@@ -30,6 +30,7 @@ import com.karl.domain.RuntimeDomain;
 import com.karl.fx.controller.ApprovalTabController;
 import com.karl.fx.controller.GameRunningTabController;
 import com.karl.fx.controller.MainDeskController;
+import com.karl.fx.controller.PlayerTableController;
 import com.karl.fx.model.LuckInfoModel;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
@@ -59,6 +60,10 @@ public class GameService {
 	@Autowired
 	@Lazy
 	private GameRunningTabController gameRunningTabController;
+	
+	@Autowired
+	@Lazy
+	private PlayerTableController playerTableController;
 
 	@Autowired
 	@Lazy
@@ -199,8 +204,8 @@ public class GameService {
 								AppUtils.APPLYADDPOINT,
 								Long.valueOf(addPointMatcher.group(1))));
 			} catch (Exception e) {
-				LOGGER.error("User{" + remarkName + "} add point{"
-						+ addPointMatcher.group(1) + "failed!", e);
+				LOGGER.error("User{" + remarkName + "} apply add point{"
+						+ content + "failed!", e);
 			}
 			return;
 		}
@@ -233,8 +238,8 @@ public class GameService {
 								AppUtils.APPLYSUBPOINT,
 								Long.valueOf(subPointMatcher.group(1))));
 			} catch (Exception e) {
-				LOGGER.error("User{" + remarkName + "} sub point{"
-						+ subPointMatcher.group(1) + "failed!", e);
+				LOGGER.error("User{" + remarkName + "} apply sub point{"
+						+ content + "failed!", e);
 			}
 			return;
 		}
@@ -268,8 +273,8 @@ public class GameService {
 					}
 
 				} catch (Exception e) {
-					LOGGER.error("User{" + remarkName + "} sub point{"
-							+ subPointMatcher.group(1) + "failed!", e);
+					LOGGER.error("User{" + remarkName + "} put point{"
+							+ content + "failed!", e);
 				}
 				return;
 			}
@@ -320,7 +325,7 @@ public class GameService {
 
 				} catch (Exception e) {
 					LOGGER.error("User{" + remarkName + "} sub point{"
-							+ subPointMatcher.group(1) + "failed!", e);
+							+ content + "failed!", e);
 				}
 				return;
 			}
@@ -1039,9 +1044,8 @@ public class GameService {
 			playerModle.setWechatId(playerEntity.getWebchatId());
 			playerModle.setPlayerId(playerEntity.getPlayerId());
 			playerModle
-					.setPlayerPoint(String
-							.valueOf(playerEntity.getPoints() == null ? 0
-									: playerEntity.getPoints()));
+					.setPlayerPoint(playerEntity.getPoints() == null ? 0L
+									: playerEntity.getPoints());
 		}
 	}
 
@@ -1252,7 +1256,7 @@ public class GameService {
 
 		// update view
 		if (runningPlayers().get(player.getRemarkName()) == null) {
-			mainDeskController.addNewPlayer(player);
+			playerTableController.addNewPlayer(player);
 		}
 		runningPlayers().put(player.getRemarkName(), player);
 	}

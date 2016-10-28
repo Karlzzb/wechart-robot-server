@@ -1,8 +1,6 @@
 package com.karl.fx.controller;
 
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
+import java.util.Comparator;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -21,17 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.util.Callback;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +31,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.karl.db.domain.GameInfo;
-import com.karl.db.domain.Player;
 import com.karl.fx.model.ChatGroupModel;
-import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
 
@@ -57,12 +46,6 @@ public class MainDeskController extends FxmlController {
 	private ImageView imgLoad;
 
 	@FXML
-	private Button groupFlush;
-
-	@FXML
-	private Button syncPlayer;
-
-	@FXML
 	private Button clearBankerBut;
 
 	@FXML
@@ -70,21 +53,6 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private ChoiceBox<ChatGroupModel> groupBoxM;
-
-	@FXML
-	private Label groupSizeLable;
-
-	@FXML
-	private TableColumn<PlayerModel, Boolean> colBankerSgin;
-
-	@FXML
-	private TableColumn<PlayerModel, String> colPlayerName;
-
-	@FXML
-	private TableColumn<PlayerModel, String> colPlayerPoint;
-
-	@FXML
-	private TableView<PlayerModel> playerTab;
 
 	@FXML
 	private TextField bankerBetPoint;
@@ -118,17 +86,14 @@ public class MainDeskController extends FxmlController {
 	@Autowired
 	@Lazy
 	private MessageController messageController;
+	
+	@Autowired
+	@Lazy
+	private PlayerTableController playerTableController;
 
 	@Autowired
 	@Lazy
 	private GameRunningTabController gameRunningTabController;
-
-	@FXML
-	private TextField playerSearchText;
-
-	private Thread playerFlushThread;
-
-	private Task<Void> playerFlushTask;
 
 	@FXML
 	private Button undoGameButton;
@@ -136,28 +101,29 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private Button singlePlayerInfoSend;
 
-	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
+	
+	private Comparator<PlayerModel> comparator = new Comparator<PlayerModel>() {
+		@Override
+		public int compare(PlayerModel r1, PlayerModel r2) {
+			if (r1.getPlayerPoint() > r2.getPlayerPoint()) {
+				return 1;
+			} else if (r1.getPlayerPoint() < r2
+					.getPlayerPoint()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	};
 
 	@Override
 	public void initialize() {
-		autoPlayerFlushContinue = Boolean.TRUE;
 		isInitializing = Boolean.TRUE;
 		buildGroupBox();
-		buildPlayerTab();
-		playerAutoFlush();
 		buildGameKeyBox();
 		buildGameQuicker();
-		buildFilterPlayer();
 		isInitializing = Boolean.FALSE;
-	}
-
-	private void buildFilterPlayer() {
-		playerSearchText
-				.textProperty()
-				.addListener(
-						(ChangeListener<String>) (observable, oldVal, newVal) -> searchPlayer(
-								oldVal, newVal));
 	}
 
 	@FXML
@@ -227,39 +193,6 @@ public class MainDeskController extends FxmlController {
 				runtimeDomain.setBeforeGameInfo(gameInfo);
 			}
 		}
-	}
-
-	private void searchPlayer(String oldVal, String newVal) {
-
-		if (newVal == null || newVal.isEmpty()) {
-			fillPlayerTab();
-			return;
-		}
-
-		ObservableList<PlayerModel> filterPlayer = FXCollections
-				.observableArrayList();
-		List<Player> pEntityList = gameService.getAllPlayers();
-		if (pEntityList != null && pEntityList.size() > 0) {
-			PlayerModel playerModle = null;
-			for (int i = 0; i < pEntityList.size(); i++) {
-				if (pEntityList.get(i).getRemarkName()
-						.matches(".*" + newVal + ".*")) {
-					playerModle = new PlayerModel(i, pEntityList.get(i)
-							.getRemarkName(), pEntityList.get(i).getPoints()
-							.intValue(), pEntityList.get(i).getWebchatId(),
-							pEntityList.get(i).getWechatName());
-					if (playerModle.getPlayerName().equals(
-							runtimeDomain.getBankerRemarkName())) {
-						playerModle.setIsBanker(Boolean.TRUE);
-					}
-					filterPlayer.add(playerModle);
-				}
-			}
-			playerTab.setItems(filterPlayer);
-
-			flushRadioCol();
-		}
-		this.flushRadioCol();
 	}
 
 	private void buildGameQuicker() {
@@ -339,20 +272,21 @@ public class MainDeskController extends FxmlController {
 				return;
 			}
 		}
-		
-		if (runtimeDomain.getCurrentGroupId() == null || runtimeDomain.getCurrentGroupId().isEmpty()) {
+
+		if (runtimeDomain.getCurrentGroupId() == null
+				|| runtimeDomain.getCurrentGroupId().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("错误操作");
 			alert.setContentText("请先选择玩家群，再开局！");
 			alert.showAndWait();
 			return;
 		}
-		
+
 		// change the game status
 		runtimeDomain.setGlobalGameSignal(currentGameSignal);
 		// start/end game, the view actions
 		if (runtimeDomain.getGlobalGameSignal()) {
-			gameService.ryncPlayersPoint(playerTab.getItems());
+			gameService.ryncPlayersPoint(playerTableController.getPlayerList());
 			startGameViewAction();
 			gameSingal.getStyleClass().clear();
 			gameSingal.getStyleClass().add("end-button");
@@ -370,7 +304,7 @@ public class MainDeskController extends FxmlController {
 		}
 	}
 
-	private void setCurrentBankSign(String bankerName) {
+	public void setCurrentBankSign(String bankerName) {
 		bankerLabel.setText("当前庄家： 【 " + bankerName + "】");
 	}
 
@@ -414,8 +348,6 @@ public class MainDeskController extends FxmlController {
 									.getGroupId());
 							runtimeDomain.setCurrentGroupName(newValue
 									.getGroupName());
-							groupSizeLable.setText("群人数 :"
-									+ String.valueOf(newValue.getGroupSize()));
 							// fillPlayerTab();
 						}
 					}
@@ -438,139 +370,7 @@ public class MainDeskController extends FxmlController {
 		fillUpGroupBox();
 	}
 
-	private void buildPlayerTab() {
-		playerTab.setEditable(true);
-
-		Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {
-			@Override
-			public TableCell<PlayerModel, Boolean> call(
-					TableColumn<PlayerModel, Boolean> p) {
-				return new RadioButtonCell();
-			}
-		};
-		colBankerSgin.setCellFactory(radioFactory);
-		colBankerSgin
-				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
-						PlayerModel.ISBANKERCOLKEY));
-		colPlayerName
-				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
-						PlayerModel.PLAYERNAMECOLKEY));
-		colPlayerName.setEditable(Boolean.FALSE);
-
-		// Editable col
-		Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>> cellFactory = new Callback<TableColumn<PlayerModel, String>, TableCell<PlayerModel, String>>() {
-			public TableCell<PlayerModel, String> call(
-					TableColumn<PlayerModel, String> p) {
-				return new EditingCell<PlayerModel>();
-			}
-		};
-		colPlayerPoint.setEditable(Boolean.TRUE);
-		colPlayerPoint
-				.setCellValueFactory(new PropertyValueFactory<PlayerModel, String>(
-						PlayerModel.PLAYERPOINTCOLKEY));
-		colPlayerPoint.setCellFactory(cellFactory);
-		colPlayerPoint
-				.setOnEditCommit(new EventHandler<CellEditEvent<PlayerModel, String>>() {
-					@Override
-					public void handle(CellEditEvent<PlayerModel, String> cell) {
-						autoPlayerFlushContinue = Boolean.FALSE;
-						PlayerModel pModel = cell.getTableView().getItems()
-								.get(cell.getTablePosition().getRow());
-						if (!cell.getNewValue().matches("\\d*")) {
-							flushPlayerList();
-							autoPlayerFlushContinue = Boolean.TRUE;
-							return;
-						}
-						try {
-							pModel.setPlayerPoint(cell.getNewValue());
-							gameService.ryncPlayersPoint(pModel);
-						} catch (Exception e) {
-							LOGGER.error("Player[" + pModel.getPlayerName()
-									+ "] change point failed!", e);
-						} finally {
-							autoPlayerFlushContinue = Boolean.TRUE;
-						}
-					}
-				});
-		playerTab.getSelectionModel().selectedItemProperty()
-				.addListener((obs, oldSelection, selectedPModel) -> {
-					if (selectedPModel != null) {
-						singlePlayerInfoSend.setUserData(selectedPModel);
-					}
-				});
-		fillPlayerTab();
-		singlePlayerInfoSend.setUserData(null);
-	}
-
-	private void fillPlayerTab() {
-		playerTab.getItems().clear();
-		Map<String, Player> currentPlayers = runtimeDomain.getRunningPlayeres();
-
-		if (currentPlayers != null && currentPlayers.size() > 0) {
-			PlayerModel playerModle = null;
-			Player pEntity = null;
-			int i = 1;
-			for (String remarkName : currentPlayers.keySet()) {
-				pEntity = currentPlayers.get(remarkName);
-				
-				playerModle = new PlayerModel(i, pEntity
-						.getRemarkName(), pEntity.getPoints()
-						.intValue(), pEntity.getWebchatId(),
-						pEntity.getWechatName());
-				if (playerModle.getPlayerName().equals(
-						runtimeDomain.getBankerRemarkName())) {
-					playerModle.setIsBanker(Boolean.TRUE);
-				}
-				playerTab.getItems().add(playerModle);
-				runtimeDomain.putRunningPlayeres(pEntity
-						.getRemarkName(), pEntity);
-				i++;
-			}
-			flushRadioCol();
-		}
-	}
-	
-	public void addNewPlayer(Player pEntity) {
-		PlayerModel playerModle = new PlayerModel(0, pEntity
-				.getRemarkName(), pEntity.getPoints()
-				.intValue(), pEntity.getWebchatId(),
-				pEntity.getWechatName());
-		playerTab.getItems().add(playerModle);
-		flushRadioCol();
-	}
-
-	// private void fillPlayerTab() {
-	// playerTab.getItems().clear();
-	// PlayerModel playerModle = null;
-	// Map<String, PlayerModel> currentPlayers = gameService
-	// .getCurrentPlayers();
-	// for (String remarkName : currentPlayers.keySet()) {
-	// playerModle = currentPlayers.get(remarkName);
-	// gameService.initialCurrentPlayer(playerModle);
-	// if (playerModle.getPlayerName().equals(
-	// runtimeDomain.getBankerRemarkName())) {
-	// playerModle.setIsBanker(Boolean.TRUE);
-	// }
-	// playerTab.getItems().add(playerModle);
-	// }
-	// flushRadioCol();
-	// }
-
-	private void flushRadioCol() {
-		Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>> radioFactory = new Callback<TableColumn<PlayerModel, Boolean>, TableCell<PlayerModel, Boolean>>() {
-			@Override
-			public TableCell<PlayerModel, Boolean> call(
-					TableColumn<PlayerModel, Boolean> p) {
-				return new RadioButtonCell();
-			}
-		};
-		colBankerSgin.setCellFactory(radioFactory);
-		colBankerSgin
-				.setCellValueFactory(new PropertyValueFactory<PlayerModel, Boolean>(
-						PlayerModel.ISBANKERCOLKEY));
-	}
-
-	private void fillUpGroupBox() {
+	public void fillUpGroupBox() {
 		ObservableList<ChatGroupModel> groupList = groupBox.getItems();
 		ObservableList<ChatGroupModel> groupListFiniance = groupBoxM.getItems();
 
@@ -603,87 +403,6 @@ public class MainDeskController extends FxmlController {
 		}
 		groupBox.getSelectionModel().select(selected);
 		groupBoxM.getSelectionModel().select(selectedM);
-	}
-
-	@FXML
-	private void singleInfoSentOut(ActionEvent event) {
-		Object selectedRow = singlePlayerInfoSend.getUserData();
-		if (selectedRow == null) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("错误操作");
-			alert.setContentText("请先在列表中选择一个玩家！");
-			alert.showAndWait();
-			return;
-		}
-
-		if (selectedRow instanceof PlayerModel) {
-			PlayerModel pMode = (PlayerModel) selectedRow;
-			String content = MessageFormat.format(AppUtils.SINGLEPLAYERINFO,
-					pMode.getWechatName(), pMode.getPlayerPoint());
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("信息发送");
-			alert.setHeaderText("确认发送");
-			alert.setContentText(content);
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.CANCEL) {
-				return;
-			}
-			webWechat.webwxsendmsg(content);
-		}
-	}
-
-	@FXML
-	private void flushGroup(ActionEvent event) {
-		Service<Integer> service = new Service<Integer>() {
-			@Override
-			protected Task<Integer> createTask() {
-				return new Task<Integer>() {
-					@Override
-					protected Integer call() throws Exception {
-						try {
-							webWechat.wxInit();
-							webWechat.getContact();
-							// webWechat.getGroupMembers();
-							fillPlayerTab();
-						} catch (Exception e) {
-							LOGGER.error("wechart Group flush failed!", e);
-						}
-						return Integer.valueOf("0");
-					}
-				};
-			};
-		};
-		service.start();
-		service.setOnRunning((WorkerStateEvent we) -> {
-			imgLoad.setVisible(true);
-		});
-		service.setOnSucceeded((WorkerStateEvent we) -> {
-			imgLoad.setVisible(false);
-			fillUpGroupBox();
-		});
-	}
-
-	@FXML
-	private void savePlayerPoint(ActionEvent event) {
-		Service<Integer> service = new Service<Integer>() {
-			@Override
-			protected Task<Integer> createTask() {
-				return new Task<Integer>() {
-					@Override
-					protected Integer call() throws Exception {
-						gameService.ryncPlayersPoint(playerTab.getItems());
-						return Integer.valueOf("0");
-					}
-				};
-			};
-		};
-		service.start();
-		service.setOnRunning((WorkerStateEvent we) -> {
-			imgLoad.setVisible(true);
-		});
-		service.setOnSucceeded((WorkerStateEvent we) -> {
-			imgLoad.setVisible(false);
-		});
 	}
 
 	@FXML
@@ -836,141 +555,43 @@ public class MainDeskController extends FxmlController {
 		}
 	}
 
-	/**
-	 * auto rync player table
-	 */
-	private void playerAutoFlush() {
-		if (playerFlushTask == null) {
-			playerFlushTask = new Task<Void>() {
-				@Override
-				public Void call() {
-					while (true) {
-						try {
-							Thread.sleep(AppUtils.PLAYER_TAB_FLSH_TERVAL);
-							if (autoPlayerFlushContinue) {
-								flushPlayerList();
-							}
-						} catch (Exception e) {
-							LOGGER.error("player table auto change failed!", e);
-						}
-
-					}
-				}
-			};
-			if (playerFlushThread == null) {
-				playerFlushThread = new Thread(playerFlushTask);
-				playerFlushThread.setDaemon(Boolean.TRUE);
-				playerFlushThread.start();
-			}
-			LOGGER.debug("Auto player flush Thread start");
-		}
-	}
-
-	private void flushPlayerList() {
-		synchronized (this) {
-			PlayerModel pModel = null;
-			Player pEntity = null;
-			ObservableList<PlayerModel> playerList = playerTab.getItems();
-			if (playerList == null || playerList.size() < 1) {
-				return;
-			}
-			for (int i = 0; i < playerList.size(); i++) {
-				pModel = playerList.get(i);
-				pModel.getPlayerName();
-				pEntity = runtimeDomain.getRunningPlayeres().get(
-						pModel.getPlayerName());
-				if (pEntity != null) {
-					pModel.setPlayerPoint(String
-							.valueOf(pEntity.getPoints() == null ? 0 : pEntity
-									.getPoints()));
-					pModel.setPlayerName(pEntity.getRemarkName());
-				}
-			}
-		}
-	}
-
 	private void startGameViewAction() {
 		PlayerModel pModel = null;
-		ObservableList<PlayerModel> playerList = playerTab.getItems();
+		ObservableList<PlayerModel> playerList = playerTableController.getPlayerList();
 		for (int i = 0; i < playerList.size(); i++) {
 			pModel = playerList.get(i);
 			pModel.getPlayerName();
 			pModel.setPlayerLatestBet(AppUtils.NONEBET);
 		}
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
-		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
-		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
 		bankerBetPoint.setEditable(Boolean.FALSE);
 		definedBet.setEditable(Boolean.FALSE);
 	}
 
 	private void endGameViewAction() {
 		groupBox.setDisable(runtimeDomain.getGlobalGameSignal());
-		groupFlush.setDisable(runtimeDomain.getGlobalGameSignal());
-		syncPlayer.setDisable(runtimeDomain.getGlobalGameSignal());
 		bankerBetPoint.setEditable(Boolean.TRUE);
 		definedBet.setEditable(Boolean.TRUE);
 	}
-
-	private class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
-
-		private RadioButton radio;
-
-		public RadioButtonCell() {
-			createRadioButton();
-		}
-
-		private void createRadioButton() {
-			radio = new RadioButton();
-			radio.focusedProperty().addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> arg0,
-						Boolean before, Boolean now) {
-					// game time no change
-					if (runtimeDomain.getGlobalGameSignal()) {
-						radio.setSelected(before);
-						return;
-					}
-					if (now) {
-						commitEdit(radio.isSelected());
-					}
-				}
-			});
-			radio.setToggleGroup(playerGroup);
-		}
-
-		@Override
-		public void commitEdit(Boolean t) {
-			super.commitEdit(t);
-			final ObservableList<PlayerModel> items = getTableView().getItems();
-			for (int i = 0; i < items.size(); i++) {
-				PlayerModel playerModel = items.get(i);
-				if (i == getIndex()) {
-					playerModel.setIsBanker(t);
-					runtimeDomain.setBankerRemarkName(playerModel
-							.getPlayerName());
-					setCurrentBankSign(playerModel.getPlayerName());
-					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel
-							.getPlayerPoint()) * 2 / 3);
-					bankerBetPoint.setText(runtimeDomain.getBankerBetPoint()
-							.toString());
-				} else {
-					playerModel.setIsBanker(Boolean.FALSE);
-				}
-			}
-		}
-
-		@Override
-		public void updateItem(Boolean item, boolean empty) {
-			super.updateItem(item, empty);
-			final ObservableList<PlayerModel> items = getTableView().getItems();
-			if (items != null && getIndex() > -1) {
-				if (getIndex() < items.size()) {
-					radio.setSelected(items.get(getIndex()).getIsBanker());
-					setGraphic(radio);
-				}
-			}
-		}
+	
+	public void openImageLoad() {
+		imgLoad.setVisible(true);
+	}
+	
+	public void closeImageLoad() {
+		imgLoad.setVisible(false);
+		fillUpGroupBox();
 	}
 
+	public ToggleGroup getPlayerGroup() {
+		return playerGroup;
+	}
+
+	public void setPlayerGroup(ToggleGroup playerGroup) {
+		this.playerGroup = playerGroup;
+	}
+	
+	public void setBankerBetPoint(Long betPoint) {
+		bankerBetPoint.setText(betPoint.toString());
+	}
 }
