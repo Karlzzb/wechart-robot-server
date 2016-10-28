@@ -903,9 +903,11 @@ public class WebWechat {
 							data = webwxsync();
 							handleMsg(data, console);
 							break;
-						case 6:// 红包
+						case 6:// 红包  && 加好友
 							data = webwxsync();
 							handleMsg(data, console);
+							wxInit();
+							getContact();
 							break;
 						case 7:// 进入/离开聊天界面
 							data = webwxsync();

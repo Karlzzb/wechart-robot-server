@@ -1,7 +1,6 @@
 package com.karl.fx.controller;
 
 import java.text.MessageFormat;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,20 +88,7 @@ public class PlayerTableController extends FxmlController {
 
 	private Boolean autoPlayerFlushContinue;
 	private Boolean isInitializing;
-
-	private Comparator<PlayerModel> comparator = new Comparator<PlayerModel>() {
-		@Override
-		public int compare(PlayerModel r1, PlayerModel r2) {
-			if (r1.getPlayerPoint() > r2.getPlayerPoint()) {
-				return 1;
-			} else if (r1.getPlayerPoint() < r2.getPlayerPoint()) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	};
-
+	
 	@Override
 	public void initialize() {
 		autoPlayerFlushContinue = Boolean.TRUE;
@@ -246,7 +232,7 @@ public class PlayerTableController extends FxmlController {
 			}
 			flushRadioCol();
 			resortTable();
-			this.playerSizeLableChange();
+			playerSizeLableChange();
 		}
 		
 	}
@@ -283,7 +269,6 @@ public class PlayerTableController extends FxmlController {
 					return 0;
 				});
 		playerTab.setItems(sortedList);
-		playerSizeLableChange();
 		flushRadioCol();
 	}
 
@@ -473,7 +458,8 @@ public class PlayerTableController extends FxmlController {
 				pModel.setPlayerName(pEntity.getRemarkName());
 			}
 		}
-		this.resortTable();
+		resortTable();
+		playerSizeLableChange();
 	}
 
 	private class RadioButtonCell extends TableCell<PlayerModel, Boolean> {
