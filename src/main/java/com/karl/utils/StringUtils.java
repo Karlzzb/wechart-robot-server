@@ -25,6 +25,9 @@ public class StringUtils {
     
     public static Pattern SELFPACKHEAD = Pattern.compile("^【包信息】.*");
     
+	public static Pattern RECOMMENDMSG = Pattern.compile("^我通过了你的朋友验证请求.*");
+
+    
     public static Pattern SELFPACKLINE = Pattern.compile("([1-9]+[0-9]*)位: (.*), ([0-9]*\\.?[0-9]+), (.*)");
     
     public static String ANGLEINLINE = "</?[^>]+>";

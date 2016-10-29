@@ -699,6 +699,69 @@ public class WebWechat {
 		return jsonObject;
 	}
 
+	protected void handleMsgSystem(JSONObject data) {
+		if (null == data) {
+			return;
+		}
+
+		JSONArray addMsgList = data.getJSONArray("AddMsgList");
+		JSONArray modContactList = data.getJSONArray("ModContactList");
+		if (addMsgList == null || modContactList == null) {
+			return;
+		}
+
+		for (int i = 0, len = addMsgList.size(); i < len; i++) {
+			JSONObject msg = addMsgList.getJSONObject(i);
+			int msgType = msg.getInt("MsgType", 0);
+
+			switch (msgType) {
+			case 51:
+				break;
+			case 1:
+				handleTextMsgSystem(msg, modContactList);
+				break;
+			case 3:
+				break;
+			case 34:
+				break;
+			case 42:
+				break;
+			default:
+				break;
+			}
+			LOGGER.debug("Message Detail： {}" + msg.toString());
+		}
+		LOGGER.debug("Message Package： {}", data.toString());
+	}
+
+	private void handleTextMsgSystem(JSONObject jsonMsg,
+			JSONArray modContactList) {
+		if (modContactList == null || modContactList.size() < 0) {
+			return;
+		}
+
+		String content = jsonMsg.getString("Content");
+		String messageFrom = jsonMsg.getString("FromUserName");
+
+		if (content == null || messageFrom == null) {
+			return;
+		}
+
+		if (content != null && StringUtils.RECOMMENDMSG.matcher(content).find()) {
+			for (int i = 0; i < modContactList.size(); i++) {
+				JSONObject userInfoJson = modContactList.getJSONObject(i);
+				if (userInfoJson != null
+						&& userInfoJson.getString("UserName") != null
+						&& userInfoJson.getString("UserName").equals(
+								messageFrom)) {
+					runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
+					LOGGER.debug("New User Json info{} add!",userInfoJson.toString());
+					break;
+				}
+			}
+		}
+	}
+
 	/**
 	 * 获取最新消息
 	 * 
@@ -903,11 +966,9 @@ public class WebWechat {
 							data = webwxsync();
 							handleMsg(data, console);
 							break;
-						case 6:// 红包  && 加好友
+						case 6:// 红包 && 加好友
 							data = webwxsync();
-							handleMsg(data, console);
-							wxInit();
-							getContact();
+							handleMsgSystem(data);
 							break;
 						case 7:// 进入/离开聊天界面
 							data = webwxsync();

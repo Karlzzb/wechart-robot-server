@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -273,8 +274,14 @@ public class PlayerTableController extends FxmlController {
 	}
 
 	private void playerSizeLableChange() {
-		playerSizeLable.setText("玩家人数 :"
-				+ String.valueOf(playerTab.getItems().size()));
+		Platform.setImplicitExit(false);
+		Platform.runLater(new Runnable() {
+		    @Override
+		    public void run() {
+				playerSizeLable.setText("玩家人数 :"
+						+ String.valueOf(playerTab.getItems().size()));
+		    }
+		});
 	}
 
 	// private void fillPlayerTab() {
