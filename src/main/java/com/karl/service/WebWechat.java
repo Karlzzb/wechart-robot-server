@@ -747,17 +747,15 @@ public class WebWechat {
 			return;
 		}
 
-		if (content != null && StringUtils.RECOMMENDMSG.matcher(content).find()) {
-			for (int i = 0; i < modContactList.size(); i++) {
-				JSONObject userInfoJson = modContactList.getJSONObject(i);
-				if (userInfoJson != null
-						&& userInfoJson.getString("UserName") != null
-						&& userInfoJson.getString("UserName").equals(
-								messageFrom)) {
-					runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
-					LOGGER.debug("New User Json info{} add!",userInfoJson.toString());
-					break;
-				}
+		for (int i = 0; i < modContactList.size(); i++) {
+			JSONObject userInfoJson = modContactList.getJSONObject(i);
+			if (userInfoJson != null
+					&& userInfoJson.getString("UserName") != null
+					&& userInfoJson.getString("UserName").equals(
+							messageFrom)) {
+				runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
+				LOGGER.debug("New User Json info{} add!",userInfoJson.toString());
+				break;
 			}
 		}
 	}

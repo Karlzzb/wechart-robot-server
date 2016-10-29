@@ -1223,7 +1223,7 @@ public class GameService {
 		if (remarkName.equals(nickName)) {
 			remarkNameOk = false;
 			remarkName = StringUtils.replaceHtml(remarkName.trim());
-			remarkName = remarkName.length() > 10 ? remarkName.substring(0, 9)
+			remarkName = remarkName.length() > 8 ? remarkName.substring(0, 8)
 					: remarkName;
 
 			Player existEntity = playerService
