@@ -6,7 +6,6 @@
 package com.karl.fx.controller;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.ResourceBundle;
@@ -31,7 +30,6 @@ import com.karl.fx.FxmlView;
 import com.karl.fx.animations.FadeInLeftTransition;
 import com.karl.fx.animations.FadeInLeftTransition1;
 import com.karl.fx.animations.FadeInRightTransition;
-import com.karl.utils.DateUtils;
 
 @Component
 public class CertificateConroller extends FxmlController implements
@@ -77,13 +75,6 @@ public class CertificateConroller extends FxmlController implements
 
 	@FXML
 	private void aksiLogin(ActionEvent event) {
-		if (DateUtils.formatDate(new Date()).equals("2016-10-31")) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("错误");
-			alert.setContentText("账号已过期，请重新向管理员申请！");
-			alert.showAndWait();
-			return;
-		}
 		Boolean pass = Boolean.FALSE;
 		EnumSet<CertificateRule> theRule = EnumSet.allOf(CertificateRule.class);
 		CertificateRule certificateRule = null;
