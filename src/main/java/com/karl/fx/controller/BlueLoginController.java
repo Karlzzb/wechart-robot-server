@@ -48,15 +48,12 @@ public class BlueLoginController extends FxmlController {
 	@FXML
 	private ImageView qrImgeView;
 
-	private ConsoleController consoleController;
 
 	@Autowired
 	@Lazy(value = true)
-	public BlueLoginController(StageManager stageManager,
-			ConsoleController consoleController) {
+	public BlueLoginController(StageManager stageManager) {
 		super();
 		this.stageManager = stageManager;
-		this.consoleController = consoleController;
 	}
 
 	@Override
@@ -98,7 +95,7 @@ public class BlueLoginController extends FxmlController {
 						}
 						LOGGER.info("[*] 微信登录成功");
 						webWechat.buildWechat();
-						webWechat.listenMsgMode(consoleController);
+						webWechat.listenMsgMode();
 						return 0;
 					}
 				};

@@ -16,7 +16,6 @@ import blade.kit.json.JSONObject;
 
 import com.karl.db.domain.Player;
 import com.karl.domain.RuntimeDomain;
-import com.karl.fx.controller.ConsoleController;
 import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
 import com.karl.utils.StringUtils;
@@ -765,7 +764,7 @@ public class WebWechat {
 	 * 
 	 * @param console
 	 */
-	public void handleMsg(JSONObject data, ConsoleController console) {
+	public void handleMsg(JSONObject data) {
 		if (null == data) {
 			return;
 		}
@@ -780,7 +779,7 @@ public class WebWechat {
 			case 51:
 				break;
 			case 1:
-				handleTextMsg(msg, console);
+				handleTextMsg(msg);
 				break;
 			case 3:
 				// webwxsendmsg("二蛋还不支持图片呢", msg.getString("FromUserName"));
@@ -789,7 +788,7 @@ public class WebWechat {
 				// webwxsendmsg("二蛋还不支持语音呢", msg.getString("FromUserName"));
 				break;
 			case 42:
-				handleRecomendMsg(msg, console);
+				handleRecomendMsg(msg);
 				break;
 			default:
 				break;
@@ -799,7 +798,7 @@ public class WebWechat {
 		LOGGER.debug("Message Package： {}", data.toString());
 	}
 
-	private void handleRecomendMsg(JSONObject jsonMsg, ConsoleController console) {
+	private void handleRecomendMsg(JSONObject jsonMsg) {
 		String recommendWechatId = "";
 		String recommendWechatName = "";
 		JSONObject recommendInfo = null;
@@ -862,7 +861,7 @@ public class WebWechat {
 	 * @param jsonMsg
 	 * @param console
 	 */
-	private void handleTextMsg(JSONObject jsonMsg, ConsoleController console) {
+	private void handleTextMsg(JSONObject jsonMsg) {
 
 		String remarkName = "";
 		String content = "";
@@ -894,8 +893,6 @@ public class WebWechat {
 
 			}
 			LOGGER.debug("【" + remarkName + "】       说：        【" + content
-					+ "】");
-			console.writeLog("【" + remarkName + "】       说：        【" + content
 					+ "】");
 		} else {
 			LOGGER.debug(
@@ -933,15 +930,15 @@ public class WebWechat {
 		// }
 	}
 
-	public void listenMsgMode(final ConsoleController console) {
+	public void listenMsgMode() {
 		new Thread(new Runnable() {
 			public void run() {
-				console.writeLog("[*] 获取联系人成功");
-				console.writeLog("[*] 共有 "
+				LOGGER.debug("[*] 获取联系人成功");
+				LOGGER.debug("[*] 共有 "
 						+ runtimeDomain.getAllUsrMap().size() + " 位联系人");
-				console.writeLog("[*] 共有 " + runtimeDomain.getGroupMap().size()
+				LOGGER.debug("[*] 共有 " + runtimeDomain.getGroupMap().size()
 						+ " 个群");
-				console.writeLog("[*] 进入消息监听模式 ...");
+				LOGGER.debug("[*] 进入消息监听模式 ...");
 				while (!stopRequested) {
 					try {
 						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
@@ -957,16 +954,16 @@ public class WebWechat {
 							switch (arr[1]) {
 							case 2:// 新的消息
 								data = webwxsync();
-								handleMsg(data, console);
+								handleMsg(data);
 								break;
 							case 3:// 新的消息
 								data = webwxsync();
-								handleMsg(data, console);
+								handleMsg(data);
 								break;
 							case 6:// 红包 && 加好友
 								data = webwxsync();
 								handleMsgSystem(data);
-								handleMsg(data, console);
+								handleMsg(data);
 								break;
 							case 7:// 进入/离开聊天界面
 								data = webwxsync();
@@ -974,7 +971,7 @@ public class WebWechat {
 							default:
 								break;
 							}
-							LOGGER.info("[*] retcode={},selector={} \n {}",
+							LOGGER.debug("[*] retcode={},selector={} \n {}",
 									arr[0], arr[1],
 									data == null ? "" : data.toString());
 						}

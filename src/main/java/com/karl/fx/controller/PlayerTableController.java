@@ -209,7 +209,7 @@ public class PlayerTableController extends FxmlController {
 	}
 
 	private void fillPlayerTab() {
-		playerTab.getItems().clear();
+		ObservableList<PlayerModel> playerTableList = FXCollections.observableArrayList();
 		Map<String, Player> currentPlayers = runtimeDomain.getRunningPlayeres();
 
 		if (currentPlayers != null && currentPlayers.size() > 0) {
@@ -226,21 +226,21 @@ public class PlayerTableController extends FxmlController {
 						runtimeDomain.getBankerRemarkName())) {
 					playerModle.setIsBanker(Boolean.TRUE);
 				}
-				playerTab.getItems().add(playerModle);
+				playerTableList.add(playerModle);
 				runtimeDomain.putRunningPlayeres(pEntity.getRemarkName(),
 						pEntity);
 				i++;
 			}
 			flushRadioCol();
-			resortTable();
+			resortTable(playerTableList);
 			playerSizeLableChange();
 		}
 		
 	}
 
-	private void resortTable() {
+	private void resortTable(ObservableList<PlayerModel> playerTableList) {
 		SortedList<PlayerModel> sortedList = new SortedList<>(
-				playerTab.getItems(), (PlayerModel p1, PlayerModel p2) -> {
+				playerTableList, (PlayerModel p1, PlayerModel p2) -> {
 					if (p1.getPlayerPoint() < p2.getPlayerPoint()) {
 						return 1;
 					}
@@ -465,7 +465,7 @@ public class PlayerTableController extends FxmlController {
 				pModel.setPlayerName(pEntity.getRemarkName());
 			}
 		}
-		resortTable();
+		resortTable(playerList);
 		playerSizeLableChange();
 	}
 
