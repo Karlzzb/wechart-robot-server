@@ -751,10 +751,10 @@ public class WebWechat {
 			JSONObject userInfoJson = modContactList.getJSONObject(i);
 			if (userInfoJson != null
 					&& userInfoJson.getString("UserName") != null
-					&& userInfoJson.getString("UserName").equals(
-							messageFrom)) {
+					&& userInfoJson.getString("UserName").equals(messageFrom)) {
 				runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
-				LOGGER.debug("New User Json info{} add!",userInfoJson.toString());
+				LOGGER.debug("New User Json info{} add!",
+						userInfoJson.toString());
 				break;
 			}
 		}
@@ -945,36 +945,43 @@ public class WebWechat {
 				while (!stopRequested) {
 					try {
 						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
-					} catch (InterruptedException e) {
-						LOGGER.error("sleeping failed:", e);
-					}
 
-					int[] arr = syncCheck();
+						int[] arr = syncCheck();
 
-					LOGGER.debug("[*] retcode={},selector={}", arr[0], arr[1]);
-
-					if (arr[0] == 1100) {
-					}
-
-					if (arr[0] == 0) {
-						JSONObject data = null;
-
-						switch (arr[1]) {
-						case 2:// 新的消息
-							data = webwxsync();
-							handleMsg(data, console);
-							break;
-						case 6:// 红包 && 加好友
-							data = webwxsync();
-							handleMsgSystem(data);
-							break;
-						case 7:// 进入/离开聊天界面
-							data = webwxsync();
-							break;
-						default:
-							break;
+						if (arr[0] == 1100) {
 						}
+
+						if (arr[0] == 0) {
+							JSONObject data = null;
+
+							switch (arr[1]) {
+							case 2:// 新的消息
+								data = webwxsync();
+								handleMsg(data, console);
+								break;
+							case 3:// 新的消息
+								data = webwxsync();
+								handleMsg(data, console);
+								break;
+							case 6:// 红包 && 加好友
+								data = webwxsync();
+								handleMsgSystem(data);
+								handleMsg(data, console);
+								break;
+							case 7:// 进入/离开聊天界面
+								data = webwxsync();
+								break;
+							default:
+								break;
+							}
+							LOGGER.info("[*] retcode={},selector={} \n {}",
+									arr[0], arr[1],
+									data == null ? "" : data.toString());
+						}
+					} catch (Exception e) {
+						LOGGER.error("wechat sync failed!",e);
 					}
+
 				}
 			}
 		}, "listenMsgMode").start();
