@@ -5,11 +5,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-import com.karl.utils.StringUtils;
-
 public class PlayerModel{
     public static final String AUDOIDCOLKEY = "autoID";
-    public static final String PLAYERIDCOLKEY = "playerId";
     public static final String PLAYERNAMECOLKEY = "playerName";
     public static final String PLAYERPOINTCOLKEY = "playerPoint";
 	public static final String PLAYERBETCOLKEY = "playerLatestBet";
@@ -17,7 +14,6 @@ public class PlayerModel{
 	
     private  SimpleIntegerProperty autoID;
     private  SimpleBooleanProperty isBanker;
-    private  SimpleStringProperty playerId;
     private  SimpleStringProperty wechatId;
     private  SimpleStringProperty playerName;
     private  SimpleLongProperty playerPoint;
@@ -26,7 +22,6 @@ public class PlayerModel{
 
     public PlayerModel(Integer autoID, String playerName, Long playerPoint, String wechatId, String wechatName) {
         this.autoID =  new SimpleIntegerProperty(autoID);;
-        this.playerId = new SimpleStringProperty(StringUtils.getMD5(playerName));
         this.playerName = new SimpleStringProperty(playerName);
         this.playerPoint = new SimpleLongProperty(playerPoint);
         this.wechatId = new SimpleStringProperty(wechatId);
@@ -60,15 +55,7 @@ public class PlayerModel{
     	return playerPoint;
     }
 
-    public String getPlayerId() {
-        return playerId.getValue();
-    }
-
     public String getPlayerName() {
-        return StringUtils.replaceHtml(playerName.getValue());
-    }
-    
-    public String getPlayerNameRaw() {
         return playerName.getValue();
     }
 
@@ -78,11 +65,6 @@ public class PlayerModel{
 
 	public Integer getAutoID() {
 		return autoID.getValue();
-	}
-
-
-	public void setPlayerId(String playerId) {
-		this.playerId.set(playerId);
 	}
 
 	public void setPlayerName(String playerName) {

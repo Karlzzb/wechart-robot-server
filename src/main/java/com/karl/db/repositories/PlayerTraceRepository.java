@@ -17,24 +17,20 @@ public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Long>
     List<PlayerTrace> findByRemarkName(String remarkName);
 
     @Modifying
-    @Query("update PlayerTrace p set p.luckInfo = ?1  where p.gameSerialNo = ?2 and p.playerId = ?3 and p.remarkName = ?4 and p.betInfo = ?5")
-	void updateLuckInfo(Long luckInfo, Long gameSerialNo, String playerId, String remarkName, String betInfo);
+    @Query("update PlayerTrace p set p.luckInfo = ?1  where p.gameSerialNo = ?2 and p.remarkName = ?3 and p.betInfo = ?4")
+	void updateLuckInfo(Long luckInfo, Long gameSerialNo, String remarkName, String betInfo);
 
     @Modifying
     @Query("update PlayerTrace p set p.luckInfo = ?1  where p.traceId = ?2")
 	void updateLuckInfo(Long luckInfo, Long traceId);
     
     @Modifying
-    @Query("update PlayerTrace p set p.resultTimes = ?1, p.resultPoint = ?2  where p.gameSerialNo = ?3 and p.playerId = ?4 and p.remarkName = ?5 and p.betInfo = ?6")
-	void updateResult(Long resultTimes, Long resultPoint, Long gameSerialNo, String playerId, String remarkName, String betInfo);    
-
-    @Modifying
     @Query("update PlayerTrace p set p.resultTimes = ?1, p.resultPoint = ?2  where p.traceId = ?3")
 	void updateResult(Long resultTimes, Long resultPoint, Long traceId);
 
     @Modifying
-    @Query("update PlayerTrace p set p.luckInfo = ?1, p.luckTime = ?5, p.resultRuleName = ?6, p.resultTimes = ?7  where p.gameSerialNo = ?2 and p.playerId = ?3 and p.remarkName = ?4")
-	void updateLuckInfo(Double luckInfo, Long gameSerialNo, String playerId,
+    @Query("update PlayerTrace p set p.luckInfo = ?1, p.luckTime = ?4, p.resultRuleName = ?5, p.resultTimes = ?6  where p.gameSerialNo = ?2 and p.remarkName = ?3")
+	void updateLuckInfo(Double luckInfo, Long gameSerialNo,
 			String remarkName, Long luckTime, String resultRuleName, Integer resultTimes);
 
     @Modifying

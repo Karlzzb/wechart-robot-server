@@ -16,9 +16,6 @@ public class ApplyPoints implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long applyId;
-
-	@Column(nullable = false)
-	private String playerId;
 	
 	@Column(nullable = false)
 	private String webChatId;
@@ -43,14 +40,6 @@ public class ApplyPoints implements Serializable {
 	
 	@Column(nullable = true)
 	private Long approvalTime;
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
-	}
 
 	public String getRemarkName() {
 		return remarkName;

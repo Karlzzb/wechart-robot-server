@@ -133,7 +133,7 @@ public class GameRunningTabController extends FxmlController {
 		Callback<TableColumn<PlayerTraceModel, String>, TableCell<PlayerTraceModel, String>> cellFactory = new Callback<TableColumn<PlayerTraceModel, String>, TableCell<PlayerTraceModel, String>>() {
 			public TableCell<PlayerTraceModel, String> call(
 					TableColumn<PlayerTraceModel, String> p) {
-				return new EditingCell<PlayerTraceModel,String>("");
+				return new EditingCell<PlayerTraceModel, String>("");
 			}
 		};
 		betInfo.setEditable(Boolean.TRUE);
@@ -229,51 +229,47 @@ public class GameRunningTabController extends FxmlController {
 	}
 
 	private void fillTraceTab() {
-		synchronized (this) {
-			try {
-				if (traceTab.getItems() != null) {
-					traceTab.getItems().clear();
-				}
-				GameInfo gameInfo = gameService.getGameById(runtimeDomain
-						.getCurrentGameId());
-				if (gameInfo == null || gameInfo.getIsUndo()) {
-					return;
-				}
-				List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
-				if (traceList != null) {
-					PlayerTrace trace = null;
-					Player pEntity = null;
-					String resultInfo;
-					for (int i = 0; i < traceList.size(); i++) {
-						trace = traceList.get(i);
-						pEntity = runtimeDomain.getRunningPlayeres().get(
-								trace.getRemarkName());
-						if (pEntity == null) {
-							continue;
-						}
-						resultInfo = "";
-						if (trace.getResultPoint() != null) {
-							resultInfo = trace.getResultPoint() > 0 ? "赢"
-									+ trace.getResultPoint() : "输"
-									+ Math.abs(trace.getResultPoint());
-						}
-
-						traceTab.getItems().add(
-								new PlayerTraceModel(trace.getTraceId(), trace
-										.getPlayerId(), trace.getRemarkName(),
-										pEntity.getPoints(),
-										trace.getBetInfo(), trace.getLuckInfo()
-												.toString(), trace
-												.getResultRuleName(),
-										resultInfo, trace.getIsBanker()));
-					}
-				}
-				flushDefiedCol();
-				LOGGER.debug("Trace table flush secess, table size={}!",
-						traceTab.getItems().size());
-			} catch (Exception e) {
-				LOGGER.error("Trace table flush failed!", e);
+		try {
+			if (traceTab.getItems() != null) {
+				traceTab.getItems().clear();
 			}
+			GameInfo gameInfo = gameService.getGameById(runtimeDomain
+					.getCurrentGameId());
+			if (gameInfo == null || gameInfo.getIsUndo()) {
+				return;
+			}
+			List<PlayerTrace> traceList = gameService.getCurrentPlayTrace();
+			if (traceList != null) {
+				PlayerTrace trace = null;
+				Player pEntity = null;
+				String resultInfo;
+				for (int i = 0; i < traceList.size(); i++) {
+					trace = traceList.get(i);
+					pEntity = runtimeDomain.getRunningPlayeres().get(
+							trace.getRemarkName());
+					if (pEntity == null) {
+						continue;
+					}
+					resultInfo = "";
+					if (trace.getResultPoint() != null) {
+						resultInfo = trace.getResultPoint() > 0 ? "赢"
+								+ trace.getResultPoint() : "输"
+								+ Math.abs(trace.getResultPoint());
+					}
+
+					traceTab.getItems().add(
+							new PlayerTraceModel(trace.getTraceId(), trace.getRemarkName(),
+									pEntity.getPoints(), trace.getBetInfo(),
+									trace.getLuckInfo().toString(), trace
+											.getResultRuleName(), resultInfo,
+									trace.getIsBanker()));
+				}
+			}
+			flushDefiedCol();
+			LOGGER.debug("Trace table flush secess, table size={}!", traceTab
+					.getItems().size());
+		} catch (Exception e) {
+			LOGGER.error("Trace table flush failed!", e);
 		}
 	}
 
@@ -284,9 +280,12 @@ public class GameRunningTabController extends FxmlController {
 				try {
 					stageManager.popLuckInfoWindow(runtimeDomain);
 					fillTraceTab();
-				}catch(Exception e) {
+				} catch (Exception e) {
 					LOGGER.error("Can not open luckinfo board!", e);
 				}
+				
+				LOGGER.info("The open luckinfo complete!");
+
 				return 0;
 			}
 		};

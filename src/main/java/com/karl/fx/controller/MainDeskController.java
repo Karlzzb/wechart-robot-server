@@ -86,7 +86,7 @@ public class MainDeskController extends FxmlController {
 	@Autowired
 	@Lazy
 	private MessageController messageController;
-	
+
 	@Autowired
 	@Lazy
 	private PlayerTableController playerTableController;
@@ -102,14 +102,13 @@ public class MainDeskController extends FxmlController {
 	private Button singlePlayerInfoSend;
 
 	private Boolean isInitializing;
-	
+
 	private Comparator<PlayerModel> comparator = new Comparator<PlayerModel>() {
 		@Override
 		public int compare(PlayerModel r1, PlayerModel r2) {
 			if (r1.getPlayerPoint() > r2.getPlayerPoint()) {
 				return 1;
-			} else if (r1.getPlayerPoint() < r2
-					.getPlayerPoint()) {
+			} else if (r1.getPlayerPoint() < r2.getPlayerPoint()) {
 				return -1;
 			} else {
 				return 0;
@@ -218,7 +217,9 @@ public class MainDeskController extends FxmlController {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				if (!newValue.matches("\\d*")
+				if (bankerBetPoint.getText() == null
+						|| bankerBetPoint.getText().isEmpty()
+						|| !newValue.matches("\\d*")
 						|| Long.valueOf(bankerBetPoint.getText()).compareTo(
 								runtimeDomain
 										.getRunningPlayeres()
@@ -557,7 +558,8 @@ public class MainDeskController extends FxmlController {
 
 	private void startGameViewAction() {
 		PlayerModel pModel = null;
-		ObservableList<PlayerModel> playerList = playerTableController.getPlayerList();
+		ObservableList<PlayerModel> playerList = playerTableController
+				.getPlayerList();
 		for (int i = 0; i < playerList.size(); i++) {
 			pModel = playerList.get(i);
 			pModel.getPlayerName();
@@ -573,11 +575,11 @@ public class MainDeskController extends FxmlController {
 		bankerBetPoint.setEditable(Boolean.TRUE);
 		definedBet.setEditable(Boolean.TRUE);
 	}
-	
+
 	public void openImageLoad() {
 		imgLoad.setVisible(true);
 	}
-	
+
 	public void closeImageLoad() {
 		imgLoad.setVisible(false);
 		fillUpGroupBox();
@@ -590,7 +592,7 @@ public class MainDeskController extends FxmlController {
 	public void setPlayerGroup(ToggleGroup playerGroup) {
 		this.playerGroup = playerGroup;
 	}
-	
+
 	public void setBankerBetPoint(Long betPoint) {
 		bankerBetPoint.setText(betPoint.toString());
 	}

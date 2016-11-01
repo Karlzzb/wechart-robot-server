@@ -1,7 +1,9 @@
 package com.karl.domain;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -10,7 +12,6 @@ import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
 
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,13 @@ import com.karl.fx.model.PlayRule;
 import com.karl.fx.model.PlayerApply;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
+
+import freemarker.core.ParseException;
+import freemarker.template.Configuration;
+import freemarker.template.MalformedTemplateNameException;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
+import freemarker.template.TemplateNotFoundException;
 
 @Component
 public class RuntimeDomain implements Serializable {
@@ -78,9 +86,13 @@ public class RuntimeDomain implements Serializable {
 		firstBankerFee = 0L;
 		luckInfoModeList = FXCollections.observableArrayList();
 		definedStartInfo = "3秒玩法，新鲜上市!";
+		buildFtl();
+		illegalPlayer = new ArrayList<String>();
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
+
+	private Configuration ftlCfg;
 
 	private String readyWechatId;
 
@@ -98,7 +110,7 @@ public class RuntimeDomain implements Serializable {
 	private int tip = 0;
 
 	private String cookie;
-	
+
 	private String bestSyncCheckChannel;
 
 	private JSONObject syncKeyJNode, User, baseRequest;
@@ -263,15 +275,14 @@ public class RuntimeDomain implements Serializable {
 
 	private Long currentRealPackageFee;
 
-	private Stage luckInfoStage;
-
 	private ObservableList<LuckInfoModel> luckInfoModeList;
 
 	private Long firstBankerFee;
 
 	private String definedStartInfo;
 	
-	
+	private List<String> illegalPlayer;
+
 	/**
 	 * key=remarkName
 	 * 
@@ -839,26 +850,6 @@ public class RuntimeDomain implements Serializable {
 		this.currentRealPackageFee = currentRealPackageFee;
 	}
 
-	public Stage getLuckInfoStage() {
-		return this.luckInfoStage;
-	}
-
-	public void setLuckInfoStage(Stage luckInfoStage) {
-		clearLuckInfoStage();
-		this.luckInfoStage = luckInfoStage;
-	}
-
-	public void clearLuckInfoStage() {
-		try {
-			if (luckInfoStage != null) {
-
-				luckInfoStage.close();
-				luckInfoStage = null;
-			}
-		} catch (Exception e) {
-		}
-	}
-
 	public ObservableList<LuckInfoModel> getLuckInfoModeList() {
 		return this.luckInfoModeList;
 	}
@@ -898,5 +889,59 @@ public class RuntimeDomain implements Serializable {
 
 	public void setDefinedStartInfo(String definedStartInfo) {
 		this.definedStartInfo = definedStartInfo;
+	}
+
+	private void buildFtl() {
+		ftlCfg = new Configuration(Configuration.VERSION_2_3_23);
+		ftlCfg.setClassForTemplateLoading(getClass(), "/ftl");
+		ftlCfg.setDefaultEncoding("UTF-8");
+		ftlCfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		ftlCfg.setLogTemplateExceptions(false);
+	}
+
+	public Template getRankTemplate() {
+		try {
+			return ftlCfg.getTemplate("ranking.ftlh");
+		} catch (TemplateNotFoundException e) {
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Template getBillTemplate() {
+		try {
+			return ftlCfg.getTemplate("bill.ftlh");
+		} catch (TemplateNotFoundException e) {
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<String> getIllegalPlayer() {
+		return illegalPlayer;
+	}
+
+	public void setIllegalPlayer(List<String> illegalPlayer) {
+		this.illegalPlayer = illegalPlayer;
+	}
+	
+	public void addIllegalPlayer(String playerName) {
+		illegalPlayer.add(playerName);
+	}
+	
+	public void clearIllegalPlayer() {
+		illegalPlayer.clear();
 	}
 }

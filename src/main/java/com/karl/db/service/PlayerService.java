@@ -20,7 +20,6 @@ import com.karl.db.repositories.GameStatsRepository;
 import com.karl.db.repositories.PlayerRepository;
 import com.karl.db.repositories.PlayerTraceRepository;
 import com.karl.utils.AppUtils;
-import com.karl.utils.StringUtils;
 
 @Component("playerService")
 @Transactional
@@ -57,9 +56,6 @@ public class PlayerService {
 	}
 
 	public Player save(Player player) {
-		if (player.getPlayerId() == null || player.getPlayerId().isEmpty()) {
-			player.setPlayerId(StringUtils.getMD5(player.getRemarkName()));
-		}
 		Assert.notNull(player, "player must not be null");
 		return playerRepository.save(player);
 	}
@@ -119,7 +115,7 @@ public class PlayerService {
 		Assert.notNull(playerId, "playerId must not be null");
 		Assert.notNull(remarkName, "remarkName must not be null");
 		Assert.notNull(betInfo, "betInfo must not be null");
-		playerTraceRepository.updateLuckInfo(luckInfo, gameSerialNo, playerId,
+		playerTraceRepository.updateLuckInfo(luckInfo, gameSerialNo,
 				remarkName, betInfo);
 	}
 
@@ -127,20 +123,6 @@ public class PlayerService {
 		Assert.notNull(luckInfo, "luckInfo must not be null");
 		Assert.notNull(traceId, "traceId must not be null");
 		playerTraceRepository.updateLuckInfo(luckInfo, traceId);
-	}
-
-	public void updateResult(Long resultTimes, Long resultPoint,
-			Long gameSerialNo, String playerId, String remarkName,
-			String betInfo) {
-		Assert.notNull(resultTimes, "resultTimes must not be null");
-		Assert.notNull(resultPoint, "resultPoint must not be null");
-		Assert.notNull(gameSerialNo, "gameSerialNo must not be null");
-		Assert.notNull(playerId, "playerId must not be null");
-		Assert.notNull(remarkName, "remarkName must not be null");
-		Assert.notNull(betInfo, "betInfo must not be null");
-		playerTraceRepository.updateResult(resultTimes, resultPoint,
-				gameSerialNo, playerId, remarkName, betInfo);
-
 	}
 
 	public void updateResult(Long resultTimes, Long resultPoint, Long traceId) {
@@ -156,14 +138,13 @@ public class PlayerService {
 	}
 
 	public void updateLuckInfo(Double luckInfo, Long gameSerialNo,
-			String playerId, String remarkName, Long luckTime, String resultRuleName, Integer resultTimes) {
+			String remarkName, Long luckTime, String resultRuleName, Integer resultTimes) {
 		Assert.notNull(luckInfo, "luckInfo must not be null");
 		Assert.notNull(gameSerialNo, "gameSerialNo must not be null");
-		Assert.notNull(playerId, "playerId must not be null");
 		Assert.notNull(remarkName, "remarkName must not be null");
 		Assert.notNull(resultRuleName, "resultRuleName must not be null");
 		Assert.notNull(resultTimes, "resultTimes must not be null");
-		playerTraceRepository.updateLuckInfo(luckInfo, gameSerialNo, playerId,
+		playerTraceRepository.updateLuckInfo(luckInfo, gameSerialNo,
 				remarkName, luckTime, resultRuleName, resultTimes);
 	}
 

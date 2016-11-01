@@ -173,8 +173,7 @@ public class StageManager {
 	public void popLuckInfoWindow(RuntimeDomain runtimeDomain) {
 		Scene scene = new Scene(
 				loadViewNodeHierarchy(FxmlView.LUCKTABLE.getFxmlFile()));
-		runtimeDomain.setLuckInfoStage(new Stage());
-		Stage luckInfoStage = runtimeDomain.getLuckInfoStage();
+		Stage luckInfoStage = new Stage();
 		luckInfoStage.setTitle(FxmlView.LUCKTABLE.getTitle());
 		luckInfoStage.initModality(Modality.NONE);
 		luckInfoStage.initOwner(getPrimaryStage());
@@ -186,13 +185,12 @@ public class StageManager {
 		} catch (Exception e) {
 			LOGGER.error(
 					"Uable to show scene for title "
-							+ FxmlView.MESSAGE.getTitle(), e);
+							+ FxmlView.LUCKTABLE.getTitle(), e);
 		}
-		luckInfoStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				runtimeDomain.clearLuckInfoStage();
-			}
-		});
+//		luckInfoStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//			public void handle(WindowEvent we) {
+//			}
+//		});
 	}
 
 	public void loadAnchorPaneMemu(AnchorPane ap, final FxmlView view) {

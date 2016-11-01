@@ -15,12 +15,11 @@ public class PlayerTrace implements Serializable {
 		super();
 	}
 
-	public PlayerTrace(Long gameSerialNo, String playerId,
+	public PlayerTrace(Long gameSerialNo,
 			String webchatId, String wechatName, String remarkName,
 			String betInfo, Long betPoint, Boolean islowRisk, Integer betIndex, Long betTime) {
 		super();
 		this.gameSerialNo = gameSerialNo;
-		this.playerId = playerId;
 		this.webchatId = webchatId;
 		this.wechatName = wechatName;
 		this.remarkName = remarkName;
@@ -31,12 +30,11 @@ public class PlayerTrace implements Serializable {
 		this.islowRisk = islowRisk;
 	}
 	
-	public PlayerTrace(Long gameSerialNo, String playerId,
+	public PlayerTrace(Long gameSerialNo,
 			String webchatId, String wechatName, String remarkName,
 			String betInfo, Long betPoint, Boolean islowRisk, Integer betIndex, Long betTime, Boolean isBanker) {
 		super();
 		this.gameSerialNo = gameSerialNo;
-		this.playerId = playerId;
 		this.webchatId = webchatId;
 		this.wechatName = wechatName;
 		this.remarkName = remarkName;
@@ -56,9 +54,6 @@ public class PlayerTrace implements Serializable {
 
     @Column(nullable = false)
 	private Long gameSerialNo;
-       
-    @Column(nullable = false)
-    private String playerId;
 
     @Column(nullable = true)
     private String webchatId;
@@ -108,14 +103,6 @@ public class PlayerTrace implements Serializable {
 
 	public void setGameSerialNo(Long gameSerialNo) {
 		this.gameSerialNo = gameSerialNo;
-	}
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
 	}
 
 	public String getWebchatId() {

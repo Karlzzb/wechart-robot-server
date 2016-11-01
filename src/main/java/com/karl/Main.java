@@ -46,7 +46,7 @@ public class Main extends Application {
 		try {
 			SpringApplicationBuilder builder = new SpringApplicationBuilder(
 					Main.class);
-			builder.web(false);
+//			builder.web(false);
 			String[] args = getParameters().getRaw().toArray(new String[] {});
 			builder.headless(false);
 			springContext = builder.run(args);

@@ -97,4 +97,64 @@ public class StringUtils {
     	return key;
     }
     
+    /**
+     * unicode 转字符串
+     */
+    public static String unicode2String(String unicode) {
+        StringBuffer string = new StringBuffer();
+        String[] hex = unicode.split("U");
+        for (int i = 1; i < hex.length; i++) {
+            // 转换出每一个代码点
+            int data = Integer.parseInt(hex[i], 16);
+     
+            // 追加成string
+            string.append((char) data);
+        }
+     
+        return string.toString();
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String labelR() {
+    	return StringUtils.unicode2String("U+00AE");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String labelFace() {
+    	return StringUtils.unicode2String("U+E105");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String labelFaceEM() {
+    	return StringUtils.unicode2String("U+E107");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String labelRUN() {
+    	return StringUtils.unicode2String("U+E115");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String labelEXPIRE() {
+    	return StringUtils.unicode2String("U+E02D");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String labelTOP() {
+    	return StringUtils.unicode2String("U+E24C");
+    }
+    
+	
 }

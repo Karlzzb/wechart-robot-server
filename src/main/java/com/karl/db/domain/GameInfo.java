@@ -21,9 +21,6 @@ public class GameInfo implements Serializable {
 	private Long gameSerialNo;
 
 	@Column(nullable = false)
-	private String playerId;
-
-	@Column(nullable = false)
 	private String bankerRemarkName;
 
 	@Column(nullable = false)
@@ -68,14 +65,6 @@ public class GameInfo implements Serializable {
 
 	public void setGameSerialNo(Long gameSerialNo) {
 		this.gameSerialNo = gameSerialNo;
-	}
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
 	}
 
 	public String getBankerRemarkName() {

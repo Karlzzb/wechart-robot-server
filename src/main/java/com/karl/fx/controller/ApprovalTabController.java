@@ -96,7 +96,7 @@ public class ApprovalTabController extends FxmlController {
 			for (int i = 0; i < applyEntityList.size(); i++) {
 				applyEntity = applyEntityList.get(i);
 				applyList.add(new PlayerApply(Boolean.FALSE, applyEntity
-						.getApplyId(), applyEntity.getPlayerId(), applyEntity
+						.getApplyId(), applyEntity
 						.getRemarkName(), applyEntity.getApplyType(),
 						applyEntity.getPoints(), applyEntity
 								.getApprovalStatus(), applyEntity
@@ -112,7 +112,7 @@ public class ApprovalTabController extends FxmlController {
 		}
 		approvalTab.getItems().add(
 				new PlayerApply(Boolean.FALSE, applyEntity.getApplyId(),
-						applyEntity.getPlayerId(), applyEntity.getRemarkName(),
+						 applyEntity.getRemarkName(),
 						applyEntity.getApplyType(), applyEntity.getPoints(),
 						applyEntity.getApprovalStatus(), applyEntity
 								.getWebChatId(), applyEntity.getWebchatName()));
@@ -150,7 +150,7 @@ public class ApprovalTabController extends FxmlController {
 
 	private void changeApply(int index, int approvalStatus) {
 		if (gameService.approvalPlayer(applyList.get(index).getApplyId(),
-				applyList.get(index).getPlayerId(), applyList.get(index)
+				applyList.get(index).getPlayerName(), applyList.get(index)
 						.getApplyType(), approvalStatus, applyList.get(index)
 						.getApplyPoint(), applyList.get(index).getWebChatId())) {
 			applyList.remove(index);

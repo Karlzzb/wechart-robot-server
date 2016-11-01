@@ -18,11 +18,10 @@ public class PlayerTraceModel {
 	 * @param resultRuleName
 	 * @param resultInfo
 	 */
-	public PlayerTraceModel(Long traceId, String playerId, String playerName,
+	public PlayerTraceModel(Long traceId, String playerName,
 			Long playerPoint, String betInfo, String luckInfo,
 			String resultRuleName, String resultInfo, Boolean isBanker) {
 		super();
-		this.playerId = new SimpleStringProperty(playerId);
 		this.playerName = new SimpleStringProperty(playerName);
 		this.resultRuleName = new SimpleStringProperty(resultRuleName);
 		this.playerPoint = new SimpleLongProperty(playerPoint);
@@ -33,7 +32,6 @@ public class PlayerTraceModel {
 		this.isBanker = isBanker;
 	}
 
-	public static final String PLAYERIDCOLKEY = "playerId";
 	public static final String PLAYERNAMECOLKEY = "playerName";
 	public static final String PLAYERPOINTCOLKEY = "playerPoint";
 	public static final String BETINFOKEY = "betInfo";
@@ -43,7 +41,6 @@ public class PlayerTraceModel {
 
 	private SimpleStringProperty resultRuleName;
 	private SimpleStringProperty resultInfo;
-	private SimpleStringProperty playerId;
 	private SimpleStringProperty wechatId;
 	private SimpleStringProperty playerName;
 	private SimpleLongProperty playerPoint;
@@ -72,15 +69,6 @@ public class PlayerTraceModel {
 	 */
 	public SimpleStringProperty resultInfoProperty() {
 		return resultInfo;
-	}
-
-	/**
-	 * very import for cell data auto fresh
-	 * 
-	 * @return
-	 */
-	public SimpleStringProperty playerIdProperty() {
-		return playerId;
 	}
 
 	/**
@@ -128,12 +116,6 @@ public class PlayerTraceModel {
 		return wechatName;
 	}
 
-	/* Get Set method */
-
-	public String getPlayerId() {
-		return playerId.getValue();
-	}
-
 	public String getPlayerName() {
 		return StringUtils.replaceHtml(playerName.getValue());
 	}
@@ -144,10 +126,6 @@ public class PlayerTraceModel {
 
 	public Long getPlayerPoint() {
 		return playerPoint.getValue();
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId.set(playerId);
 	}
 
 	public void setPlayerName(String playerName) {

@@ -20,6 +20,11 @@ public class StaticTest {
 	}
 	
 	public static void main(String[] args) {
-		StaticTest.testRule(1.73);
+//		StaticTest.testRule(1.73);
+		
+//		System.out.println(StringUtils.unicode2String("U+00AE"));
+		
 	}
 }
+
+

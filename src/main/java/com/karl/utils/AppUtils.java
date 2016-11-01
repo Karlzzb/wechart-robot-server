@@ -97,7 +97,7 @@ public class AppUtils {
 	public static final String REPLYPOINTAPPLYADD = "@{0} 已上[{1}] 剩余积分： {2,number,#}";
 	public static final String REPLYPOINTAPPLYSUB = "@{0} 已下[{1}] 剩余积分： {2,number,#}";
 
-	public static final String SINGLEPLAYERINFO = "@{0} 剩余积分： {1}";
+	public static final String SINGLEPLAYERINFO = "@{0} 剩余积分： {1,number,#}";
 
 	public static final String ASKRECOMMEND = "玩家{0}目前积分{1,number,#}，您要修改吗？";
 

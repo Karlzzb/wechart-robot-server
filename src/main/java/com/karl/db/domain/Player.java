@@ -11,17 +11,13 @@ public class Player implements Serializable {
     private static final long serialVersionUID = -7909930972652408103L;
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String playerId;
+    private String remarkName;
 
     @Column(nullable = true)
     private String webchatId;
     
     @Column(nullable = false)
     private String wechatName;
-
-    @Column(nullable = false)
-    private String remarkName;
 
     @Column(nullable = true)
     private Long points;
@@ -46,14 +42,6 @@ public class Player implements Serializable {
     public Player() {
         super();
     }
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
-	}
 
 	public String getWebchatId() {
 		return webchatId;

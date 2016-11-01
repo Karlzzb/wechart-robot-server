@@ -9,12 +9,11 @@ import com.karl.utils.AppUtils;
 
 public class PlayerApply {
 	public PlayerApply(Boolean applyCheck,
-			Long applyId, String playerId, String playerName,
+			Long applyId, String playerName,
 			Integer applyType, Long applyPoint,
 			Integer approvalStatus, String webChatId, String wechatName) {
 		super();
 		this.applyCheck = new SimpleBooleanProperty(applyCheck);
-		this.playerId = new SimpleStringProperty(playerId);
 		this.playerName = new SimpleStringProperty(playerName);
 		this.applyType = new SimpleIntegerProperty(applyType);
 		this.applyPoint = new SimpleLongProperty(applyPoint);
@@ -43,7 +42,6 @@ public class PlayerApply {
     public static final String APPLYINFOKEY = "applyPoint";
     private  SimpleBooleanProperty applyCheck;
     private  SimpleLongProperty applyId;
-    private  SimpleStringProperty playerId;
     private  SimpleStringProperty playerName;
     private  SimpleStringProperty applyInfo;
     private  SimpleIntegerProperty applyType;
@@ -57,12 +55,6 @@ public class PlayerApply {
 	}
 	public void setApplyCheck(Boolean applyCheck) {
 		this.applyCheck.setValue(applyCheck);
-	}
-	public String getPlayerId() {
-		return playerId.getValue();
-	}
-	public void setPlayerId(String playerId) {
-		this.playerId.setValue(playerId);
 	}
 	public String getPlayerName() {
 		return playerName.getValue();
