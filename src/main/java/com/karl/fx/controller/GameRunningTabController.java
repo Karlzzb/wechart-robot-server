@@ -284,7 +284,7 @@ public class GameRunningTabController extends FxmlController {
 					LOGGER.error("Can not open luckinfo board!", e);
 				}
 				
-				LOGGER.info("The open luckinfo complete!");
+				LOGGER.debug("The open luckinfo complete!");
 
 				return 0;
 			}

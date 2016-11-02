@@ -742,7 +742,6 @@ public class WebWechat {
 			case 1:
 				messageService.submit(() -> {
 					handleTextMsgSystem(msg, modContactList);
-					LOGGER.debug("System Message Thread finish once!");
 				});
 				break;
 			case 3:
@@ -754,9 +753,8 @@ public class WebWechat {
 			default:
 				break;
 			}
-			LOGGER.debug("Message Detail： {}" + msg.toString());
 		}
-		LOGGER.debug("Message Package： {}", data.toString());
+		LOGGER.info("System Message: {}", data.toString());
 	}
 
 	private void handleTextMsgSystem(JSONObject jsonMsg,
@@ -781,7 +779,7 @@ public class WebWechat {
 						&& userInfoJson.getString("UserName").equals(
 								messageFrom)) {
 					runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
-					LOGGER.debug("New User Json info{} add!",
+					LOGGER.info("New User Json info{} add!",
 							userInfoJson.toString());
 					break;
 				}
@@ -1040,7 +1038,7 @@ public class WebWechat {
 				JSONObject data = webwxsync();
 				handleMsg(data);
 				handleMsgSystem(data);
-				LOGGER.debug("Listen Thread6 finish once!");
+				LOGGER.info("Listen Thread6 finish once!");
 			} catch (Exception e) {
 				LOGGER.error("wechat sync newMessageThread1 failed!", e);
 			}
