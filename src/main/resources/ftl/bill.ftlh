@@ -45,7 +45,7 @@ ${expirePlayer.remarkName} ${expirePlayer.betPoint?string["0"]} ${expirePlayer.r
 
 </#if>
 <#if illegalPlayers?has_content>
-----${FaceEM}抢包无注${FaceEM}----
+----${FaceEM}抢包无分${FaceEM}----
 
 <#list illegalPlayers as row>
 ${row}

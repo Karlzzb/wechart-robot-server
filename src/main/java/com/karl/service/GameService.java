@@ -132,7 +132,7 @@ public class GameService {
 							runtimeDomain.addIllegalPlayer(remarkName);
 						} else if (runningPlayers().get(remarkName).getPoints() == null
 								|| runningPlayers().get(remarkName).getPoints()
-										.compareTo(Long.valueOf(0)) == 0) {
+										.compareTo(runtimeDomain.getDefiendBet()) < 0) {
 							playerRole = LuckInfoModel.PLAYERROLENOPOINT;
 							runtimeDomain.addIllegalPlayer(remarkName);
 						}
