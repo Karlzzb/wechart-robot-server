@@ -347,6 +347,16 @@ public class RuntimeDomain implements Serializable {
 		}
 		return name;
 	}
+	
+	public String getUserNickName(JSONObject member) {
+		String name = AppUtils.UNCONTACTUSRNAME;
+		if (member != null) {
+			if (StringKit.isNotBlank(member.getString("NickName"))) {
+				name = member.getString("NickName");
+			}
+		}
+		return name;
+	}
 
 	public String getUuid() {
 		return uuid;
@@ -410,6 +420,10 @@ public class RuntimeDomain implements Serializable {
 
 	public Map<String, JSONObject> getAllUsrMap() {
 		return allUsrMap;
+	}
+	
+	public JSONObject getSingleUsrMap(String remarkName) {
+		return allUsrMap.get(remarkName);
 	}
 
 	public void setAllUsrMap(Map<String, JSONObject> allUsrMap) {

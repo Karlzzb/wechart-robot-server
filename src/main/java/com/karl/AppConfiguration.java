@@ -4,7 +4,6 @@ import java.util.ResourceBundle;
 
 import javafx.stage.Stage;
 
-import org.h2.server.web.WebServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.web.HttpEncodingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
-import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,12 +68,12 @@ public class AppConfiguration {
         return new StageManager(stage, springFXMLLoader, webWechat);
     }
     
-    @Bean
-    ServletRegistrationBean h2servletRegistration() {
-     	WebServlet h2Web = new WebServlet();
-       	ServletRegistrationBean registrationBean = new ServletRegistrationBean(h2Web);
-    	registrationBean.addUrlMappings("/console/*");
-    	return registrationBean;
-    }
+//    @Bean
+//    ServletRegistrationBean h2servletRegistration() {
+//     	WebServlet h2Web = new WebServlet();
+//       	ServletRegistrationBean registrationBean = new ServletRegistrationBean(h2Web);
+//    	registrationBean.addUrlMappings("/console/*");
+//    	return registrationBean;
+//    }
 
 }

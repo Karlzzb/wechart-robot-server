@@ -754,7 +754,7 @@ public class WebWechat {
 				break;
 			}
 		}
-		LOGGER.info("System Message: {}", data.toString());
+		LOGGER.debug("System Message: {}", data.toString());
 	}
 
 	private void handleTextMsgSystem(JSONObject jsonMsg,
@@ -767,8 +767,13 @@ public class WebWechat {
 
 			String content = jsonMsg.getString("Content");
 			String messageFrom = jsonMsg.getString("FromUserName");
+			// int msgType = jsonMsg.getInt("MsgType", 0);
 
-			if (content == null || messageFrom == null) {
+			if (content == null || content.isEmpty() || messageFrom == null) {
+				return;
+			}
+
+			if (!StringUtils.RECOMMENDMSG.matcher(content).find()) {
 				return;
 			}
 
@@ -778,6 +783,10 @@ public class WebWechat {
 						&& userInfoJson.getString("UserName") != null
 						&& userInfoJson.getString("UserName").equals(
 								messageFrom)) {
+					if (runtimeDomain.getSingleUsrMap(messageFrom) == null) {
+						webwxsendmsgM("/::P 机器人新加好友: "
+								+ runtimeDomain.getUserNickName(userInfoJson));
+					}
 					runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
 					LOGGER.info("New User Json info{} add!",
 							userInfoJson.toString());
@@ -1038,7 +1047,7 @@ public class WebWechat {
 				JSONObject data = webwxsync();
 				handleMsg(data);
 				handleMsgSystem(data);
-				LOGGER.info("Listen Thread6 finish once!");
+				LOGGER.debug("Listen Thread6 finish once!");
 			} catch (Exception e) {
 				LOGGER.error("wechat sync newMessageThread1 failed!", e);
 			}

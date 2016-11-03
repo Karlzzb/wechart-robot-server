@@ -63,7 +63,7 @@ ${row}
 庄 包 : [${gameInfo.luckInfo?string["0.##"]}]  ${gameInfo.resultRuleName} [${gameInfo.resultTimes?string["0"]}倍]
 吃 : ${loserList?size}家 /赔 : ${winnerList?size}家 /跑 : ${paceList?size}家
 开 局 庄 分 : ${(bankerBetPoint - gameInfo.resultPoint)?string["0"]}
-庄 家 获 利 : <#if (gameInfo.resultPoint + gameInfo.manageFee + gameInfo.packageFee + gameInfo.firstBankerFee + gameInfo.bankerWinCut) <= 0>输<#else>赢</#if>${(gameInfo.resultPoint + gameInfo.manageFee + gameInfo.packageFee + gameInfo.firstBankerFee + gameInfo.bankerWinCut)?abs}
+庄 家 获 利 : <#if (gameInfo.resultPoint + gameInfo.manageFee + gameInfo.packageFee + gameInfo.firstBankerFee + gameInfo.bankerWinCut) <= 0>输<#else>赢</#if>${(gameInfo.resultPoint + gameInfo.manageFee + gameInfo.packageFee + gameInfo.firstBankerFee + gameInfo.bankerWinCut)?abs?string["0"]}
 <#if showManageFee>
 管 理 费 用 : ${gameInfo.manageFee?string["0"]}
 </#if>
