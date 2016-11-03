@@ -34,7 +34,8 @@ public class MessageController extends FxmlController {
     private void sentOut(ActionEvent event) {
     	webWechat.webwxsendmsg(messageBoard.getText());
     	if(runtimeDomain.getSentOutMessage().length > 1) {
-    		webWechat.webwxsendmsg(runtimeDomain.getSentOutMessage()[1]);
+    		messageBoard.setText((runtimeDomain.getSentOutMessage()[1]));
+        	webWechat.webwxsendmsg(messageBoard.getText());
     	}
     	Stage stage = (Stage)sentOutBut.getScene().getWindow();
     	runtimeDomain.setMessageBoardCount(0);

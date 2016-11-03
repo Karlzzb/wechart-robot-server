@@ -1004,6 +1004,8 @@ public class WebWechat {
 							case 7:// 进入/离开聊天界面
 								break;
 							default:
+//								JSONObject data = webwxsync();
+//								LOGGER.info("wechat sync type {}, data{}",arr[1],data.toString());
 								break;
 							}
 						}
@@ -1046,7 +1048,7 @@ public class WebWechat {
 				JSONObject data = webwxsync();
 				handleMsg(data);
 				handleMsgSystem(data);
-				LOGGER.debug("Listen Thread6 finish once!");
+				LOGGER.debug("Listen Thread6 finish once! data{}",data.toString());
 			} catch (Exception e) {
 				LOGGER.error("wechat sync newMessageThread1 failed!", e);
 			}

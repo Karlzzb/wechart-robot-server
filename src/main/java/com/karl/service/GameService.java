@@ -131,8 +131,11 @@ public class GameService {
 							playerRole = LuckInfoModel.PLAYERROLENONE;
 							runtimeDomain.addIllegalPlayer(remarkName);
 						} else if (runningPlayers().get(remarkName).getPoints() == null
-								|| runningPlayers().get(remarkName).getPoints()
-										.compareTo(runtimeDomain.getDefiendBet()) < 0) {
+								|| runningPlayers()
+										.get(remarkName)
+										.getPoints()
+										.compareTo(
+												runtimeDomain.getDefiendBet()) < 0) {
 							playerRole = LuckInfoModel.PLAYERROLENOPOINT;
 							runtimeDomain.addIllegalPlayer(remarkName);
 						}
@@ -527,7 +530,9 @@ public class GameService {
 
 		// banker win cut
 		Long bankerWinCut = 0L;
-		if (Long.valueOf(bankerState + runtimeDomain.getManageFee() + packageFee + firstBankerFee).compareTo(Long.valueOf(0)) > 0) {
+		if (Long.valueOf(
+				bankerState + runtimeDomain.getManageFee() + packageFee
+						+ firstBankerFee).compareTo(Long.valueOf(0)) > 0) {
 			bankerWinCut = (bankerState + runtimeDomain.getManageFee() + packageFee)
 					* runtimeDomain.getBankerWinCutRate() / 100L;
 			bankerState -= bankerWinCut;
@@ -559,164 +564,14 @@ public class GameService {
 		playerService.save(gameInfo);
 
 		// sync banker betpoint on the view
-		runtimeDomain.setBankerBetPoint(bankerState > 0 ? runtimeDomain
-				.getBankerBetPoint() : bankerState
+		runtimeDomain.setBankerBetPoint(bankerState
 				+ runtimeDomain.getBankerBetPoint());
 
 		// config the message
-		String content = buildBillMsg2(gameInfo, traceList, firstPackgeTime,
-				bankerLuckTime, winnerList, loserList, paceList, allInList,
-				packageFee, firstBankerFee, bankerWinCut);
+		String content = buildBillMsg2(gameInfo, traceList,
+				firstPackgeTime, bankerLuckTime, winnerList, loserList,
+				paceList, allInList, packageFee, firstBankerFee, bankerWinCut);
 		runtimeDomain.setBeforeGameInfo(gameInfo);
-		return content;
-	}
-
-	private String buildBillMsg(GameInfo gameInfo, List<PlayerTrace> traceList,
-			Long firstPackgeTime, Long bankerLuckTime,
-			List<PlayerTrace> winnerList, List<PlayerTrace> loserList,
-			List<PlayerTrace> paceList, List<PlayerTrace> allInList,
-			Long packageFee, Long firstBankerFee, Long bankerWinCut) {
-		String winListStr = "";
-		for (int i = 0; i < winnerList.size(); i++) {
-			if (winnerList.get(i).getResultPoint().compareTo(Long.valueOf(0)) != 0) {
-				winListStr += MessageFormat
-						.format(AppUtils.GAMERESULTWIN,
-								winnerList.get(i).getRemarkName().length() > 5 ? winnerList
-										.get(i).getRemarkName().substring(0, 5)
-										: winnerList.get(i).getRemarkName(),
-								winnerList.get(i).getBetPoint(),
-								winnerList.get(i).getResultRuleName() + "("
-										+ winnerList.get(i).getLuckInfo() + ")",
-								winnerList.get(i).getResultPoint()).toString();
-			} else {
-				winListStr += MessageFormat
-						.format(AppUtils.GAMERESULTINVAIN,
-								winnerList.get(i).getRemarkName().length() > 5 ? winnerList
-										.get(i).getRemarkName().substring(0, 5)
-										: winnerList.get(i).getRemarkName(),
-								winnerList.get(i).getBetPoint(),
-								winnerList.get(i).getResultRuleName() + "("
-										+ winnerList.get(i).getLuckInfo() + ")")
-						.toString();
-			}
-			winListStr += "\n";
-		}
-		String loseListStr = "";
-		for (int i = 0; i < loserList.size(); i++) {
-			loseListStr += MessageFormat.format(
-					AppUtils.GAMERESULTLOSE,
-					loserList.get(i).getRemarkName().length() > 5 ? loserList
-							.get(i).getRemarkName().substring(0, 5) : loserList
-							.get(i).getRemarkName(),
-					loserList.get(i).getBetPoint(),
-					loserList.get(i).getResultRuleName() + "("
-							+ loserList.get(i).getLuckInfo() + ")",
-					Math.abs(loserList.get(i).getResultPoint())).toString();
-			loseListStr += "\n";
-		}
-		String allInListStr = "";
-		for (int i = 0; i < allInList.size(); i++) {
-			if (allInList.get(i).getResultPoint().compareTo(Long.valueOf(0)) > 0) {
-				allInListStr += MessageFormat
-						.format(AppUtils.GAMERESULTWIN,
-								allInList.get(i).getRemarkName().length() > 5 ? allInList
-										.get(i).getRemarkName().substring(0, 5)
-										: allInList.get(i).getRemarkName(),
-								allInList.get(i).getBetPoint(),
-								allInList.get(i).getResultRuleName() + "("
-										+ allInList.get(i).getLuckInfo() + ")",
-								allInList.get(i).getResultPoint()).toString();
-			} else {
-				allInListStr += MessageFormat
-						.format(AppUtils.GAMERESULTLOSE,
-								allInList.get(i).getRemarkName().length() > 5 ? allInList
-										.get(i).getRemarkName().substring(0, 5)
-										: allInList.get(i).getRemarkName(),
-								allInList.get(i).getBetPoint(),
-								allInList.get(i).getResultRuleName() + "("
-										+ allInList.get(i).getLuckInfo() + ")",
-								Math.abs(allInList.get(i).getResultPoint()))
-						.toString();
-			}
-			allInListStr += "\n";
-		}
-		String timeoutStr = "---------[超时]---------\n";
-		if ((bankerLuckTime - firstPackgeTime <= runtimeDomain
-				.getCurrentTimeOut() * 1000)) {
-			for (int i = 0; i < traceList.size(); i++) {
-				if (traceList.get(i).getLuckTime() - firstPackgeTime <= runtimeDomain
-						.getCurrentTimeOut() * 1000) {
-					continue;
-				}
-
-				if (traceList.get(i).getRemarkName()
-						.equals(gameInfo.getBankerRemarkName())) {
-					continue;
-				}
-
-				timeoutStr += MessageFormat
-						.format(AppUtils.GAMERESULTTIMEOUT, traceList.get(i)
-								.getRemarkName().length() > 5 ? traceList
-								.get(i).getRemarkName().substring(0, 5)
-								: traceList.get(i).getRemarkName(), traceList
-								.get(i).getResultRuleName()
-								+ "("
-								+ traceList.get(i).getLuckInfo() + ")", Math
-								.abs(traceList.get(i).getResultPoint()));
-			}
-		}
-
-		String pacesStr = "";
-		if (paceList.size() > 0) {
-			pacesStr = "---------[和]---------\n";
-			for (int i = 0; i < paceList.size(); i++) {
-				pacesStr += MessageFormat.format(AppUtils.GAMERESULTESAME,
-						paceList.get(i).getRemarkName().length() > 5 ? paceList
-								.get(i).getRemarkName().substring(0, 5)
-								: paceList.get(i).getRemarkName(), paceList
-								.get(i).getResultRuleName()
-								+ "("
-								+ paceList.get(i).getLuckInfo() + ")");
-			}
-		}
-
-		String content = MessageFormat.format(
-				AppUtils.GAMERESULT,
-				runtimeDomain.getCurrentGameId(),
-				runtimeDomain.getCurrentGameKey(),
-				runtimeDomain.getCurrentGroupName(),
-				winListStr,
-				loseListStr,
-				allInListStr,
-				DateUtils.timeStampTimeFormat(runtimeDomain
-						.getCurrentLastPackegeTime().getTime()),
-				DateUtils.timeStampTimeFormat(runtimeDomain
-						.getCurrentFirstPackegeTime().getTime()
-						+ runtimeDomain.getCurrentTimeOut() * 1000),
-				DateUtils.timeStampTimeFormat(runtimeDomain
-						.getCurrentFirstPackegeTime().getTime()),
-				gameInfo.getBankerRemarkName(),
-				gameInfo.getLuckInfo(),
-				gameInfo.getResultRuleName(),
-				gameInfo.getResultTimes(),
-				winnerList.size(),// 13
-				loserList.size(),// 14
-				paceList.size(),// 15
-				runtimeDomain.getBankerBetPoint(),
-				traceList.size(),
-				packageFee,
-				bankerWinCut,
-				runtimeDomain.getRunningPlayeres()
-						.get(runtimeDomain.getBankerRemarkName()).getPoints(),
-				timeoutStr,
-				runtimeDomain.getShowManageFee() ? "管理费： "
-						+ runtimeDomain.getManageFee() + "\n" : "",
-				(gameInfo.getResultPoint() + runtimeDomain.getManageFee()
-						+ packageFee + firstBankerFee + bankerWinCut),// 23
-				(bankerLuckTime - firstPackgeTime > runtimeDomain
-						.getCurrentTimeOut() * 1000) ? "庄家超时: "
-						+ DateUtils.timeStampTimeFormat(bankerLuckTime) + "\n"
-						: "", pacesStr);
 		return content;
 	}
 
@@ -752,7 +607,7 @@ public class GameService {
 				}
 				expireList.add(traceList.get(i));
 			}
-			
+
 			root.put("bankerTimeOut", bankerTimeOut);
 			root.put("expireList", expireList);
 			root.put("paceList", paceList);
@@ -781,8 +636,8 @@ public class GameService {
 			root.put("EXPIRE", StringUtils.labelEXPIRE());
 			temp.process(root, write);
 		} catch (TemplateException | IOException e) {
-			LOGGER.error("bill construct failed!",e);
-		}finally {
+			LOGGER.error("bill construct failed!", e);
+		} finally {
 			root = null;
 		}
 
