@@ -45,8 +45,8 @@ public class WebWechat {
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
-		listenService = Executors.newFixedThreadPool(4);
-		messageService = Executors.newFixedThreadPool(10);
+		listenService = Executors.newFixedThreadPool(8);
+		messageService = Executors.newFixedThreadPool(12);
 	}
 
 	/**
@@ -761,7 +761,7 @@ public class WebWechat {
 			JSONArray modContactList) {
 
 		try {
-			if (modContactList == null || modContactList.size() < 0) {
+			if (modContactList == null || modContactList.size() < 1) {
 				return;
 			}
 
@@ -784,8 +784,7 @@ public class WebWechat {
 						&& userInfoJson.getString("UserName").equals(
 								messageFrom)) {
 					if (runtimeDomain.getSingleUsrMap(messageFrom) == null) {
-						webwxsendmsgM("/::P 机器人新加好友: "
-								+ runtimeDomain.getUserNickName(userInfoJson));
+						webwxsendmsgM("/::P 机器人新加好友: "+ runtimeDomain.getUserNickName(userInfoJson));
 					}
 					runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
 					LOGGER.info("New User Json info{} add!",

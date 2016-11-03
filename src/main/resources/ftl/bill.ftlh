@@ -60,6 +60,9 @@ ${row}
 超 时 玩 家 : ${expireList?size?string["0"]} 个
 --------------------------
 本 局 庄 家 : ${gameInfo.bankerRemarkName}
+<#if bankerTimeOut>
+庄 家超时： ${bankerPackageTime}
+</#if>
 庄 包 : [${gameInfo.luckInfo?string["0.##"]}]  ${gameInfo.resultRuleName} [${gameInfo.resultTimes?string["0"]}倍]
 吃 : ${loserList?size}家 /赔 : ${winnerList?size}家 /跑 : ${paceList?size}家
 开 局 庄 分 : ${(bankerBetPoint - gameInfo.resultPoint)?string["0"]}
@@ -68,6 +71,7 @@ ${row}
 管 理 费 用 : ${gameInfo.manageFee?string["0"]}
 </#if>
 发 包 金 额 : ${gameInfo.packageFee?string["0"]}
+本 局 基 金 : ${gameInfo.bankerWinCut?string["0"]}
 剩 余 庄 分 : ${bankerBetPoint?string["0"]}
 ═══════════
 /::)${R}-专注报数-仅供娱乐,严禁赌博!

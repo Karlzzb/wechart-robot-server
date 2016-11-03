@@ -734,6 +734,7 @@ public class GameService {
 		}
 		StringWriter write = new StringWriter();
 		try {
+			Boolean bankerTimeOut = false;
 			root.put("winnerList", winnerList);
 			root.put("loserList", loserList);
 			root.put("allInList", allInList);
@@ -746,11 +747,13 @@ public class GameService {
 
 				if (traceList.get(i).getRemarkName()
 						.equals(gameInfo.getBankerRemarkName())) {
+					bankerTimeOut = true;
 					continue;
 				}
 				expireList.add(traceList.get(i));
 			}
-
+			
+			root.put("bankerTimeOut", bankerTimeOut);
 			root.put("expireList", expireList);
 			root.put("paceList", paceList);
 

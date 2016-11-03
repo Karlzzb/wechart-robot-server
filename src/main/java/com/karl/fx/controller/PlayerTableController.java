@@ -351,7 +351,7 @@ public class PlayerTableController extends FxmlController {
 					@Override
 					protected Integer call() throws Exception {
 						try {
-							webWechat.wxInit();
+							//webWechat.wxInit();
 							webWechat.getContact();
 							// webWechat.getGroupMembers();
 							fillPlayerTab();
