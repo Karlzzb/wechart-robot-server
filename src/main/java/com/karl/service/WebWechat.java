@@ -46,7 +46,7 @@ public class WebWechat {
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
 		listenService = Executors.newFixedThreadPool(4);
-		messageService = Executors.newFixedThreadPool(8);
+		messageService = Executors.newFixedThreadPool(10);
 	}
 
 	/**
