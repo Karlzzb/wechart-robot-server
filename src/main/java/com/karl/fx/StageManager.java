@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.karl.domain.RuntimeDomain;
-import com.karl.service.PcClient;
 import com.karl.service.WebWechat;
 
 public class StageManager {
@@ -26,22 +25,6 @@ public class StageManager {
 	private final Stage primaryStage;
 	private Stage loginStage;
 	private final SpringFXMLLoader springFXMLLoader;
-
-	public StageManager(Stage primaryStage, SpringFXMLLoader springFXMLLoader,
-			final WebWechat webWechat, final PcClient pcClient) {
-		this.primaryStage = primaryStage;
-		this.springFXMLLoader = springFXMLLoader;
-
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				webWechat.setStopRequested(Boolean.FALSE);
-				if (pcClient != null) {
-					pcClient.destory();
-				}
-				System.exit(0);
-			}
-		});
-	}
 
 	public StageManager(Stage primaryStage, SpringFXMLLoader springFXMLLoader,
 			WebWechat webWechat) {
