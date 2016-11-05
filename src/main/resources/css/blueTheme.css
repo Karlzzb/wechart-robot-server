@@ -290,3 +290,61 @@
     -fx-padding: 5;
     -fx-alignment: center;
 }
+
+
+.titled-pane 
+{
+-fx-text-fill: #fff;
+-fx-font-size: 13px;
+-fx-margin: 0 5px 10px 5px;
+}
+.titled-pane:focused 
+{
+-fx-text-fill: white;
+}
+.titled-pane > .title 
+{
+-fx-background-color: #5da2ca;
+-fx-background-insets: 0;
+-fx-background-radius: 0;
+-fx-padding: 5px 10px; /* 2 10 3 10 */
+-fx-font-size: 18px;
+}
+
+.titled-pane:focused > .title 
+{
+-fx-color: #fff;
+}
+
+.titled-pane > .title > .arrow-button 
+{
+-fx-background-color: null;
+-fx-background-insets: 0;
+-fx-background-radius: 0;
+-fx-padding: 0.0em 0.25em 0.0em 0.0em; /* 0 3 0 0 */
+}
+
+.titled-pane > .title > .arrow-button .arrow 
+{
+-fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+-fx-background-insets: 0;
+-fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
+-fx-shape: none;
+}
+
+.titled-pane:collapsed > .title > .arrow-button .arrow 
+{
+-fx-rotate: -90;
+}
+
+.titled-pane > *.content 
+{
+-fx-background-color: #5689d8;
+-fx-background-insets: 0 0 0 0;
+-fx-padding: 1em;
+ }
+
+.titled-pane:focused > .title > .arrow-button .arrow 
+{
+-fx-background-color: white;
+}
