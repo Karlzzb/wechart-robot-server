@@ -911,6 +911,7 @@ public class RuntimeDomain implements Serializable {
 		ftlCfg.setDefaultEncoding("UTF-8");
 		ftlCfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 		ftlCfg.setLogTemplateExceptions(false);
+		ftlCfg.setWhitespaceStripping(Boolean.TRUE);
 	}
 
 	public Template getRankTemplate() {
