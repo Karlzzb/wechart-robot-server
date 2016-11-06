@@ -138,6 +138,8 @@ public class GameService {
 												runtimeDomain.getDefiendBet()) < 0) {
 							playerRole = LuckInfoModel.PLAYERROLENOPOINT;
 							runtimeDomain.addIllegalPlayer(remarkName);
+						}else if (remarkName.equals(runtimeDomain.getBankerRemarkName())) {
+							playerRole = LuckInfoModel.PLAYERROLEBANKER;
 						}
 						luckInfoModeList.add(new LuckInfoModel(index,
 								remarkName, luckInfo.toString(), m.group(4)

@@ -620,7 +620,7 @@ public class WebWechat {
 	 *            : UserName
 	 */
 	public void webwxsendmsg(String content, String to) {
-		int retry = 3;
+		int retry = 4;
 		Boolean result = Boolean.FALSE;
 
 		while (!result && retry-- > 0) {

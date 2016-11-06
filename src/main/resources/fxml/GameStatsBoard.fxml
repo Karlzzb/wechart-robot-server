@@ -44,7 +44,7 @@
             			<columns>
             				<TableColumn fx:id="statsSignCol" prefWidth="69.33334350585938" resizable="false" text="账单" />
             				<TableColumn fx:id="statsTimeCol" prefWidth="96.00003051757812" resizable="false" text="日期" />
-            				<TableColumn fx:id="bankerWinCutCol" minWidth="0.0" prefWidth="64.66668701171875" resizable="false" text="分成" />
+            				<TableColumn fx:id="bankerWinCutCol" minWidth="0.0" prefWidth="64.66668701171875" resizable="false" text="抽水" />
                         <TableColumn fx:id="firstBankerFeeCol" prefWidth="83.0" resizable="false" text="上庄费" />
                         <TableColumn fx:id="manageFeeCol" prefWidth="82.0" resizable="false" text="管理费" />
                         <TableColumn fx:id="packageFeeCol" prefWidth="77.66668701171875" resizable="false" text="包费" />

@@ -145,7 +145,7 @@ public class GameStatsController extends FxmlController {
 		if (statsModelList != null && statsModelList.size() > 0) {
 			GameStatsModel statsModel = null;
 			XYChart.Series<String, Number> series1 = new XYChart.Series<String, Number>();
-			series1.setName("分成");
+			series1.setName("抽水");
 			XYChart.Series<String, Number> series2 = new XYChart.Series<String, Number>();
 			series2.setName("上庄");
 			XYChart.Series<String, Number> series3 = new XYChart.Series<String, Number>();
@@ -176,7 +176,7 @@ public class GameStatsController extends FxmlController {
 		pieChart.getData().clear();
 		ObservableList<PieChart.Data> pieChartData = FXCollections
 				.observableArrayList(
-						new PieChart.Data("分成", statsModel.getBankerWinCut()),
+						new PieChart.Data("抽水", statsModel.getBankerWinCut()),
 						new PieChart.Data("上庄", statsModel.getFirstBankerFee()),
 						new PieChart.Data("管理费", statsModel.getManageFee()),
 						new PieChart.Data("包费", statsModel.getPackageFee()));

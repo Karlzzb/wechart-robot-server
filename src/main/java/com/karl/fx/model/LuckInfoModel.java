@@ -12,7 +12,7 @@ public class LuckInfoModel {
     public static final String  PACKAGETIMECOL = "packageTime";
     public static final String PLAYERROLECOL = "playerRole";
     
-    public static final String  PLAYERROLEBANKER= "庄家玩家";
+    public static final String  PLAYERROLEBANKER= "庄家";
     public static final String  PLAYERROLENOMAL = "玩家";
     public static final String  PLAYERROLENOPOINT = "无分";
     public static final String  PLAYERROLENONE = "非好友";
