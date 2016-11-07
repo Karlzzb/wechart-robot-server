@@ -41,7 +41,7 @@ public class AppUtils {
 
 	public static final long TRACE_TAB_FLSH_TERVAL = 2000;
 
-	public static final long WECHAT_LISTEN_INTERVAL = 1000;
+	public static final long WECHAT_LISTEN_INTERVAL = 2000;
 
 	public static final String UNCONTACTUSRNAME = "非好友故无名";
 

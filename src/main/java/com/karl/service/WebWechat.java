@@ -1034,9 +1034,8 @@ public class WebWechat {
 	private void newMessageThread6(JSONObject data) {
 		messageService.submit(() -> {
 			try {
+				handleMsg(data);
 				handleMsgSystem(data);
-				LOGGER.debug("Listen Thread6 finish once! data{}",
-						data.toString());
 			} catch (Exception e) {
 				LOGGER.error("wechat sync newMessageThread6 failed!", e);
 			}
