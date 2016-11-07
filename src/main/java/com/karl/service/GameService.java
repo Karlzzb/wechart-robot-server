@@ -84,6 +84,7 @@ public class GameService {
 			return;
 		}
 
+		LOGGER.info("Self package info got once!");
 		LOGGER.debug("Self package info【" + content + "】 Got!");
 		try {
 			String[] packageArray = content.split(StringUtils.SELFPACKSPLIT);
@@ -154,6 +155,7 @@ public class GameService {
 			}
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			recievedluckUIhandle();
+			LOGGER.info("Self package info analyze success once!");
 			LOGGER.debug("Self package info【" + content + "】 analyze success!");
 		} catch (Exception e) {
 			LOGGER.error("Self package info【" + content + "】 analyze failed!",

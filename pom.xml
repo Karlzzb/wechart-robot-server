@@ -131,7 +131,7 @@
 							<jre>
 								<minVersion>1.7.0</minVersion>
 								<maxVersion>1.8.0</maxVersion>
-								<initialHeapSize>512</initialHeapSize>
+								<initialHeapSize>1024</initialHeapSize>
 								<maxHeapSize>1024</maxHeapSize>
 							</jre>
 							<versionInfo>

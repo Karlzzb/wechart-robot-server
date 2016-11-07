@@ -43,7 +43,7 @@ public class WebWechat {
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
-		messageService = Executors.newFixedThreadPool(8);
+		messageService = Executors.newFixedThreadPool(20);
 	}
 
 	/**
@@ -661,10 +661,10 @@ public class WebWechat {
 						LOGGER.debug("message send result{}!", res);
 						request.disconnect();
 						result = true;
-					}else {
-						LOGGER.error("message send failed once! ret="+ret);
+					} else {
+						LOGGER.error("message send failed once! ret=" + ret);
 					}
-				}else {
+				} else {
 					LOGGER.error("message send failed once! response empty");
 				}
 			} catch (Exception e) {
@@ -994,24 +994,23 @@ public class WebWechat {
 						if (arr[0] == 1100) {
 						}
 						if (arr[0] == 0) {
+							JSONObject data = null;
 							switch (arr[1]) {
 							case 2:// 新的消息
-								newMessageThread1();
-								break;
-							case 3:// 新的消息
-								newMessageThread3();
+								data = webwxsync();
+								newMessageThread1(data);
 								break;
 							case 6:// 红包 && 加好友
-								newMessageThread6();
+								data = webwxsync();
+								newMessageThread6(data);
 								break;
 							case 7:// 进入/离开聊天界面
 								break;
 							default:
-								// JSONObject data = webwxsync();
-								// LOGGER.info("wechat sync type {}, data{}",arr[1],data.toString());
 								break;
 							}
 						}
+						LOGGER.info("wechat sync repsonce{},{}",arr[0],arr[1]);
 					} catch (Exception e) {
 						LOGGER.error("wechat sync failed!", e);
 					}
@@ -1021,35 +1020,27 @@ public class WebWechat {
 		}, "listenMsgMode").start();
 	}
 
-	private void newMessageThread1() {
-		try {
-			JSONObject data = webwxsync();
-			handleMsg(data);
-			LOGGER.debug("Listen Thread1 finish once!");
-		} catch (Exception e) {
-			LOGGER.error("wechat sync newMessageThread1 failed!", e);
-		}
+	private void newMessageThread1(JSONObject data) {
+		messageService.submit(() -> {
+			try {
+				handleMsg(data);
+				LOGGER.debug("Listen Thread1 finish once!");
+			} catch (Exception e) {
+				LOGGER.error("wechat sync newMessageThread1 failed!", e);
+			}
+		});
 	}
 
-	private void newMessageThread3() {
-		try {
-			JSONObject data = webwxsync();
-			handleMsg(data);
-			LOGGER.debug("Listen Thread3 finish once!");
-		} catch (Exception e) {
-			LOGGER.error("wechat sync newMessageThread3 failed!", e);
-		}
-	}
-
-	private void newMessageThread6() {
-		try {
-			JSONObject data = webwxsync();
-			handleMsg(data);
-			handleMsgSystem(data);
-			LOGGER.debug("Listen Thread6 finish once! data{}", data.toString());
-		} catch (Exception e) {
-			LOGGER.error("wechat sync newMessageThread6 failed!", e);
-		}
+	private void newMessageThread6(JSONObject data) {
+		messageService.submit(() -> {
+			try {
+				handleMsgSystem(data);
+				LOGGER.debug("Listen Thread6 finish once! data{}",
+						data.toString());
+			} catch (Exception e) {
+				LOGGER.error("wechat sync newMessageThread6 failed!", e);
+			}
+		});
 	}
 
 	public void loginWechat() throws InterruptedException {
