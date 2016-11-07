@@ -520,24 +520,39 @@ public class WebWechat {
 	 * 消息检查
 	 */
 	public int[] syncCheck() {
+		long start=System.currentTimeMillis();  
 		int[] arr = new int[2];
 		if (runtimeDomain.getBestSyncCheckChannel() != null
 				&& !runtimeDomain.getBestSyncCheckChannel().isEmpty()) {
 			arr = syncCheckSingle(runtimeDomain.getBestSyncCheckChannel());
 			if (arr[0] == 0) {
+				LOGGER.info("Choisen syncCheck channel【" + runtimeDomain.getBestSyncCheckChannel()
+						+ "】  time consumption 【"+(System.currentTimeMillis()-start)+"】!");
 				return arr;
 			}
 		}
+		
+		Long lastInterval = null;
 		for (int i = 0; i < AppUtils.WEBPUSH_URL.length; i++) {
 			String url = AppUtils.WEBPUSH_URL[i];
+			long startTime=System.currentTimeMillis();  
 			arr = syncCheckSingle(url);
 			if (arr[0] == 0) {
-				runtimeDomain.setBestSyncCheckChannel(url);
-				break;
+				long interval =System.currentTimeMillis() - startTime;
+				if (lastInterval == null || lastInterval.compareTo(interval) > 0) {
+					runtimeDomain.setBestSyncCheckChannel(url);
+					lastInterval = interval;
+				}
+				LOGGER.info("Message syncCheck channel【" + url
+						+ "】  time consumption 【"+interval+"】!");
 			}
 			LOGGER.debug("Message syncCheck channel【" + url
 					+ "】 is unvailable!");
 		}
+		
+		
+
+		
 		return arr;
 	}
 
@@ -565,7 +580,6 @@ public class WebWechat {
 				return arr;
 			}
 			LOGGER.debug("[syncCheck response ] " + res);
-
 			String retcode = StringUtils.match("retcode:\"(\\d+)\",", res);
 			String selector = StringUtils.match("selector:\"(\\d+)\"}", res);
 			if (null != retcode && null != selector) {
