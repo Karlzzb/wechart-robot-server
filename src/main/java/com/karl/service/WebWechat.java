@@ -33,7 +33,7 @@ public class WebWechat {
 	private GameService gameService;
 
 	private ExecutorService messageService;
-
+	
 	private volatile boolean stopRequested;
 
 	@Autowired
@@ -43,7 +43,7 @@ public class WebWechat {
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
-		messageService = Executors.newFixedThreadPool(20);
+		messageService = Executors.newCachedThreadPool();
 	}
 
 	/**
@@ -137,10 +137,12 @@ public class WebWechat {
 				String pm = StringUtils.match(
 						"window.redirect_uri=\"(\\S+?)\";", res);
 				AppUtils.redirect_uri = pm + "&fun=new";
-				LOGGER.debug("[*] redirect_uri={}", AppUtils.redirect_uri);
+				LOGGER.info("[*] redirect_uri={}", AppUtils.redirect_uri);
 				AppUtils.base_uri = AppUtils.redirect_uri.substring(0,
 						AppUtils.redirect_uri.lastIndexOf("/"));
-				LOGGER.debug("[*] base_uri={}", AppUtils.base_uri);
+				LOGGER.info("[*] base_uri={}", AppUtils.base_uri);
+				
+				LOGGER.info("Login response={}", res);
 			} else if (code.equals("408")) {
 				LOGGER.debug("[*] 登录超时");
 			} else {
@@ -545,6 +547,7 @@ public class WebWechat {
 				}
 				LOGGER.info("Message syncCheck channel【" + url
 						+ "】  time consumption 【"+interval+"】!");
+				break;
 			}
 			LOGGER.debug("Message syncCheck channel【" + url
 					+ "】 is unvailable!");
@@ -804,7 +807,7 @@ public class WebWechat {
 								+ runtimeDomain.getUserNickName(userInfoJson));
 					}
 					runtimeDomain.putAllUsrMap(messageFrom, userInfoJson);
-					LOGGER.info("New User Json info{} add!",
+					LOGGER.debug("New User Json info{} add!",
 							userInfoJson.toString());
 					break;
 				}
@@ -993,6 +996,7 @@ public class WebWechat {
 	public void listenMsgMode() {
 		new Thread(new Runnable() {
 			public void run() {
+				LOGGER.warn("wechat sync start!");
 				LOGGER.debug("[*] 获取联系人成功");
 				LOGGER.debug("[*] 共有 " + runtimeDomain.getAllUsrMap().size()
 						+ " 位联系人");
@@ -1001,11 +1005,10 @@ public class WebWechat {
 				LOGGER.debug("[*] 进入消息监听模式 ...");
 				while (!stopRequested) {
 					try {
-						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
-
+//						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
 						int[] arr = syncCheck();
-
 						if (arr[0] == 1100) {
+//							runtimeDomain.setBestSyncCheckChannel(null);
 						}
 						if (arr[0] == 0) {
 							JSONObject data = null;
@@ -1014,6 +1017,10 @@ public class WebWechat {
 								data = webwxsync();
 								newMessageThread1(data);
 								break;
+							case 3:// 新的消息
+								data = webwxsync();
+								LOGGER.info("wechat status{} data【{}】",arr[1],data);
+								break;
 							case 6:// 红包 && 加好友
 								data = webwxsync();
 								newMessageThread6(data);
@@ -1021,6 +1028,7 @@ public class WebWechat {
 							case 7:// 进入/离开聊天界面
 								break;
 							default:
+								LOGGER.info("wechat status{} default",arr[1]);
 								break;
 							}
 						}
@@ -1030,6 +1038,9 @@ public class WebWechat {
 					}
 
 				}
+				LOGGER.warn("wechat sync stop!");
+				setStopRequested(Boolean.FALSE);
+				listenMsgMode();
 			}
 		}, "listenMsgMode").start();
 	}

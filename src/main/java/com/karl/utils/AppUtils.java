@@ -19,8 +19,8 @@ public class AppUtils {
 	public static String[] WEBPUSH_URL = {
 			"https://webpush.wx.qq.com/cgi-bin/mmwebwx-bin/synccheck",
 			"https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck",
-			"https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
 			"https://webpush2.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
+			"https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck",
 			"https://webpush1.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck" };
 	public static String skey, synckey, wxsid, wxuin, pass_ticket,
 			deviceId = "e" + (new Date()).getTime();

@@ -61,6 +61,26 @@ public class StageManager {
 			LOGGER.error("Uable to show scene for title " + view.getTitle(), e);
 		}
 	}
+	
+	public void retryLogin(final FxmlView view) {
+		try {
+			Parent rootNode = springFXMLLoader.load(view.getFxmlFile());
+			Stage retryLogin = new Stage();
+			Scene scene = retryLogin.getScene();
+			if (scene == null) {
+				scene = new Scene(rootNode);
+			}
+			scene.setRoot(rootNode);
+			retryLogin.setTitle(view.getTitle());
+			retryLogin.setScene(scene);
+			retryLogin.initStyle(view.getStageStyle());
+			retryLogin.sizeToScene();
+			retryLogin.centerOnScreen();
+			retryLogin.show();
+		} catch (Exception e) {
+			LOGGER.error("Uable to show scene for title " + view.getTitle(), e);
+		}
+	}
 
 	public void switchScene(final FxmlView view) {
 		if (loginStage != null) {

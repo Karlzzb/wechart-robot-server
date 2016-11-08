@@ -82,6 +82,21 @@ public enum FxmlView {
         public StageStyle getStageStyle() {
         	return StageStyle.UNDECORATED;
         }
+    }, RETRYLOGIN{
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("bluelogin.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/RetryLogin.fxml";
+        }
+        
+        @Override
+        public StageStyle getStageStyle() {
+        	return StageStyle.UNDECORATED;
+        }
     }, STATS{
         @Override
         public String getTitle() {
