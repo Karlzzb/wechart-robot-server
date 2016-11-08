@@ -98,6 +98,8 @@ public class RetryLoginController extends FxmlController {
 							LOGGER.info("微信登录失败");
 						}
 						LOGGER.info("[*] 微信登录成功");
+						runtimeDomain.clearGroupMap();
+						runtimeDomain.clearAllUsrMap();
 						webWechat.buildWechat();
 						webWechat.setStopRequested(Boolean.TRUE);
 						return 0;

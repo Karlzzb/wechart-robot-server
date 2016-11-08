@@ -417,6 +417,10 @@ public class RuntimeDomain implements Serializable {
 	public void putGroupMap(String key, JSONObject value) {
 		this.groupMap.put(key, value);
 	}
+	
+	public void clearGroupMap() {
+		this.groupMap.clear();
+	}
 
 	public Map<String, JSONObject> getAllUsrMap() {
 		return allUsrMap;
@@ -432,6 +436,10 @@ public class RuntimeDomain implements Serializable {
 
 	public void putAllUsrMap(String key, JSONObject value) {
 		this.allUsrMap.put(key, value);
+	}
+	
+	public void clearAllUsrMap() {
+		this.allUsrMap.clear();
 	}
 
 	public String getCurrentGroupId() {

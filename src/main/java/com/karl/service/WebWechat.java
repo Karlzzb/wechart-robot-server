@@ -674,8 +674,8 @@ public class WebWechat {
 				JSONObject response = jsonObject.getJSONObject("BaseResponse");
 				if (null != response && !response.isEmpty()) {
 					int ret = response.getInt("Ret", -1);
+					LOGGER.info("message send result{}!", res);
 					if (ret == 0) {
-						LOGGER.debug("message send result{}!", res);
 						request.disconnect();
 						result = true;
 					} else {
@@ -1029,6 +1029,10 @@ public class WebWechat {
 								break;
 							default:
 								LOGGER.info("wechat status{} default",arr[1]);
+								data = webwxsync();
+								if (data != null) {
+									LOGGER.info("wechat status{} data【{}】",arr[1],data.toString());
+								}
 								break;
 							}
 						}

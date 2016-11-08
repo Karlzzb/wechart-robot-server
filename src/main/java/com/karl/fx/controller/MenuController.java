@@ -70,7 +70,7 @@ public class MenuController extends FxmlController {
 
 	@FXML
 	private void wechatLogin(ActionEvent event) {
-		stageManager.retryLogin(FxmlView.RETRYLOGIN);
+//		stageManager.retryLogin(FxmlView.RETRYLOGIN);
 	}
 
 }
