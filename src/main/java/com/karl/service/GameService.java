@@ -76,6 +76,7 @@ public class GameService {
 	private MainDeskController mainDeskController;
 
 	public void mainSelfMessageHandle(String content) {
+		long start=System.currentTimeMillis();  
 		if (!runtimeDomain.getGlobalGameSignal()) {
 			return;
 		}
@@ -155,7 +156,7 @@ public class GameService {
 			}
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			recievedluckUIhandle();
-			LOGGER.info("Self package info analyze success once!");
+			LOGGER.info("Self package info analyze success.The time consumption 【"+(System.currentTimeMillis()-start)+"】!");
 			LOGGER.debug("Self package info【" + content + "】 analyze success!");
 		} catch (Exception e) {
 			LOGGER.error("Self package info【" + content + "】 analyze failed!",
@@ -169,7 +170,7 @@ public class GameService {
 
 	public void mainMessageHandle(String messageFrom, String webChatId,
 			String remarkName, String content) {
-
+		long start=System.currentTimeMillis();  
 		// Message is the pattern of betting
 		if (runtimeDomain.getGlobalGameSignal()
 				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())
@@ -223,6 +224,7 @@ public class GameService {
 				LOGGER.error("User{" + remarkName + "} apply add point{"
 						+ content + "failed!", e);
 			}
+			LOGGER.info("Msg 查+ time consumption 【"+(System.currentTimeMillis()-start)+"】!");
 			return;
 		}
 
@@ -257,6 +259,7 @@ public class GameService {
 				LOGGER.error("User{" + remarkName + "} apply sub point{"
 						+ content + "failed!", e);
 			}
+			LOGGER.info("Msg 查- time consumption 【"+(System.currentTimeMillis()-start)+"】!");
 			return;
 		}
 
@@ -292,6 +295,7 @@ public class GameService {
 					LOGGER.error("User{" + remarkName + "} put point{"
 							+ content + "failed!", e);
 				}
+				LOGGER.info("Msg 上 time consumption 【"+(System.currentTimeMillis()-start)+"】!");
 				return;
 			}
 
@@ -343,6 +347,7 @@ public class GameService {
 					LOGGER.error("User{" + remarkName + "} sub point{"
 							+ content + "failed!", e);
 				}
+				LOGGER.info("Msg 下time consumption 【"+(System.currentTimeMillis()-start)+"】!");
 				return;
 			}
 		}

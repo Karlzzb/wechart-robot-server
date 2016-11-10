@@ -33,7 +33,7 @@ public class WebWechat {
 	private GameService gameService;
 
 	private ExecutorService messageService;
-	
+
 	private volatile boolean stopRequested;
 
 	@Autowired
@@ -141,7 +141,7 @@ public class WebWechat {
 				AppUtils.base_uri = AppUtils.redirect_uri.substring(0,
 						AppUtils.redirect_uri.lastIndexOf("/"));
 				LOGGER.info("[*] base_uri={}", AppUtils.base_uri);
-				
+
 				LOGGER.info("Login response={}", res);
 			} else if (code.equals("408")) {
 				LOGGER.debug("[*] 登录超时");
@@ -522,40 +522,31 @@ public class WebWechat {
 	 * 消息检查
 	 */
 	public int[] syncCheck() {
-		long start=System.currentTimeMillis();  
+		long start = System.currentTimeMillis();
 		int[] arr = new int[2];
 		if (runtimeDomain.getBestSyncCheckChannel() != null
 				&& !runtimeDomain.getBestSyncCheckChannel().isEmpty()) {
 			arr = syncCheckSingle(runtimeDomain.getBestSyncCheckChannel());
 			if (arr[0] == 0) {
-				LOGGER.info("Choisen syncCheck channel【" + runtimeDomain.getBestSyncCheckChannel()
-						+ "】  time consumption 【"+(System.currentTimeMillis()-start)+"】!");
+				LOGGER.info("Choisen syncCheck channel【"
+						+ runtimeDomain.getBestSyncCheckChannel()
+						+ "】  time consumption 【"
+						+ (System.currentTimeMillis() - start) + "】!");
 				return arr;
 			}
 		}
-		
-		Long lastInterval = null;
+
 		for (int i = 0; i < AppUtils.WEBPUSH_URL.length; i++) {
 			String url = AppUtils.WEBPUSH_URL[i];
-			long startTime=System.currentTimeMillis();  
 			arr = syncCheckSingle(url);
 			if (arr[0] == 0) {
-				long interval =System.currentTimeMillis() - startTime;
-				if (lastInterval == null || lastInterval.compareTo(interval) > 0) {
-					runtimeDomain.setBestSyncCheckChannel(url);
-					lastInterval = interval;
-				}
-				LOGGER.info("Message syncCheck channel【" + url
-						+ "】  time consumption 【"+interval+"】!");
+				runtimeDomain.setBestSyncCheckChannel(url);
 				break;
 			}
 			LOGGER.debug("Message syncCheck channel【" + url
 					+ "】 is unvailable!");
 		}
-		
-		
 
-		
 		return arr;
 	}
 
@@ -674,7 +665,7 @@ public class WebWechat {
 				JSONObject response = jsonObject.getJSONObject("BaseResponse");
 				if (null != response && !response.isEmpty()) {
 					int ret = response.getInt("Ret", -1);
-					LOGGER.info("message send result{}!", res);
+					LOGGER.debug("message send result{}!", res);
 					if (ret == 0) {
 						request.disconnect();
 						result = true;
@@ -863,6 +854,7 @@ public class WebWechat {
 	}
 
 	private void handleRecomendMsg(JSONObject jsonMsg) {
+		long start = System.currentTimeMillis();
 		try {
 			String recommendWechatId = "";
 			String recommendWechatName = "";
@@ -924,6 +916,8 @@ public class WebWechat {
 		} catch (Exception e) {
 			LOGGER.error("handleTextMsg failed!", e);
 		}
+		LOGGER.info("Msg 推荐 time consumption 【"
+				+ (System.currentTimeMillis() - start) + "】!");
 	}
 
 	/**
@@ -1005,10 +999,10 @@ public class WebWechat {
 				LOGGER.debug("[*] 进入消息监听模式 ...");
 				while (!stopRequested) {
 					try {
-//						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
+						// Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
 						int[] arr = syncCheck();
 						if (arr[0] == 1100) {
-//							runtimeDomain.setBestSyncCheckChannel(null);
+							// runtimeDomain.setBestSyncCheckChannel(null);
 						}
 						if (arr[0] == 0) {
 							JSONObject data = null;
@@ -1019,7 +1013,8 @@ public class WebWechat {
 								break;
 							case 3:// 新的消息
 								data = webwxsync();
-								LOGGER.info("wechat status{} data【{}】",arr[1],data);
+								LOGGER.info("wechat status{} data【{}】", arr[1],
+										data);
 								break;
 							case 6:// 红包 && 加好友
 								data = webwxsync();
@@ -1028,15 +1023,10 @@ public class WebWechat {
 							case 7:// 进入/离开聊天界面
 								break;
 							default:
-								LOGGER.info("wechat status{} default",arr[1]);
-								data = webwxsync();
-								if (data != null) {
-									LOGGER.info("wechat status{} data【{}】",arr[1],data.toString());
-								}
 								break;
 							}
 						}
-						LOGGER.info("wechat sync repsonce{},{}",arr[0],arr[1]);
+						LOGGER.info("wechat sync repsonce{},{}", arr[0], arr[1]);
 					} catch (Exception e) {
 						LOGGER.error("wechat sync failed!", e);
 					}
