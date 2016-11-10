@@ -630,10 +630,10 @@ public class WebWechat {
 
 		while (!result && retry-- > 0) {
 			try {
+				Thread.sleep(1500);
 				if(retry < 4) {
-					Thread.sleep(1000);
+					Thread.sleep(3000);
 				}
-				
 				String url = AppUtils.base_uri
 						+ "/webwxsendmsg?lang=zh_CN&pass_ticket="
 						+ runtimeDomain.getPassTicket();
@@ -1000,7 +1000,7 @@ public class WebWechat {
 				LOGGER.debug("[*] 进入消息监听模式 ...");
 				while (!stopRequested) {
 					try {
-						// Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
+						Thread.sleep(AppUtils.WECHAT_LISTEN_INTERVAL);
 						int[] arr = syncCheck();
 						if (arr[0] == 1100) {
 							// runtimeDomain.setBestSyncCheckChannel(null);
