@@ -43,7 +43,7 @@ public class WebWechat {
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
-		messageService = Executors.newCachedThreadPool();
+		messageService = Executors.newFixedThreadPool(16);
 	}
 
 	/**
@@ -625,11 +625,15 @@ public class WebWechat {
 	 *            : UserName
 	 */
 	public void webwxsendmsg(String content, String to) {
-		int retry = 4;
+		int retry = 8;
 		Boolean result = Boolean.FALSE;
 
 		while (!result && retry-- > 0) {
 			try {
+				if(retry < 4) {
+					Thread.sleep(1000);
+				}
+				
 				String url = AppUtils.base_uri
 						+ "/webwxsendmsg?lang=zh_CN&pass_ticket="
 						+ runtimeDomain.getPassTicket();
@@ -655,7 +659,6 @@ public class WebWechat {
 								"application/json;charset=utf-8")
 						.header("Cookie", runtimeDomain.getCookie())
 						.send(body.toString());
-
 				String res = request.body();
 				if (StringKit.isBlank(res)) {
 					LOGGER.error("message send failed once! repsoncse blank");
@@ -750,9 +753,7 @@ public class WebWechat {
 			case 51:
 				break;
 			case 1:
-				messageService.submit(() -> {
-					handleTextMsgSystem(msg, modContactList);
-				});
+				handleTextMsgSystem(msg, modContactList);
 				break;
 			case 3:
 				break;
@@ -828,10 +829,10 @@ public class WebWechat {
 			case 51:
 				break;
 			case 1:
-				messageService.submit(() -> {
+//				messageService.submit(() -> {
 					handleTextMsg(msg);
 					LOGGER.debug("Text Message Thread finish once!");
-				});
+//				});
 				break;
 			case 3:
 				// webwxsendmsg("二蛋还不支持图片呢", msg.getString("FromUserName"));
@@ -840,10 +841,10 @@ public class WebWechat {
 				// webwxsendmsg("二蛋还不支持语音呢", msg.getString("FromUserName"));
 				break;
 			case 42:
-				messageService.submit(() -> {
+//				messageService.submit(() -> {
 					handleRecomendMsg(msg);
 					LOGGER.debug("Recomend Message Thread finish once!");
-				});
+//				});
 				break;
 			default:
 				break;
