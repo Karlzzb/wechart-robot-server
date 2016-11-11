@@ -17,7 +17,9 @@ import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
 import com.karl.db.domain.Player;
+import com.karl.domain.MessageDomain;
 import com.karl.domain.RuntimeDomain;
+import com.karl.thread.MessageConsumer;
 import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
 import com.karl.utils.StringUtils;
@@ -44,6 +46,7 @@ public class WebWechat {
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
 		messageService = Executors.newFixedThreadPool(16);
+		new Thread(new MessageConsumer(runtimeDomain)).start();
 	}
 
 	/**
@@ -625,13 +628,30 @@ public class WebWechat {
 	 *            : UserName
 	 */
 	public void webwxsendmsg(String content, String to) {
+		try {
+			runtimeDomain.getMsgQueue().put(new MessageDomain(content, to));
+			LOGGER.info("message queue size 【"
+					+ runtimeDomain.getMsgQueue().size() + "】!");
+		} catch (Exception e) {
+			LOGGER.error("message queue put failed!", e);
+		}
+	}
+
+	/**
+	 * Sent message
+	 * 
+	 * @param content
+	 * @param to
+	 *            : UserName
+	 */
+	public void webwxsendmsg2(String content, String to) {
 		int retry = 8;
 		Boolean result = Boolean.FALSE;
 
 		while (!result && retry-- > 0) {
 			try {
 				Thread.sleep(1500);
-				if(retry < 4) {
+				if (retry < 4) {
 					Thread.sleep(3000);
 				}
 				String url = AppUtils.base_uri
@@ -829,10 +849,10 @@ public class WebWechat {
 			case 51:
 				break;
 			case 1:
-//				messageService.submit(() -> {
-					handleTextMsg(msg);
-					LOGGER.debug("Text Message Thread finish once!");
-//				});
+				// messageService.submit(() -> {
+				handleTextMsg(msg);
+				LOGGER.debug("Text Message Thread finish once!");
+				// });
 				break;
 			case 3:
 				// webwxsendmsg("二蛋还不支持图片呢", msg.getString("FromUserName"));
@@ -841,10 +861,10 @@ public class WebWechat {
 				// webwxsendmsg("二蛋还不支持语音呢", msg.getString("FromUserName"));
 				break;
 			case 42:
-//				messageService.submit(() -> {
-					handleRecomendMsg(msg);
-					LOGGER.debug("Recomend Message Thread finish once!");
-//				});
+				// messageService.submit(() -> {
+				handleRecomendMsg(msg);
+				LOGGER.debug("Recomend Message Thread finish once!");
+				// });
 				break;
 			default:
 				break;

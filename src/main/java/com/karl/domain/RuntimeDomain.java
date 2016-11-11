@@ -9,6 +9,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,6 +43,8 @@ import freemarker.template.TemplateNotFoundException;
 public class RuntimeDomain implements Serializable {
 
 	private int messageBoardCount;
+	
+	private BlockingQueue<MessageDomain> msgQueue;
 
 	public RuntimeDomain() {
 		groupMap = new HashMap<String, JSONObject>();
@@ -88,6 +92,7 @@ public class RuntimeDomain implements Serializable {
 		definedStartInfo = "3秒玩法，新鲜上市!";
 		buildFtl();
 		illegalPlayer = new ArrayList<String>();
+		msgQueue = new ArrayBlockingQueue<MessageDomain>(100);
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -966,5 +971,13 @@ public class RuntimeDomain implements Serializable {
 	
 	public void clearIllegalPlayer() {
 		illegalPlayer.clear();
+	}
+
+	public BlockingQueue<MessageDomain> getMsgQueue() {
+		return msgQueue;
+	}
+
+	public void setMsgQueue(BlockingQueue<MessageDomain> msgQueue) {
+		this.msgQueue = msgQueue;
 	}
 }

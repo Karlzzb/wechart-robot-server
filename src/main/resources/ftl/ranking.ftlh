@@ -8,5 +8,5 @@ ${TOP}总۩积۩分۩榜${TOP}
 <#list rankList as player>${(player_index+1)?string["000"]}[${player.remarkName}]${player.points?string["0"]}
 </#list>
 ────────────
-/::)${R}-专注报数-仅供娱乐,严禁赌博!
+${R}-专注报数-仅供娱乐,严禁赌博!
 </#compress>

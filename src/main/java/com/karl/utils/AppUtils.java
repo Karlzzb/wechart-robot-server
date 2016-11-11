@@ -139,6 +139,8 @@ public class AppUtils {
 	public static final String MATHPACKAGEFEEMODEL = "公式计算包费";
 	public static final String REALPACKAGEFEEMODEL = "实际包费";
 
+	public static final int MSGSENTRETRY = 5;
+
 	/**
 	 * sort by bet time
 	 * 

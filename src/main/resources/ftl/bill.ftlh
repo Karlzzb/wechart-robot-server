@@ -74,4 +74,4 @@ ${row}
 本 局 基 金 : ${gameInfo.bankerWinCut?string["0"]}
 剩 余 庄 分 : ${bankerBetPoint?string["0"]}
 ═══════════
-/::)${R}-专注报数-仅供娱乐,严禁赌博!
+${R}-专注报数-仅供娱乐,严禁赌博!
