@@ -23,32 +23,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane id="AnchorPane" prefHeight="767.0" prefWidth="901.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
 	<children>
-      <GridPane layoutX="-2.0" prefHeight="767.0" prefWidth="901.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="700.0" minWidth="400.0" prefWidth="550.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="30.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="350.0" prefWidth="380.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints maxHeight="100.0" minHeight="50.0" prefHeight="60.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="350.0" minHeight="250.0" prefHeight="250.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="400.0" minHeight="300.0" prefHeight="350.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-      		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true" prefHeight="565.0" prefWidth="400.0" styleClass="test" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="3">
-      			<columns>
-      				<TableColumn fx:id="ruleCheck" prefWidth="86.66665649414062" resizable="false" text="选择" />
-      				<TableColumn fx:id="ruleName" prefWidth="160.0" resizable="false" text="名称" />
-      				<TableColumn fx:id="ruleDetail" prefWidth="286.0" resizable="false" text="倍数" />
-      			</columns>
-      		</TableView>
-            <HBox prefHeight="100.0" prefWidth="511.0" GridPane.columnIndex="1">
+      <BorderPane prefHeight="634.0" prefWidth="880.0">
+         <top>
+            <HBox BorderPane.alignment="CENTER">
                <children>
                   <Label styleClass="header-title" text="配置" />
                </children>
@@ -56,154 +35,189 @@
                   <Insets bottom="10.0" left="10.0" top="10.0" />
                </padding>
             </HBox>
-            <Pane id="config-rule-panel" prefHeight="200.0" prefWidth="313.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-               <children>
-                  <VBox prefHeight="264.0" prefWidth="351.0" styleClass="colorPanel">
+         </top>
+         <stylesheets>
+            <URL value="@../css/Metro-UI.css" />
+            <URL value="@../css/blueTheme.css" />
+         </stylesheets>
+         <center>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <content>
+                  <HBox prefHeight="575.0" prefWidth="878.0">
                      <children>
-                        <HBox VBox.vgrow="ALWAYS">
+                        <VBox prefHeight="572.0" prefWidth="513.0">
                            <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="庄家超时赔付：" HBox.hgrow="ALWAYS" />
-                              <ChoiceBox fx:id="bankerOutTime" prefHeight="31.0" prefWidth="170.0" />
+                        		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true" prefHeight="565.0" prefWidth="400.0" styleClass="test">
+                        			<columns>
+                        				<TableColumn fx:id="ruleCheck" prefWidth="86.66665649414062" resizable="false" text="选择" />
+                        				<TableColumn fx:id="ruleName" prefWidth="160.0" resizable="false" text="名称" />
+                        				<TableColumn fx:id="ruleDetail" prefWidth="286.0" resizable="false" text="倍数" />
+                        			</columns>
+                                 <VBox.margin>
+                                    <Insets top="2.0" />
+                                 </VBox.margin>
+                        		</TableView>
+                              <Line endX="400.0" startX="-100.0" stroke="#467ed4" strokeWidth="5.0" styleClass="table-title-line" />
                            </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
+                        </VBox>
+                        <Region prefHeight="594.0" prefWidth="120.0" HBox.hgrow="ALWAYS" />
+                        <VBox prefHeight="564.0" prefWidth="402.0">
                            <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="闲家超时赔付：" />
-                              <ChoiceBox fx:id="playerOutTime" prefHeight="31.0" prefWidth="170.0" />
+                              <Pane id="config-rule-panel" prefHeight="200.0" prefWidth="313.0">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="321.0" styleClass="colorPanel">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="庄家超时赔付：" />
+                                                <ChoiceBox fx:id="bankerOutTime" prefHeight="31.0" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="闲家超时赔付：" />
+                                                <ChoiceBox fx:id="playerOutTime" prefHeight="31.0" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="超时时间（秒）：" />
+                                                <TextField fx:id="timeOut" prefHeight="28.0" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="计算规则：" />
+                                                <ChoiceBox fx:id="lotteryRuleChoice" prefHeight="31.0" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <CheckBox fx:id="invainBanker" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="允许庄家负分" />
+                                                <CheckBox fx:id="invainPlayer" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="允许玩家负分">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" />
+                                                   </HBox.margin>
+                                                </CheckBox>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </Pane>
+                              <Pane id="config-fee-panel" prefHeight="332.0" prefWidth="319.0">
+                                 <children>
+                                    <VBox prefHeight="329.0" prefWidth="321.0" styleClass="colorPanel">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="广告：" />
+                                                <TextField fx:id="definedStart" prefHeight="28.0" prefWidth="348.0" />
+                                             </children>
+                                          </HBox>
+                                          <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费">
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </CheckBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="管理费用：" />
+                                                <TextField fx:id="manageFee" prefHeight="28.0" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <RadioButton fx:id="fixedPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="固定包费" />
+                                                <TextField fx:id="fixedPackageFee" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <RadioButton fx:id="mathPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="公式包费" />
+                                                <Label alignment="CENTER" prefHeight="25.0" prefWidth="21.0" text="+" textAlignment="CENTER">
+                                                   <HBox.margin>
+                                                      <Insets left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="mathPackageFeeB" prefHeight="28.0" prefWidth="76.0" />
+                                                <Label alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="16.0" style="-fx-text-fill: red;" text="*" textFill="#ff0e0e" />
+                                                <TextField fx:id="mathPackageFeeC" prefHeight="25.0" prefWidth="76.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <RadioButton fx:id="realPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="实际包费">
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </RadioButton>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="下庄抽水（%）：" />
+                                                <TextField fx:id="bankerWinCut" prefHeight="28.0" prefWidth="170.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="上庄费用：" />
+                                                <TextField fx:id="firstBankerFee" prefHeight="28.0" prefWidth="170.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                       </padding>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="30.0" />
+                                 </VBox.margin>
+                              </Pane>
                            </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="超时时间（秒）：" />
-                              <TextField fx:id="timeOut" prefHeight="28.0" prefWidth="170.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="计算规则：" />
-                              <ChoiceBox fx:id="lotteryRuleChoice" prefHeight="31.0" prefWidth="170.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <CheckBox fx:id="invainBanker" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="允许庄家负分" />
-                              <CheckBox fx:id="invainPlayer" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="允许玩家负分">
-                                 <HBox.margin>
-                                    <Insets left="10.0" />
-                                 </HBox.margin>
-                              </CheckBox>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="5.0" />
-                           </VBox.margin>
-                        </HBox>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </VBox>
                      </children>
-                     <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                     </padding>
-                  </VBox>
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </Pane>
-            <Pane id="config-fee-panel" prefHeight="332.0" prefWidth="319.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-               <children>
-                  <VBox prefHeight="383.0" prefWidth="351.0" styleClass="colorPanel">
-                     <children>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="广告：" />
-                              <TextField fx:id="definedStart" prefHeight="28.0" prefWidth="170.0" />
-                           </children>
-                        </HBox>
-                        <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费" VBox.vgrow="ALWAYS">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </CheckBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="管理费用：" />
-                              <TextField fx:id="manageFee" prefHeight="28.0" prefWidth="170.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <RadioButton fx:id="fixedPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="固定包费" />
-                              <TextField fx:id="fixedPackageFee" prefWidth="170.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <RadioButton fx:id="mathPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="公式包费" />
-                              <Label alignment="CENTER" prefHeight="25.0" prefWidth="21.0" text="+" textAlignment="CENTER">
-                                 <HBox.margin>
-                                    <Insets left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="mathPackageFeeB" prefHeight="28.0" prefWidth="76.0" />
-                              <Label alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="16.0" style="-fx-text-fill: red;" text="*" textFill="#ff0e0e" />
-                              <TextField fx:id="mathPackageFeeC" prefHeight="25.0" prefWidth="76.0">
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <RadioButton fx:id="realPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="实际包费" VBox.vgrow="ALWAYS">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </RadioButton>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="下庄抽水（%）：" />
-                              <TextField fx:id="bankerWinCut" prefHeight="28.0" prefWidth="170.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="140.0" text="上庄费用：" />
-                              <TextField fx:id="firstBankerFee" prefHeight="28.0" prefWidth="170.0" />
-                           </children>
-                        </HBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                     </padding>
-                  </VBox>
-               </children>
-            </Pane>
-         </children>
-      </GridPane>
+                  </HBox>
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
 	</children>
-   <stylesheets>
-      <URL value="@../css/Metro-UI.css" />
-      <URL value="@../css/blueTheme.css" />
-   </stylesheets>
 </AnchorPane>

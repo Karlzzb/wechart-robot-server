@@ -348,3 +348,10 @@
 {
 -fx-background-color: white;
 }
+
+.scroll-pane {
+	   -fx-background-color:transparent;
+}
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
