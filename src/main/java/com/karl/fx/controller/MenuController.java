@@ -34,7 +34,7 @@ public class MenuController extends FxmlController {
 
 	@Override
 	public void initialize() {
-		listMenu.getItems().addAll("  工作台", "  配置", "  统计");
+		listMenu.getItems().addAll("  工作台", "  配置", "  统计", "  配置2");
 		listMenu.getSelectionModel().select(0);
 		listMenu.requestFocus();
 		stageManager.loadAnchorPaneMemu(paneData, FxmlView.MAIN);
@@ -63,6 +63,9 @@ public class MenuController extends FxmlController {
 			break;
 		case 2: {
 			stageManager.loadAnchorPaneMemu(paneData, FxmlView.STATS);
+		}
+		case 3: {
+			stageManager.loadAnchorPaneMemu(paneData, FxmlView.CONFIGALL);
 		}
 			break;
 		}

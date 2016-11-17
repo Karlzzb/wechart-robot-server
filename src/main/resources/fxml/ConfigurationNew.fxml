@@ -1,57 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
+<AnchorPane id="AnchorPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
 	<children>
-      <StackPane prefHeight="720.0" prefWidth="1280.0">
+      <StackPane prefHeight="692.0" prefWidth="1072.0">
          <children>
             <ScrollPane prefHeight="200.0" prefWidth="200.0">
                <content>
-                  <GridPane prefHeight="1156.0" prefWidth="1213.0">
+                  <GridPane prefHeight="692.0" prefWidth="1072.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="ALWAYS" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                       <ColumnConstraints hgrow="ALWAYS" maxWidth="340.0" minWidth="280.0" prefWidth="290.0" />
-                        <ColumnConstraints hgrow="ALWAYS" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                       <ColumnConstraints hgrow="ALWAYS" maxWidth="340.0" minWidth="280.0" prefWidth="290.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.0" minWidth="280.0" prefWidth="290.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="80.0" minHeight="50.0" prefHeight="60.0" vgrow="ALWAYS" />
-                      <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
-                      <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="100.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="140.0" minHeight="120.0" prefHeight="130.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="20.0" vgrow="ALWAYS" />
@@ -59,22 +51,22 @@
                      <children>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="模式设置" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                          <HBox prefHeight="25.0" prefWidth="247.0">
                                              <children>
-                                                <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="普通" HBox.hgrow="ALWAYS" />
-                                                <RadioButton fx:id="fixedPackageFeeModel" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="无庄" HBox.hgrow="ALWAYS" />
-                                                <RadioButton fx:id="fixedPackageFeeModel2" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="百倍" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="25.0" prefWidth="140.0" text="普通" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="fixedPackageFeeModel" mnemonicParsing="false" prefHeight="25.0" prefWidth="140.0" text="无庄" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="fixedPackageFeeModel2" mnemonicParsing="false" prefHeight="25.0" prefWidth="140.0" text="百倍" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
-                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                          <HBox prefHeight="25.0" prefWidth="247.0">
                                              <children>
-                                                <RadioButton fx:id="fixedPackageFeeModel11" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="牌九" HBox.hgrow="ALWAYS" />
-                                                <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="合数" HBox.hgrow="ALWAYS" />
-                                                <RadioButton fx:id="fixedPackageFeeModel21" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="百倍" />
+                                                <RadioButton fx:id="fixedPackageFeeModel11" mnemonicParsing="false" prefHeight="25.0" prefWidth="140.0" text="牌九" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="25.0" prefWidth="140.0" text="合数" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="fixedPackageFeeModel21" mnemonicParsing="false" prefHeight="25.0" prefWidth="140.0" text="百倍" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -91,7 +83,7 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
                                           <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
@@ -100,7 +92,7 @@
                                                 <RadioButton fx:id="fixedPackageFeeModel21" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="单尾" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="10.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -117,16 +109,16 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
+                                          <HBox prefHeight="25.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按金额" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel12" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按时间" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel211" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="15.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -167,17 +159,17 @@
                         </TitledPane>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="庄闲超时" GridPane.columnIndex="3" GridPane.rowIndex="1">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                          <HBox prefHeight="25.0" prefWidth="247.0">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="闲家赢" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel21" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="庄家赢" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
-                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                          <HBox prefHeight="25.0" prefWidth="247.0">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel111" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="跑路" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel212" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="比点数" />
@@ -195,17 +187,17 @@
                         </TitledPane>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="庄家超时" GridPane.columnIndex="3" GridPane.rowIndex="3">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                          <HBox prefHeight="25.0" prefWidth="247.0">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel1" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="正常计算" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel21" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="通知" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
-                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                          <HBox prefHeight="25.0" prefWidth="247.0">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel112" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="牌九" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel213" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="百倍" />
@@ -225,16 +217,16 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
+                                          <HBox prefHeight="25.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel121" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按金额" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel1211" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按时间" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel21111" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="15.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -249,18 +241,18 @@
                         </TitledPane>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="赔付顺序" GridPane.columnIndex="3" GridPane.rowIndex="7">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
+                                          <HBox prefHeight="25.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel121" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按金额" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel1212" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按时间" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel21112" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="15.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -275,18 +267,18 @@
                         </TitledPane>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="赔付顺序" GridPane.columnIndex="1" GridPane.rowIndex="9">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
+                                          <HBox prefHeight="25.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel121" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按金额" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel1213" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按时间" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel21113" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="10.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -355,18 +347,18 @@
                         </TitledPane>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="赔付顺序" GridPane.columnIndex="1" GridPane.rowIndex="11">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
+                                          <HBox prefHeight="25.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel1213" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按金额" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel12131" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按时间" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel211131" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="10.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -407,18 +399,18 @@
                         </TitledPane>
                         <TitledPane alignment="TOP_LEFT" animated="false" text="赔付顺序" GridPane.columnIndex="3" GridPane.rowIndex="11">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
                                  <children>
-                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                    <VBox layoutX="-1.0" prefHeight="50.0" prefWidth="245.0">
                                        <children>
-                                          <HBox prefHeight="36.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
+                                          <HBox prefHeight="25.0" prefWidth="247.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <RadioButton fx:id="fixedPackageFeeModel1213" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按金额" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel12133" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按时间" HBox.hgrow="ALWAYS" />
                                                 <RadioButton fx:id="fixedPackageFeeModel211133" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="10.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
@@ -444,7 +436,7 @@
                                                 <RadioButton fx:id="fixedPackageFeeModel211134" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="按序号" HBox.hgrow="ALWAYS" />
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="20.0" />
+                                                <Insets top="10.0" />
                                              </VBox.margin>
                                           </HBox>
                                        </children>
