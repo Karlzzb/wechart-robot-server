@@ -55,7 +55,7 @@ public enum FxmlView {
 
         @Override
         public String getFxmlFile() {
-            return "/fxml/ConfigurationNew.fxml";
+            return "/fxml/GameSetting.fxml";
         }
     }, MESSAGE{
         @Override

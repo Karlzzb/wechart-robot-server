@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import blade.kit.DateKit;
 import blade.kit.StringKit;
-import blade.kit.json.JSONArray;
 import blade.kit.json.JSONObject;
 
 import com.karl.db.domain.GameInfo;
@@ -93,6 +92,7 @@ public class RuntimeDomain implements Serializable {
 		buildFtl();
 		illegalPlayer = new ArrayList<String>();
 		msgQueue = new ArrayBlockingQueue<MessageDomain>(100);
+		paceLotteryRule = AppUtils.PACELARGEWIN;
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -288,46 +288,7 @@ public class RuntimeDomain implements Serializable {
 	
 	private List<String> illegalPlayer;
 
-	/**
-	 * key=remarkName
-	 * 
-	 * @return
-	 */
-	private Map<String, PlayerModel> getCurrentPlayers() {
-		Map<String, PlayerModel> playModelMap = new HashMap<String, PlayerModel>();
-		if (getCurrentGroupId() == null || getCurrentGroupId().isEmpty()) {
-			return playModelMap;
-		}
-
-		JSONObject groupNode = getGroupMap().get(getCurrentGroupId());
-		if (groupNode == null) {
-			return playModelMap;
-		}
-		JSONArray memberList = groupNode.getJSONArray("MemberList");
-		if (memberList == null || memberList.size() < 1) {
-			return playModelMap;
-		}
-		JSONObject contact = null;
-		String remarkName = "";
-		String wechatName = "";
-		String wechatId = "";
-		for (int i = 0, len = memberList.size(); i < len; i++) {
-			contact = memberList.getJSONObject(i);
-			if (contact.getString("UserName").equals(
-					getUser().getString("UserName"))) {
-				// exclude self
-				continue;
-			}
-			remarkName = getUserRemarkName(contact.getString("UserName"));
-			wechatName = getUserNickName(contact.getString("UserName"));
-			wechatId = contact.getString("UserName");
-			if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
-				playModelMap.put(remarkName, new PlayerModel(i, remarkName, 0L,
-						wechatId, wechatName));
-			}
-		}
-		return playModelMap;
-	}
+	private Integer paceLotteryRule;
 
 	public String getUserRemarkName(String id) {
 		String name = AppUtils.UNCONTACTUSRNAME;
@@ -979,5 +940,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setMsgQueue(BlockingQueue<MessageDomain> msgQueue) {
 		this.msgQueue = msgQueue;
+	}
+
+	public void setPaceLotteryRule(Integer paceLotteryRule) {
+		this.paceLotteryRule = paceLotteryRule;
+	}
+
+	public Integer getPaceLotteryRule() {
+		return paceLotteryRule;
 	}
 }

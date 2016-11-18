@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -23,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="864.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.ConfigController">
 	<children>
       <BorderPane prefHeight="634.0" prefWidth="880.0">
          <top>
@@ -41,13 +35,13 @@
             <URL value="@../css/blueTheme.css" />
          </stylesheets>
          <center>
-            <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ScrollPane prefHeight="200.0" prefWidth="874.0" BorderPane.alignment="CENTER">
                <content>
-                  <HBox prefHeight="575.0" prefWidth="878.0">
+                  <HBox prefHeight="564.0" prefWidth="877.0">
                      <children>
-                        <VBox prefHeight="572.0" prefWidth="513.0">
+                        <VBox prefHeight="542.0" prefWidth="505.0">
                            <children>
-                        		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true" prefHeight="565.0" prefWidth="400.0" styleClass="test">
+                        		<TableView fx:id="ruleTab" depthTest="DISABLE" editable="true" prefHeight="545.0" prefWidth="505.0" styleClass="test">
                         			<columns>
                         				<TableColumn fx:id="ruleCheck" prefWidth="86.66665649414062" resizable="false" text="选择" />
                         				<TableColumn fx:id="ruleName" prefWidth="160.0" resizable="false" text="名称" />
@@ -61,7 +55,7 @@
                            </children>
                         </VBox>
                         <Region prefHeight="594.0" prefWidth="120.0" HBox.hgrow="ALWAYS" />
-                        <VBox prefHeight="564.0" prefWidth="402.0">
+                        <VBox prefHeight="575.0" prefWidth="401.0">
                            <children>
                               <Pane id="config-rule-panel" prefHeight="200.0" prefWidth="313.0">
                                  <children>
@@ -69,39 +63,9 @@
                                        <children>
                                           <HBox>
                                              <children>
-                                                <Label prefHeight="30.0" prefWidth="140.0" text="庄家超时赔付：" />
-                                                <ChoiceBox fx:id="bankerOutTime" prefHeight="31.0" prefWidth="170.0" />
+                                                <Label prefHeight="32.0" prefWidth="140.0" text="广告：" />
+                                                <TextField fx:id="definedStart" prefHeight="28.0" prefWidth="348.0" />
                                              </children>
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" />
-                                             </VBox.margin>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <Label prefHeight="30.0" prefWidth="140.0" text="闲家超时赔付：" />
-                                                <ChoiceBox fx:id="playerOutTime" prefHeight="31.0" prefWidth="170.0" />
-                                             </children>
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" />
-                                             </VBox.margin>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <Label prefHeight="30.0" prefWidth="140.0" text="超时时间（秒）：" />
-                                                <TextField fx:id="timeOut" prefHeight="28.0" prefWidth="170.0" />
-                                             </children>
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" />
-                                             </VBox.margin>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <Label prefHeight="30.0" prefWidth="140.0" text="计算规则：" />
-                                                <ChoiceBox fx:id="lotteryRuleChoice" prefHeight="31.0" prefWidth="170.0" />
-                                             </children>
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" />
-                                             </VBox.margin>
                                           </HBox>
                                           <HBox>
                                              <children>
@@ -116,6 +80,11 @@
                                                 <Insets bottom="10.0" />
                                              </VBox.margin>
                                           </HBox>
+                                          <HBox>
+                                             <children>
+                                                <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费" />
+                                             </children>
+                                          </HBox>
                                        </children>
                                        <padding>
                                           <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -126,21 +95,10 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
                               </Pane>
-                              <Pane id="config-fee-panel" prefHeight="332.0" prefWidth="319.0">
+                              <Pane id="config-fee-panel" prefHeight="262.0" prefWidth="318.0">
                                  <children>
-                                    <VBox prefHeight="329.0" prefWidth="321.0" styleClass="colorPanel">
+                                    <VBox prefHeight="262.0" prefWidth="319.0" styleClass="colorPanel">
                                        <children>
-                                          <HBox>
-                                             <children>
-                                                <Label prefHeight="30.0" prefWidth="140.0" text="广告：" />
-                                                <TextField fx:id="definedStart" prefHeight="28.0" prefWidth="348.0" />
-                                             </children>
-                                          </HBox>
-                                          <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费">
-                                             <VBox.margin>
-                                                <Insets bottom="10.0" />
-                                             </VBox.margin>
-                                          </CheckBox>
                                           <HBox>
                                              <children>
                                                 <Label prefHeight="30.0" prefWidth="140.0" text="管理费用：" />

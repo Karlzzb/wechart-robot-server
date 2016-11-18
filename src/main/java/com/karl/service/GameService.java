@@ -76,7 +76,7 @@ public class GameService {
 	private MainDeskController mainDeskController;
 
 	public void mainSelfMessageHandle(String content) {
-		long start=System.currentTimeMillis();  
+		long start = System.currentTimeMillis();
 		if (!runtimeDomain.getGlobalGameSignal()) {
 			return;
 		}
@@ -140,7 +140,8 @@ public class GameService {
 												runtimeDomain.getDefiendBet()) < 0) {
 							playerRole = LuckInfoModel.PLAYERROLENOPOINT;
 							runtimeDomain.addIllegalPlayer(remarkName);
-						}else if (remarkName.equals(runtimeDomain.getBankerRemarkName())) {
+						} else if (remarkName.equals(runtimeDomain
+								.getBankerRemarkName())) {
 							playerRole = LuckInfoModel.PLAYERROLEBANKER;
 						}
 						luckInfoModeList.add(new LuckInfoModel(index,
@@ -156,7 +157,8 @@ public class GameService {
 			}
 			runtimeDomain.setCurrentRealPackageFee(sumPackage.longValue());
 			recievedluckUIhandle();
-			LOGGER.info("Self package info analyze success.The time consumption 【"+(System.currentTimeMillis()-start)+"】!");
+			LOGGER.info("Self package info analyze success.The time consumption 【"
+					+ (System.currentTimeMillis() - start) + "】!");
 			LOGGER.debug("Self package info【" + content + "】 analyze success!");
 		} catch (Exception e) {
 			LOGGER.error("Self package info【" + content + "】 analyze failed!",
@@ -170,7 +172,7 @@ public class GameService {
 
 	public void mainMessageHandle(String messageFrom, String webChatId,
 			String remarkName, String content) {
-		long start=System.currentTimeMillis();  
+		long start = System.currentTimeMillis();
 		// Message is the pattern of betting
 		if (runtimeDomain.getGlobalGameSignal()
 				&& messageFrom.equals(runtimeDomain.getCurrentGroupId())
@@ -224,7 +226,8 @@ public class GameService {
 				LOGGER.error("User{" + remarkName + "} apply add point{"
 						+ content + "failed!", e);
 			}
-			LOGGER.info("Msg 查+ time consumption 【"+(System.currentTimeMillis()-start)+"】!");
+			LOGGER.info("Msg 查+ time consumption 【"
+					+ (System.currentTimeMillis() - start) + "】!");
 			return;
 		}
 
@@ -259,7 +262,8 @@ public class GameService {
 				LOGGER.error("User{" + remarkName + "} apply sub point{"
 						+ content + "failed!", e);
 			}
-			LOGGER.info("Msg 查- time consumption 【"+(System.currentTimeMillis()-start)+"】!");
+			LOGGER.info("Msg 查- time consumption 【"
+					+ (System.currentTimeMillis() - start) + "】!");
 			return;
 		}
 
@@ -295,7 +299,8 @@ public class GameService {
 					LOGGER.error("User{" + remarkName + "} put point{"
 							+ content + "failed!", e);
 				}
-				LOGGER.info("Msg 上 time consumption 【"+(System.currentTimeMillis()-start)+"】!");
+				LOGGER.info("Msg 上 time consumption 【"
+						+ (System.currentTimeMillis() - start) + "】!");
 				return;
 			}
 
@@ -347,7 +352,8 @@ public class GameService {
 					LOGGER.error("User{" + remarkName + "} sub point{"
 							+ content + "failed!", e);
 				}
-				LOGGER.info("Msg 下time consumption 【"+(System.currentTimeMillis()-start)+"】!");
+				LOGGER.info("Msg 下time consumption 【"
+						+ (System.currentTimeMillis() - start) + "】!");
 				return;
 			}
 		}
@@ -494,24 +500,14 @@ public class GameService {
 			}
 
 			// compare point between banker and player
-			if (bankerTimes > trace.getResultTimes()
-					|| (bankerTimes == trace.getResultTimes() && bankerLuck
-							.compareTo(trace.getLuckInfo()) > 0)) {
+			if (bankerTimes > trace.getResultTimes()) {
 				singleLostHandle(bankerTimes, loserList, allInList, trace,
 						pEntity);
-			} else if (bankerTimes < trace.getResultTimes()
-					|| (bankerTimes == trace.getResultTimes() && bankerLuck
-							.compareTo(trace.getLuckInfo()) < 0)) {
+			} else if (bankerTimes < trace.getResultTimes()) {
 				singleWinHandle(winnerList, allInList, trace, pEntity);
 			} else {
-				// pace
-				if (runtimeDomain.getAllowPace()) {
-					trace.setResultPoint(Long.valueOf(0));
-					paceList.add(trace);
-				} else {
-					trace.setResultPoint(-trace.getBetPoint());
-					loserList.add(trace);
-				}
+				singlePaceHandle(bankerTimes, bankerLuck, winnerList,
+						loserList, paceList, allInList, trace, pEntity);
 			}
 			bankerState -= trace.getResultPoint();
 		}
@@ -577,11 +573,45 @@ public class GameService {
 				+ runtimeDomain.getBankerBetPoint());
 
 		// config the message
-		String content = buildBillMsg2(gameInfo, traceList,
-				firstPackgeTime, bankerLuckTime, winnerList, loserList,
-				paceList, allInList, packageFee, firstBankerFee, bankerWinCut);
+		String content = buildBillMsg2(gameInfo, traceList, firstPackgeTime,
+				bankerLuckTime, winnerList, loserList, paceList, allInList,
+				packageFee, firstBankerFee, bankerWinCut);
 		runtimeDomain.setBeforeGameInfo(gameInfo);
 		return content;
+	}
+
+	private void singlePaceHandle(Integer bankerTimes, Double bankerLuck,
+			List<PlayerTrace> winnerList, List<PlayerTrace> loserList,
+			List<PlayerTrace> paceList, List<PlayerTrace> allInList,
+			PlayerTrace trace, Player pEntity) {
+		singleLostHandle(bankerTimes, loserList, allInList, trace, pEntity);
+		singleWinHandle(winnerList, allInList, trace, pEntity);
+		switch (runtimeDomain.getPaceLotteryRule()) {
+		case AppUtils.PACEPWIN:
+			singleWinHandle(winnerList, allInList, trace, pEntity);
+			break;
+		case AppUtils.PACEBWIN:
+			singleLostHandle(bankerTimes, loserList, allInList, trace, pEntity);
+			break;
+		case AppUtils.PACENOWIN:
+			trace.setResultPoint(Long.valueOf(0));
+			paceList.add(trace);
+			break;
+		case AppUtils.PACELARGEWIN:
+			if (bankerLuck.compareTo(trace.getLuckInfo()) > 0) {
+				singleLostHandle(bankerTimes, loserList, allInList, trace,
+						pEntity);
+			} else if (bankerLuck.compareTo(trace.getLuckInfo()) < 0) {
+				singleWinHandle(winnerList, allInList, trace, pEntity);
+			} else {
+				trace.setResultPoint(Long.valueOf(0));
+				paceList.add(trace);
+			}
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	private String buildBillMsg2(GameInfo gameInfo,

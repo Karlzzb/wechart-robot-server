@@ -140,6 +140,28 @@ public class AppUtils {
 	public static final String REALPACKAGEFEEMODEL = "实际包费";
 
 	public static final int MSGSENTRETRY = 5;
+	
+	//pace lottery rule
+	/**
+	 * plyer win
+	 */
+	public static final int PACEPWIN = 1;
+	
+	/**
+	 * banker win
+	 */
+	public static final int PACEBWIN = 2;
+	
+	/**
+	 * none one win
+	 */
+	public static final int PACENOWIN = 3;
+	
+	/**
+	 * according to point comparing
+	 */
+	public static final int PACELARGEWIN = 4;
+	
 
 	/**
 	 * sort by bet time

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="692.0" prefWidth="1166.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.GameSettingController">
+	<children>
+      <StackPane prefHeight="692.0" prefWidth="1280.0">
+         <children>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <content>
+                  <GridPane prefHeight="692.0" prefWidth="1280.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="ALWAYS" maxWidth="250.0" minWidth="230.0" prefWidth="230.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="30.0" minWidth="10.0" prefWidth="30.0" />
+                      <ColumnConstraints hgrow="ALWAYS" maxWidth="250.0" minWidth="230.0" prefWidth="230.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="10.0" prefWidth="30.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="230.0" prefWidth="230.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="80.0" minHeight="50.0" prefHeight="60.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="110.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="15.0" minHeight="5.0" prefHeight="10.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="110.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="15.0" minHeight="5.0" prefHeight="10.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="110.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="15.0" minHeight="5.0" prefHeight="10.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="110.0" minHeight="100.0" prefHeight="100.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="15.0" minHeight="5.0" prefHeight="10.0" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="模式设置" GridPane.rowIndex="1">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                                 <children>
+                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" styleClass="txt" text="玩法选择：">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <ChoiceBox fx:id="gamekeyBox" prefHeight="36.0" prefWidth="170.0" styleClass="select">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ChoiceBox>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="20.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="smallSettingPanel" />
+                                    <String fx:value="colorPanel" />
+                                 </styleClass>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="尾数设置" GridPane.rowIndex="3">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                                 <children>
+                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="选择位数：" />
+                                                <ChoiceBox fx:id="lotteryRuleChoice" prefHeight="31.0" prefWidth="170.0">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ChoiceBox>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="20.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="smallSettingPanel" />
+                                    <String fx:value="colorPanel" />
+                                 </styleClass>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="未定义" GridPane.rowIndex="5" />
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="未定义" GridPane.rowIndex="7" />
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="庄闲超时" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                                 <children>
+                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                       <children>
+                                          <HBox prefHeight="51.0" prefWidth="245.0">
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="庄家超时赔付：" />
+                                                <ChoiceBox fx:id="bankerOutTime" prefHeight="31.0" prefWidth="170.0">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ChoiceBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="8.0" prefWidth="245.0">
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="闲家超时赔付：" />
+                                                <ChoiceBox fx:id="playerOutTime" prefHeight="31.0" prefWidth="170.0">
+                                                   <HBox.margin>
+                                                      <Insets right="5.0" />
+                                                   </HBox.margin>
+                                                </ChoiceBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="smallSettingPanel" />
+                                    <String fx:value="colorPanel" />
+                                 </styleClass>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="未定义" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="未定义" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="未定义" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                        <TitledPane alignment="TOP_LEFT" animated="false" text="同点输赢" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                                 <children>
+                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                       <children>
+                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                             <children>
+                                                <RadioButton fx:id="pacePWinView" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="闲家赢" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="paceBWinView" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="庄家赢" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                             <children>
+                                                <RadioButton fx:id="paceNOWinView" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="跑路" HBox.hgrow="ALWAYS" />
+                                                <RadioButton fx:id="paceLargeWinView" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="比点数" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="smallSettingPanel" />
+                                    <String fx:value="colorPanel" />
+                                 </styleClass>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <HBox GridPane.columnSpan="5">
+                           <children>
+                              <Label styleClass="header-title" text="游戏设置" />
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                        <TitledPane alignment="TOP_LEFT" animated="false" prefHeight="939.0" prefWidth="340.0" text="自定义" GridPane.columnIndex="4" GridPane.rowIndex="3" GridPane.rowSpan="6">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="113.0" prefWidth="243.0" stylesheets="@../css/blueTheme.css">
+                                 <children>
+                                    <VBox layoutX="-1.0" prefHeight="67.0" prefWidth="245.0">
+                                       <children>
+                                          <HBox prefHeight="36.0" prefWidth="247.0">
+                                             <children>
+                                                <Label prefHeight="34.0" prefWidth="136.0" text="超时时间（秒）：" />
+                                                <TextField fx:id="timeOutView" prefHeight="31.0" prefWidth="105.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="smallSettingPanel" />
+                                    <String fx:value="colorPanel" />
+                                 </styleClass>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                     </children>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+         </children>
+      </StackPane>
+	</children>
+   <stylesheets>
+      <URL value="@../css/Metro-UI.css" />
+      <URL value="@../css/blueTheme.css" />
+      <URL value="@../css/blueTheme.css" />
+   </stylesheets>
+</AnchorPane>

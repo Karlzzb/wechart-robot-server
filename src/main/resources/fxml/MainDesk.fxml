@@ -53,27 +53,18 @@
 							<children>
 								<VBox prefHeight="154.0" prefWidth="256.0">
 									<children>
-										<Label fx:id="bankerLabel" prefHeight="20.0" prefWidth="248.0" styleClass="txt" text="当前庄家：                         ">
-											<font>
-												<Font size="14.0" />
-											</font>
-										</Label>
-										<HBox>
+                              <HBox>
+                                 <children>
+      										<Label fx:id="bankerLabel" prefHeight="38.0" prefWidth="248.0" styleClass="txt" text="当前庄家：                         ">
+      											<font>
+      												<Font size="14.0" />
+      											</font>
+      										</Label>
+                                 </children>
+                              </HBox>
+										<HBox prefWidth="248.0">
 											<children>
-												<Label prefHeight="30.0" prefWidth="79.0" styleClass="txt" text="玩法选择：">
-													<font>
-														<Font size="14.0" />
-													</font>
-												</Label>
-												<ChoiceBox fx:id="gamekeyBox" prefHeight="36.0" prefWidth="170.0" styleClass="select" />
-											</children>
-											<VBox.margin>
-												<Insets bottom="10.0" />
-											</VBox.margin>
-										</HBox>
-										<HBox>
-											<children>
-												<Label prefHeight="30.0" prefWidth="78.0" styleClass="txt" text="锁定积分 :">
+												<Label prefHeight="38.0" prefWidth="78.0" styleClass="txt" text="锁定积分 :">
 													<font>
 														<Font size="14.0" />
 													</font>
@@ -86,7 +77,7 @@
 										</HBox>
 										<HBox>
 											<children>
-												<Label prefHeight="30.0" prefWidth="111.0" styleClass="txt" text="拼抢玩法下注：">
+												<Label prefHeight="38.0" prefWidth="111.0" styleClass="txt" text="拼抢玩法下注：">
 													<font>
 														<Font size="14.0" />
 													</font>

@@ -1,11 +1,9 @@
 package com.karl.fx.controller;
 
-import java.util.Comparator;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -21,7 +19,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 
 import org.slf4j.Logger;
@@ -80,9 +77,6 @@ public class MainDeskController extends FxmlController {
 
 	ToggleGroup playerGroup = new ToggleGroup();
 
-	@FXML
-	private ChoiceBox<String> gamekeyBox;
-
 	@Autowired
 	@Lazy
 	private MessageController messageController;
@@ -103,24 +97,10 @@ public class MainDeskController extends FxmlController {
 
 	private Boolean isInitializing;
 
-	private Comparator<PlayerModel> comparator = new Comparator<PlayerModel>() {
-		@Override
-		public int compare(PlayerModel r1, PlayerModel r2) {
-			if (r1.getPlayerPoint() > r2.getPlayerPoint()) {
-				return 1;
-			} else if (r1.getPlayerPoint() < r2.getPlayerPoint()) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	};
-
 	@Override
 	public void initialize() {
 		isInitializing = Boolean.TRUE;
 		buildGroupBox();
-		buildGameKeyBox();
 		buildGameQuicker();
 		isInitializing = Boolean.FALSE;
 	}
@@ -309,31 +289,6 @@ public class MainDeskController extends FxmlController {
 		bankerLabel.setText("当前庄家： 【 " + bankerName + "】");
 	}
 
-	private void buildGameKeyBox() {
-		gamekeyBox.setItems(FXCollections
-				.observableArrayList(AppUtils.PLAYLONG, AppUtils.PLAYLONGSPLIT,
-						AppUtils.PLAYLUCKWAY));
-		gamekeyBox.getSelectionModel().selectedItemProperty()
-				.addListener(new ChangeListener<String>() {
-					@Override
-					public void changed(
-							ObservableValue<? extends String> paramObservableValue,
-							String paramT1, String newValue) {
-						if (newValue != null && !newValue.isEmpty()) {
-							runtimeDomain.setCurrentGameKey(newValue);
-						}
-					}
-				});
-
-		gamekeyBox.setTooltip(new Tooltip("请选择玩法"));
-		for (int i = 0; i < gamekeyBox.getItems().size(); i++) {
-			if (gamekeyBox.getItems().get(i)
-					.equals(runtimeDomain.getCurrentGameKey())) {
-				gamekeyBox.getSelectionModel().select(i);
-				break;
-			}
-		}
-	}
 
 	private void buildGroupBox() {
 		groupBox.getSelectionModel().selectedItemProperty()
