@@ -40,7 +40,7 @@ ${allInPlayer.remarkName} ${allInPlayer.betPoint?string["0"]} ${allInPlayer.resu
 ----${EXPIRE}以下超时${EXPIRE}----
 
 <#list expireList as expirePlayer>
-${expirePlayer.remarkName} ${expirePlayer.betPoint?string["0"]} ${expirePlayer.resultRuleName}(${expirePlayer.luckInfo?string["0.##"]}) 输 ${expirePlayer.resultPoint?string["0"]}
+${expirePlayer.remarkName} ${expirePlayer.betPoint?string["0"]} ${expirePlayer.resultRuleName}(${expirePlayer.luckInfo?string["0.##"]}) 输 ${expirePlayer.resultPoint?abs?string["0"]}
 </#list>
 
 </#if>

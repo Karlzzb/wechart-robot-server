@@ -243,13 +243,15 @@ public class GameService {
 				if (pEntity == null) {
 					webWechat.webwxsendmsgM(MessageFormat.format(
 							AppUtils.REPLYPOINTAPPLYERROR2, remarkName, 0,
-							subPoint, remarkName));
+							subPoint));
 					return;
 				}
+				String readyNickName = runtimeDomain
+						.getUserNickName(pEntity.getWebchatId());
 				if (pEntity.getPoints().compareTo(subPoint) < 0) {
 					webWechat.webwxsendmsgM(MessageFormat.format(
-							AppUtils.REPLYPOINTAPPLYERROR2, remarkName,
-							pEntity.getPoints(), subPoint, remarkName));
+							AppUtils.REPLYPOINTAPPLYERROR2, readyNickName,
+							pEntity.getPoints(), subPoint));
 					return;
 				}
 
@@ -291,7 +293,7 @@ public class GameService {
 					if (pEntity != null) {
 						String replyTemplate = AppUtils.REPLYPOINTAPPLYPUT;
 						webWechat.webwxsendmsgM(MessageFormat.format(
-								replyTemplate, readyRemarkName, putPoint,
+								replyTemplate, readyNickName, putPoint,
 								pEntity.getPoints()));
 					}
 
@@ -299,7 +301,7 @@ public class GameService {
 					LOGGER.error("User{" + remarkName + "} put point{"
 							+ content + "failed!", e);
 				}
-				LOGGER.info("Msg 上 time consumption 【"
+				LOGGER.debug("Msg 上 time consumption 【"
 						+ (System.currentTimeMillis() - start) + "】!");
 				return;
 			}
@@ -326,13 +328,13 @@ public class GameService {
 							readyRemarkName);
 					if (pEntity == null) {
 						webWechat.webwxsendmsgM(MessageFormat.format(
-								AppUtils.REPLYPOINTAPPLYERROR, readyRemarkName,
+								AppUtils.REPLYPOINTAPPLYERROR, readyNickName,
 								0, drawPoint));
 						return;
 					}
 					if (pEntity.getPoints().compareTo(drawPoint) < 0) {
 						webWechat.webwxsendmsgM(MessageFormat.format(
-								AppUtils.REPLYPOINTAPPLYERROR, readyRemarkName,
+								AppUtils.REPLYPOINTAPPLYERROR, readyNickName,
 								pEntity.getPoints(), drawPoint));
 						return;
 					}
@@ -344,7 +346,7 @@ public class GameService {
 						String replyTemplate = AppUtils.REPLYPOINTAPPLYDRAW;
 
 						webWechat.webwxsendmsgM(MessageFormat.format(
-								replyTemplate, readyRemarkName, drawPoint,
+								replyTemplate, readyNickName, drawPoint,
 								pEntity.getPoints()));
 					}
 
@@ -584,8 +586,6 @@ public class GameService {
 			List<PlayerTrace> winnerList, List<PlayerTrace> loserList,
 			List<PlayerTrace> paceList, List<PlayerTrace> allInList,
 			PlayerTrace trace, Player pEntity) {
-		singleLostHandle(bankerTimes, loserList, allInList, trace, pEntity);
-		singleWinHandle(winnerList, allInList, trace, pEntity);
 		switch (runtimeDomain.getPaceLotteryRule()) {
 		case AppUtils.PACEPWIN:
 			singleWinHandle(winnerList, allInList, trace, pEntity);
