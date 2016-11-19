@@ -509,9 +509,15 @@ public class PlayerTableController extends FxmlController {
 					mainDeskController.setCurrentBankSign(playerModel
 							.getPlayerName());
 					runtimeDomain.setBankerBetPoint(Long.valueOf(playerModel
-							.getPlayerPoint()) * 2 / 3);
+							.getPlayerPoint()));
 					mainDeskController.setBankerBetPoint(runtimeDomain
 							.getBankerBetPoint());
+					if(runtimeDomain.getBankerSS()) {
+						webWechat.webwxsendmsg(MessageFormat.format(
+								AppUtils.SELBANKERMSG, playerModel.getWechatName(), runtimeDomain.getBankerBetPoint(),
+								playerModel.getPlayerPoint()));
+					}
+					
 				} else {
 					playerModel.setIsBanker(Boolean.FALSE);
 				}

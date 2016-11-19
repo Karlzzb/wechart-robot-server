@@ -19,7 +19,7 @@ import blade.kit.json.JSONObject;
 import com.karl.db.domain.Player;
 import com.karl.domain.MessageDomain;
 import com.karl.domain.RuntimeDomain;
-import com.karl.thread.MessageConsumer;
+import com.karl.domain.SentorDomain;
 import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
 import com.karl.utils.StringUtils;
@@ -31,6 +31,8 @@ public class WebWechat {
 			.getLogger(WebWechat.class);
 
 	private RuntimeDomain runtimeDomain;
+	
+	private SentorDomain sentorDomain;
 
 	private GameService gameService;
 
@@ -39,14 +41,14 @@ public class WebWechat {
 	private volatile boolean stopRequested;
 
 	@Autowired
-	public WebWechat(RuntimeDomain runtimeDomain, GameService gameService)
+	public WebWechat(RuntimeDomain runtimeDomain, SentorDomain sentorDomain, GameService gameService)
 			throws InterruptedException {
 		System.setProperty("jsse.enableSNIExtension", "false");
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
+		this.sentorDomain = sentorDomain;
 		messageService = Executors.newFixedThreadPool(16);
-		new Thread(new MessageConsumer(runtimeDomain)).start();
 	}
 
 	/**
@@ -531,7 +533,7 @@ public class WebWechat {
 				&& !runtimeDomain.getBestSyncCheckChannel().isEmpty()) {
 			arr = syncCheckSingle(runtimeDomain.getBestSyncCheckChannel());
 			if (arr[0] == 0) {
-				LOGGER.info("Choisen syncCheck channel【"
+				LOGGER.debug("Choisen syncCheck channel【"
 						+ runtimeDomain.getBestSyncCheckChannel()
 						+ "】  time consumption 【"
 						+ (System.currentTimeMillis() - start) + "】!");
@@ -596,13 +598,13 @@ public class WebWechat {
 	 * @param content
 	 */
 	public void webwxsendmsg(String content) {
-		if (runtimeDomain.getCurrentGroupId() == null
-				|| runtimeDomain.getCurrentGroupId().isEmpty()) {
+		if (sentorDomain.getCurrentGroupId() == null
+				|| sentorDomain.getCurrentGroupId().isEmpty()) {
 			LOGGER.warn("message({}) not send due to no group selected!",
 					content);
 			return;
 		}
-		webwxsendmsg(content, runtimeDomain.getCurrentGroupId());
+		webwxsendmsg(content, sentorDomain.getCurrentGroupId());
 	}
 
 	/**
@@ -611,13 +613,13 @@ public class WebWechat {
 	 * @param content
 	 */
 	public void webwxsendmsgM(String content) {
-		if (runtimeDomain.getCurrentMGroupId() == null
-				|| runtimeDomain.getCurrentMGroupId().isEmpty()) {
+		if (sentorDomain.getCurrentMGroupId() == null
+				|| sentorDomain.getCurrentMGroupId().isEmpty()) {
 			LOGGER.warn("message({}) not send due to no group selected!",
 					content);
 			return;
 		}
-		webwxsendmsg(content, runtimeDomain.getCurrentMGroupId());
+		webwxsendmsg(content, sentorDomain.getCurrentMGroupId());
 	}
 
 	/**
@@ -629,9 +631,9 @@ public class WebWechat {
 	 */
 	public void webwxsendmsg(String content, String to) {
 		try {
-			runtimeDomain.getMsgQueue().put(new MessageDomain(content, to));
+			sentorDomain.getMsgQueue().put(new MessageDomain(content, to));
 			LOGGER.info("message queue size 【"
-					+ runtimeDomain.getMsgQueue().size() + "】!");
+					+ sentorDomain.getMsgQueue().size() + "】!");
 		} catch (Exception e) {
 			LOGGER.error("message queue put failed!", e);
 		}
@@ -937,7 +939,7 @@ public class WebWechat {
 		} catch (Exception e) {
 			LOGGER.error("handleTextMsg failed!", e);
 		}
-		LOGGER.info("Msg 推荐 time consumption 【"
+		LOGGER.debug("Msg 推荐 time consumption 【"
 				+ (System.currentTimeMillis() - start) + "】!");
 	}
 

@@ -12,21 +12,21 @@ import blade.kit.json.JSON;
 import blade.kit.json.JSONObject;
 
 import com.karl.domain.MessageDomain;
-import com.karl.domain.RuntimeDomain;
+import com.karl.domain.SentorDomain;
 import com.karl.utils.AppUtils;
 
 public class MessageConsumer implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MessageConsumer.class);
-
-	public MessageConsumer(RuntimeDomain runtimeDomain) {
+	
+	public MessageConsumer(SentorDomain sentorDomain) {
 		super();
-		this.runtimeDomain = runtimeDomain;
-		this.msgQueue = runtimeDomain.getMsgQueue();
+		this.sentorDomain = sentorDomain;
+		this.msgQueue = sentorDomain.getMsgQueue();
 	}
 
-	private RuntimeDomain runtimeDomain;
+	private SentorDomain sentorDomain;
 	private BlockingQueue<MessageDomain> msgQueue;
 
 	/**
@@ -45,9 +45,9 @@ public class MessageConsumer implements Runnable {
 				if (retry < AppUtils.MSGSENTRETRY - 1) {
 					Thread.sleep(2000);
 				}
-				String url = AppUtils.base_uri
+				String url = AppUtils.base_uri2
 						+ "/webwxsendmsg?lang=zh_CN&pass_ticket="
-						+ runtimeDomain.getPassTicket();
+						+ sentorDomain.getPassTicket();
 
 				JSONObject body = new JSONObject();
 
@@ -57,18 +57,18 @@ public class MessageConsumer implements Runnable {
 				Msg.put("Type", 1);
 				Msg.put("Content", content);
 				Msg.put("FromUserName",
-						runtimeDomain.getUser().getString("UserName"));
+						sentorDomain.getUser().getString("UserName"));
 				Msg.put("ToUserName", to);
 				Msg.put("LocalID", clientMsgId);
 				Msg.put("ClientMsgId", clientMsgId);
-				body.put("BaseRequest", this.runtimeDomain.getBaseRequest());
+				body.put("BaseRequest", this.sentorDomain.getBaseRequest());
 				body.put("Msg", Msg);
 
 				HttpRequest request = HttpRequest
 						.post(url)
 						.header("Content-Type",
 								"application/json;charset=utf-8")
-						.header("Cookie", runtimeDomain.getCookie())
+						.header("Cookie", sentorDomain.getCookie())
 						.send(body.toString());
 				String res = request.body();
 				if (StringKit.isBlank(res)) {
@@ -109,6 +109,14 @@ public class MessageConsumer implements Runnable {
 				LOGGER.error("Quenue wait failed!", e);
 			}
 		}
+	}
+
+	public SentorDomain getSentorDomain() {
+		return sentorDomain;
+	}
+
+	public void setSentorDomain(SentorDomain sentorDomain) {
+		this.sentorDomain = sentorDomain;
 	}
 
 }

@@ -85,6 +85,16 @@
                                                 <CheckBox fx:id="showManageFee" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="账单显示管理费" />
                                              </children>
                                           </HBox>
+                                          <HBox>
+                                             <children>
+                                                <CheckBox fx:id="bothSendView" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="上分信息发送前台" />
+                                                <CheckBox fx:id="bankerSSView" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="选庄发积分">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" />
+                                                   </HBox.margin>
+                                                </CheckBox>
+                                             </children>
+                                          </HBox>
                                        </children>
                                        <padding>
                                           <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

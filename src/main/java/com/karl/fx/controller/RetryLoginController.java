@@ -5,6 +5,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,10 +18,8 @@ import javafx.stage.Stage;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.karl.fx.StageManager;
 import com.karl.fx.animations.FadeInLeftTransition;
 import com.karl.fx.animations.FadeInRightTransition;
 import com.karl.fx.animations.FadeInTransition;
@@ -46,13 +46,9 @@ public class RetryLoginController extends FxmlController {
 
 	@FXML
 	private ImageView qrImgeView;
-
+	
 	@Autowired
-	@Lazy(value = true)
-	public RetryLoginController(StageManager stageManager) {
-		super();
-		this.stageManager = stageManager;
-	}
+	private MainDeskController mainDeskController;
 
 	@Override
 	public void initialize() {
@@ -76,32 +72,31 @@ public class RetryLoginController extends FxmlController {
 				return new Task<Integer>() {
 					@Override
 					public Integer call() throws InterruptedException {
-						String uuid = webWechat.getUUID();
+						String uuid = webWechatSentor.getUUID();
 						if (null == uuid || uuid.isEmpty()) {
 							LOGGER.info("[*] uuid获取失败");
 							return 1;
 						}
 						LOGGER.info("[*] 获取到uuid为 [{}]",
-								runtimeDomain.getUuid());
-						webWechat.showQrCode();
-						String path = runtimeDomain.getQrCodeFile().toURI()
+								sentorDomain.getUuid());
+						webWechatSentor.showQrCode();
+						String path = sentorDomain.getQrCodeFile().toURI()
 								.toString();
 						LOGGER.info("Longin image path :{}", path);
 						Image qrImge = new Image(path);
 						qrImgeView.setImage(qrImge);
 						Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
-						while (!"200".equals(webWechat.waitForLogin())) {
+						while (!"200".equals(webWechatSentor.waitForLogin())) {
 							updateProgress(10, 100);
 							Thread.sleep(AppUtils.LOGIN_WAITING_TIME);
 						}
-						if (!webWechat.login()) {
+						if (!webWechatSentor.login()) {
 							LOGGER.info("微信登录失败");
 						}
 						LOGGER.info("[*] 微信登录成功");
-						runtimeDomain.clearGroupMap();
-						runtimeDomain.clearAllUsrMap();
-						webWechat.buildWechat();
-						webWechat.setStopRequested(Boolean.TRUE);
+						sentorDomain.clearGroupMap();
+						webWechatSentor.buildWechat();
+						webWechatSentor.setStopRequested(Boolean.TRUE);
 						return 0;
 					}
 				};
@@ -114,7 +109,13 @@ public class RetryLoginController extends FxmlController {
 			new FadeInTransition(vboxBottom).play();
 		});
 		service.setOnSucceeded((WorkerStateEvent event) -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("登陆提示");
+			alert.setContentText("信息发送账号登陆完成！");
+			alert.show();
+			
 			try {
+				mainDeskController.fillUpGroupBoxSentor();
 				Stage stage = (Stage) root.getScene().getWindow();
 				if (stage != null) {
 					stage.close();

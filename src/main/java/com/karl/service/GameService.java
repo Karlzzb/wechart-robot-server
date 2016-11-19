@@ -292,9 +292,8 @@ public class GameService {
 					// send feedback
 					if (pEntity != null) {
 						String replyTemplate = AppUtils.REPLYPOINTAPPLYPUT;
-						webWechat.webwxsendmsgM(MessageFormat.format(
-								replyTemplate, readyNickName, putPoint,
-								pEntity.getPoints()));
+						pointChangeMsg(putPoint, readyNickName, pEntity,
+								replyTemplate);
 					}
 
 				} catch (Exception e) {
@@ -344,10 +343,8 @@ public class GameService {
 							readyNickName, drawPoint, Boolean.FALSE);
 					if (pEntity != null) {
 						String replyTemplate = AppUtils.REPLYPOINTAPPLYDRAW;
-
-						webWechat.webwxsendmsgM(MessageFormat.format(
-								replyTemplate, readyNickName, drawPoint,
-								pEntity.getPoints()));
+						pointChangeMsg(drawPoint, readyNickName, pEntity,
+								replyTemplate);
 					}
 
 				} catch (Exception e) {
@@ -360,6 +357,20 @@ public class GameService {
 			}
 		}
 	}
+
+	private void pointChangeMsg(Long putPoint, String readyNickName,
+			Player pEntity, String replyTemplate) {
+		webWechat.webwxsendmsgM(MessageFormat.format(
+				replyTemplate, readyNickName, putPoint,
+				pEntity.getPoints()));
+		if(runtimeDomain.getBothSend()) {
+			webWechat.webwxsendmsg(MessageFormat.format(
+					replyTemplate, readyNickName, putPoint,
+					pEntity.getPoints()));
+		}
+		
+	}
+	
 
 	@Transactional
 	public GameInfo undoTheGame(GameInfo gameInfo) {

@@ -15,6 +15,9 @@ public class AppUtils {
 
 	public static String base_uri,
 			redirect_uri = "https://wx.qq.com/cgi-bin/mmwebwx-bin";
+	
+	public static String base_uri2,
+	redirect_uri2 = "https://wx.qq.com/cgi-bin/mmwebwx-bin";
 
 	public static String[] WEBPUSH_URL = {
 			"https://webpush.wx.qq.com/cgi-bin/mmwebwx-bin/synccheck",
@@ -97,6 +100,8 @@ public class AppUtils {
 	public static final String REPLYPOINTAPPLYERROR2 = "@{0}\n剩余积分： {1}, 不足以完成下{2,number,#}积分操作!!";
 	public static final String REPLYPOINTAPPLYADD = "@{0}\n已上[{1}] 剩余积分： {2,number,#}";
 	public static final String REPLYPOINTAPPLYSUB = "@{0}\n已下[{1}] 剩余积分： {2,number,#}";
+	public static final String SELBANKERMSG = "选庄信息：@{0}\n庄上积分[{1,number,#}] 总积分： {2,number,#}";
+
 
 	public static final String SINGLEPLAYERINFO = "@{0}\n剩余积分： {1,number,#}";
 

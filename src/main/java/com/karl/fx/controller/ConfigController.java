@@ -48,6 +48,12 @@ public class ConfigController extends FxmlController {
 
 	@FXML
 	private CheckBox showManageFee;
+	
+	@FXML
+	private CheckBox bothSendView;
+	
+	@FXML
+	private CheckBox bankerSSView;
 
 	@FXML
 	private CheckBox invainBanker;
@@ -96,6 +102,28 @@ public class ConfigController extends FxmlController {
 				runtimeDomain.setDefinedStartInfo(definedStart.getText());
 			}
 		});
+		
+		bothSendView.setSelected(runtimeDomain.getBothSend());
+		bothSendView.selectedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean before, Boolean now) {
+						runtimeDomain.setBothSend(now);
+					}
+				});
+		
+		bankerSSView.setSelected(runtimeDomain.getBankerSS());
+		bankerSSView.selectedProperty().addListener(
+				new ChangeListener<Boolean>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Boolean> arg0,
+							Boolean before, Boolean now) {
+						runtimeDomain.setBankerSS(now);
+					}
+				});
 	}
 
 	private void buildAllFee() {

@@ -2,8 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1236.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.karl.fx.controller.MenuController">
@@ -14,15 +12,7 @@
 					<children>
 						<ListView fx:id="listMenu" layoutY="78.0" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#aksiKlikListMenu" prefHeight="535.0" prefWidth="136.0" stylesheets="@../css/listView.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
 						</ListView>
-						<Button fx:id="loginButton" layoutX="22.0" layoutY="19.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#wechatLogin" prefHeight="40.0" prefWidth="40.0" stylesheets="@../css/buttonCircle.css">
-							<graphic>
-								<ImageView fitHeight="16.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../img/arrowLeft.png" />
-									</image>
-								</ImageView>
-							</graphic>
-						</Button>
+						<Button fx:id="loginButton" layoutX="19.0" layoutY="29.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#wechatLogin" prefHeight="40.0" prefWidth="98.0" stylesheets="@../css/buttonCircle.css" text="信息账登陆" textFill="#06f231" />
 					</children>
 				</AnchorPane>
 				<AnchorPane fx:id="paneData" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="136.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
