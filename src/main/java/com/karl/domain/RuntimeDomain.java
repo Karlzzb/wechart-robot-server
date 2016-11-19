@@ -9,6 +9,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -90,9 +92,12 @@ public class RuntimeDomain implements Serializable {
 		paceLotteryRule = AppUtils.PACELARGEWIN;
 		bothSend = false;
 		bankerSS = false;
+		msgQueue = new ArrayBlockingQueue<MessageDomain>(100);
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
+	
+	private BlockingQueue<MessageDomain> msgQueue;
 
 	private Boolean bothSend;
 	
@@ -957,5 +962,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBankerSS(Boolean bankerSS) {
 		this.bankerSS = bankerSS;
+	}
+
+	public BlockingQueue<MessageDomain> getMsgQueue() {
+		return msgQueue;
+	}
+
+	public void setMsgQueue(BlockingQueue<MessageDomain> msgQueue) {
+		this.msgQueue = msgQueue;
 	}
 }

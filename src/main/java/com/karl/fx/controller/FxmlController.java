@@ -5,11 +5,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.karl.domain.RuntimeDomain;
-import com.karl.domain.SentorDomain;
 import com.karl.fx.StageManager;
 import com.karl.service.GameService;
 import com.karl.service.WebWechat;
-import com.karl.service.WebWechatSentor;
 
 @Component
 public class FxmlController{
@@ -21,14 +19,14 @@ public class FxmlController{
     @Autowired
     public WebWechat webWechat;
     
-    @Autowired
-    public WebWechatSentor webWechatSentor;
+//    @Autowired
+//    public WebWechatSentor webWechatSentor;
 
     @Autowired
     public RuntimeDomain runtimeDomain;
     
-    @Autowired
-    public SentorDomain sentorDomain;
+//    @Autowired
+//    public SentorDomain sentorDomain;
     
     @Autowired
     public GameService gameService;

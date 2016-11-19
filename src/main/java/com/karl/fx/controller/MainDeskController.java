@@ -21,8 +21,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -36,9 +34,6 @@ import com.karl.utils.AppUtils;
 @Lazy
 public class MainDeskController extends FxmlController {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MainDeskController.class);
-
 	@FXML
 	private ImageView imgLoad;
 
@@ -51,11 +46,11 @@ public class MainDeskController extends FxmlController {
 	@FXML
 	private ChoiceBox<ChatGroupModel> groupBoxM;
 	
-	@FXML
-	private ChoiceBox<ChatGroupModel> groupBoxSentor;
-
-	@FXML
-	private ChoiceBox<ChatGroupModel> groupBoxSentorM;
+//	@FXML
+//	private ChoiceBox<ChatGroupModel> groupBoxSentor;
+//
+//	@FXML
+//	private ChoiceBox<ChatGroupModel> groupBoxSentorM;
 
 	@FXML
 	private TextField bankerBetPoint;
@@ -107,7 +102,7 @@ public class MainDeskController extends FxmlController {
 	public void initialize() {
 		isInitializing = Boolean.TRUE;
 		buildGroupBox();
-		buildGroupBoxSentor();
+//		buildGroupBoxSentor();
 		buildGameQuicker();
 		isInitializing = Boolean.FALSE;
 	}
@@ -368,75 +363,75 @@ public class MainDeskController extends FxmlController {
 		groupBoxM.getSelectionModel().select(selectedM);
 	}
 	
-	private void buildGroupBoxSentor() {
-		groupBoxSentor.getSelectionModel().selectedItemProperty()
-				.addListener(new ChangeListener<ChatGroupModel>() {
-					@Override
-					public void changed(
-							ObservableValue<? extends ChatGroupModel> observable,
-							ChatGroupModel oldValue, ChatGroupModel newValue) {
-						if (newValue != null
-								&& !newValue.getGroupId().equals(
-										String.valueOf(0))) {
-							sentorDomain.setCurrentGroupId(newValue
-									.getGroupId());
-							sentorDomain.setCurrentGroupName(newValue
-									.getGroupName());
-						}
-					}
-				});
-		groupBoxSentorM.getSelectionModel().selectedItemProperty()
-				.addListener(new ChangeListener<ChatGroupModel>() {
-					@Override
-					public void changed(
-							ObservableValue<? extends ChatGroupModel> observable,
-							ChatGroupModel oldValue, ChatGroupModel newValue) {
-						if (newValue != null
-								&& !newValue.getGroupId().equals(
-										String.valueOf(0))) {
-							sentorDomain.setCurrentMGroupId(newValue
-									.getGroupId());
-						}
-					}
-				});
-
-		fillUpGroupBoxSentor();
-	}
-	
-	public void fillUpGroupBoxSentor() {
-		ObservableList<ChatGroupModel> groupList = groupBoxSentor.getItems();
-		ObservableList<ChatGroupModel> groupListFiniance = groupBoxSentorM.getItems();
-
-		if (groupList != null)
-			groupList.clear();
-		if (groupListFiniance != null) {
-			groupListFiniance.clear();
-		}
-		ChatGroupModel groupModel = null;
-		int i = 1;
-		int selected = 0;
-		int selectedM = 0;
-		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择玩家群", 0));
-		groupListFiniance
-				.add(new ChatGroupModel(String.valueOf(0), "请选择财务群", 0));
-		for (String groupId : sentorDomain.getGroupMap().keySet()) {
-			groupModel = new ChatGroupModel(groupId, sentorDomain
-					.getGroupMap().get(groupId).getString("NickName")
-					.replaceAll("</?[^>]+>", ""), sentorDomain.getGroupMap()
-					.get(groupId).getJSONArray("MemberList").size());
-			if (groupId.equals(sentorDomain.getCurrentGroupId())) {
-				selected = i;
-			}
-			if (groupId.equals(sentorDomain.getCurrentMGroupId())) {
-				selectedM = i;
-			}
-			groupList.add(groupModel);
-			groupListFiniance.add(groupModel);
-			i++;
-		}
-		groupBoxSentor.getSelectionModel().select(selected);
-		groupBoxSentorM.getSelectionModel().select(selectedM);
-	}
+//	private void buildGroupBoxSentor() {
+//		groupBoxSentor.getSelectionModel().selectedItemProperty()
+//				.addListener(new ChangeListener<ChatGroupModel>() {
+//					@Override
+//					public void changed(
+//							ObservableValue<? extends ChatGroupModel> observable,
+//							ChatGroupModel oldValue, ChatGroupModel newValue) {
+//						if (newValue != null
+//								&& !newValue.getGroupId().equals(
+//										String.valueOf(0))) {
+//							sentorDomain.setCurrentGroupId(newValue
+//									.getGroupId());
+//							sentorDomain.setCurrentGroupName(newValue
+//									.getGroupName());
+//						}
+//					}
+//				});
+//		groupBoxSentorM.getSelectionModel().selectedItemProperty()
+//				.addListener(new ChangeListener<ChatGroupModel>() {
+//					@Override
+//					public void changed(
+//							ObservableValue<? extends ChatGroupModel> observable,
+//							ChatGroupModel oldValue, ChatGroupModel newValue) {
+//						if (newValue != null
+//								&& !newValue.getGroupId().equals(
+//										String.valueOf(0))) {
+//							sentorDomain.setCurrentMGroupId(newValue
+//									.getGroupId());
+//						}
+//					}
+//				});
+//
+//		fillUpGroupBoxSentor();
+//	}
+//	
+//	public void fillUpGroupBoxSentor() {
+//		ObservableList<ChatGroupModel> groupList = groupBoxSentor.getItems();
+//		ObservableList<ChatGroupModel> groupListFiniance = groupBoxSentorM.getItems();
+//
+//		if (groupList != null)
+//			groupList.clear();
+//		if (groupListFiniance != null) {
+//			groupListFiniance.clear();
+//		}
+//		ChatGroupModel groupModel = null;
+//		int i = 1;
+//		int selected = 0;
+//		int selectedM = 0;
+//		groupList.add(new ChatGroupModel(String.valueOf(0), "请选择玩家群", 0));
+//		groupListFiniance
+//				.add(new ChatGroupModel(String.valueOf(0), "请选择财务群", 0));
+//		for (String groupId : sentorDomain.getGroupMap().keySet()) {
+//			groupModel = new ChatGroupModel(groupId, sentorDomain
+//					.getGroupMap().get(groupId).getString("NickName")
+//					.replaceAll("</?[^>]+>", ""), sentorDomain.getGroupMap()
+//					.get(groupId).getJSONArray("MemberList").size());
+//			if (groupId.equals(sentorDomain.getCurrentGroupId())) {
+//				selected = i;
+//			}
+//			if (groupId.equals(sentorDomain.getCurrentMGroupId())) {
+//				selectedM = i;
+//			}
+//			groupList.add(groupModel);
+//			groupListFiniance.add(groupModel);
+//			i++;
+//		}
+//		groupBoxSentor.getSelectionModel().select(selected);
+//		groupBoxSentorM.getSelectionModel().select(selectedM);
+//	}
 
 	@FXML
 	private void openLottery(ActionEvent event) {

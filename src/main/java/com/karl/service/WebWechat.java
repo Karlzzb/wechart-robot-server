@@ -19,7 +19,7 @@ import blade.kit.json.JSONObject;
 import com.karl.db.domain.Player;
 import com.karl.domain.MessageDomain;
 import com.karl.domain.RuntimeDomain;
-import com.karl.domain.SentorDomain;
+import com.karl.thread.MessageConsumer;
 import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
 import com.karl.utils.StringUtils;
@@ -32,8 +32,6 @@ public class WebWechat {
 
 	private RuntimeDomain runtimeDomain;
 	
-	private SentorDomain sentorDomain;
-
 	private GameService gameService;
 
 	private ExecutorService messageService;
@@ -41,14 +39,14 @@ public class WebWechat {
 	private volatile boolean stopRequested;
 
 	@Autowired
-	public WebWechat(RuntimeDomain runtimeDomain, SentorDomain sentorDomain, GameService gameService)
+	public WebWechat(RuntimeDomain runtimeDomain, GameService gameService)
 			throws InterruptedException {
 		System.setProperty("jsse.enableSNIExtension", "false");
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
-		this.sentorDomain = sentorDomain;
 		messageService = Executors.newFixedThreadPool(16);
+		new Thread(new MessageConsumer(runtimeDomain)).start();
 	}
 
 	/**
@@ -598,13 +596,13 @@ public class WebWechat {
 	 * @param content
 	 */
 	public void webwxsendmsg(String content) {
-		if (sentorDomain.getCurrentGroupId() == null
-				|| sentorDomain.getCurrentGroupId().isEmpty()) {
+		if (runtimeDomain.getCurrentGroupId() == null
+				|| runtimeDomain.getCurrentGroupId().isEmpty()) {
 			LOGGER.warn("message({}) not send due to no group selected!",
 					content);
 			return;
 		}
-		webwxsendmsg(content, sentorDomain.getCurrentGroupId());
+		webwxsendmsg(content, runtimeDomain.getCurrentGroupId());
 	}
 
 	/**
@@ -613,13 +611,13 @@ public class WebWechat {
 	 * @param content
 	 */
 	public void webwxsendmsgM(String content) {
-		if (sentorDomain.getCurrentMGroupId() == null
-				|| sentorDomain.getCurrentMGroupId().isEmpty()) {
+		if (runtimeDomain.getCurrentMGroupId() == null
+				|| runtimeDomain.getCurrentMGroupId().isEmpty()) {
 			LOGGER.warn("message({}) not send due to no group selected!",
 					content);
 			return;
 		}
-		webwxsendmsg(content, sentorDomain.getCurrentMGroupId());
+		webwxsendmsg(content, runtimeDomain.getCurrentMGroupId());
 	}
 
 	/**
@@ -631,9 +629,9 @@ public class WebWechat {
 	 */
 	public void webwxsendmsg(String content, String to) {
 		try {
-			sentorDomain.getMsgQueue().put(new MessageDomain(content, to));
+			runtimeDomain.getMsgQueue().put(new MessageDomain(content, to));
 			LOGGER.info("message queue size 【"
-					+ sentorDomain.getMsgQueue().size() + "】!");
+					+ runtimeDomain.getMsgQueue().size() + "】!");
 		} catch (Exception e) {
 			LOGGER.error("message queue put failed!", e);
 		}

@@ -7,15 +7,13 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import org.springframework.stereotype.Component;
-
 import blade.kit.DateKit;
 import blade.kit.StringKit;
 import blade.kit.json.JSONObject;
 
 import com.karl.utils.AppUtils;
 
-@Component
+//@Component
 public class SentorDomain implements Serializable {
 
 	private BlockingQueue<MessageDomain> msgQueue;

@@ -1,12 +1,8 @@
 package com.karl.service;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import blade.kit.DateKit;
 import blade.kit.StringKit;
@@ -22,7 +18,7 @@ import com.karl.utils.AppUtils;
 import com.karl.utils.CookieUtil;
 import com.karl.utils.StringUtils;
 
-@Service
+//@Service
 public class WebWechatSentor {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -34,7 +30,6 @@ public class WebWechatSentor {
 
 	private volatile boolean stopRequested;
 	
-	private ExecutorService messageService;
 
 	@Autowired
 	public WebWechatSentor(SentorDomain sentorDomain, GameService gameService)
@@ -44,7 +39,6 @@ public class WebWechatSentor {
 		this.sentorDomain = sentorDomain;
 		new Thread(new MessageConsumer(sentorDomain)).start();
 		this.gameService = gameService;
-		messageService = Executors.newFixedThreadPool(1);
 	}
 
 	/**
