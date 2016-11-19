@@ -1,5 +1,8 @@
 package com.karl.service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +29,22 @@ public class WebWechatSentor {
 			.getLogger(WebWechatSentor.class);
 
 	private SentorDomain sentorDomain;
+	
+	private GameService gameService;
 
 	private volatile boolean stopRequested;
+	
+	private ExecutorService messageService;
 
 	@Autowired
-	public WebWechatSentor(SentorDomain sentorDomain)
+	public WebWechatSentor(SentorDomain sentorDomain, GameService gameService)
 			throws InterruptedException {
 		System.setProperty("jsse.enableSNIExtension", "false");
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.sentorDomain = sentorDomain;
 		new Thread(new MessageConsumer(sentorDomain)).start();
+		this.gameService = gameService;
+		messageService = Executors.newFixedThreadPool(1);
 	}
 
 	/**
@@ -608,16 +617,21 @@ public class WebWechatSentor {
 							// runtimeDomain.setBestSyncCheckChannel(null);
 						}
 						if (arr[0] == 0) {
-							JSONObject data = null;
 							switch (arr[1]) {
 							case 2:// 新的消息
-								data = webwxsync();
+								final JSONObject data = webwxsync();
+//								messageService.submit(() -> {
+//									try {
+//										handleMsg(data);
+//										LOGGER.debug("Listen Thread1 finish once!");
+//									} catch (Exception e) {
+//										LOGGER.error("wechat sentor sync newMessageThread1 failed!", e);
+//									}
+//								});
 								break;
 							case 3:// 新的消息
-								data = webwxsync();
 								break;
 							case 6:// 红包 && 加好友
-								data = webwxsync();
 								break;
 							case 7:// 进入/离开聊天界面
 								break;
@@ -637,6 +651,68 @@ public class WebWechatSentor {
 			}
 		}, "listenMsgMode").start();
 	}
+	
+	/**
+	 * 获取最新消息
+	 * 
+	 * @param console
+	 */
+	public void handleMsg(JSONObject data) {
+		if (null == data) {
+			return;
+		}
+
+		JSONArray addMsgList = data.getJSONArray("AddMsgList");
+
+		for (int i = 0, len = addMsgList.size(); i < len; i++) {
+			JSONObject msg = addMsgList.getJSONObject(i);
+			int msgType = msg.getInt("MsgType", 0);
+
+			switch (msgType) {
+			case 51:
+				break;
+			case 1:
+				handleTextMsg(msg);
+				LOGGER.debug("Text Message Thread finish once!");
+				break;
+			case 3:
+				break;
+			case 34:
+				break;
+			case 42:
+				LOGGER.debug("Recomend Message Thread finish once!");
+				break;
+			default:
+				break;
+			}
+			LOGGER.debug("Message Detail： {}" + msg.toString());
+		}
+		LOGGER.debug("Message Package： {}", data.toString());
+	}
+	
+	/**
+	 * handle text message
+	 * 
+	 * @param jsonMsg
+	 * @param console
+	 */
+	private void handleTextMsg(JSONObject jsonMsg) {
+		try {
+			String content = "";
+			String messageFrom = jsonMsg.getString("FromUserName");
+
+			// Message from myself
+			if (sentorDomain.getUser().getString("UserName")
+					.equals(messageFrom)) {
+				content = jsonMsg.getString("Content");
+				gameService.mainSelfMessageHandle(content);
+				return;
+			}
+		} catch (Exception e) {
+			LOGGER.error("handleTextMsg failed!", e);
+		}
+	}
+
 
 	public void loginWechat() throws InterruptedException {
 		String uuid = getUUID();
