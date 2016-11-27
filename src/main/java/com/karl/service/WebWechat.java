@@ -31,7 +31,7 @@ public class WebWechat {
 			.getLogger(WebWechat.class);
 
 	private RuntimeDomain runtimeDomain;
-	
+
 	private GameService gameService;
 
 	private ExecutorService messageService;
@@ -45,7 +45,7 @@ public class WebWechat {
 		System.setProperty("https.protocols", "TLSv1.1");
 		this.runtimeDomain = runtimeDomain;
 		this.gameService = gameService;
-		messageService = Executors.newFixedThreadPool(16);
+		messageService = Executors.newFixedThreadPool(12);
 		new Thread(new MessageConsumer(runtimeDomain)).start();
 	}
 
@@ -905,6 +905,14 @@ public class WebWechat {
 				return;
 			}
 
+			if (recommendWechatId.isEmpty() || recommendWechatName.isEmpty()) {
+				LOGGER.error(
+						"FromUserName[{}] recommendInfo cann't be interpet{}",
+						jsonMsg.getString("FromUserName"),
+						recommendInfo == null ? "" : recommendInfo.toString());
+				return;
+			}
+
 			if (runtimeDomain.getAllUsrMap().get(recommendWechatId) == null) {
 				String content = MessageFormat.format(
 						AppUtils.ASKRECOMMENDUNKNOWN, recommendWechatName);
@@ -912,25 +920,28 @@ public class WebWechat {
 				return;
 			}
 
-			if (recommendWechatId.isEmpty() || recommendWechatName.isEmpty()) {
-				LOGGER.debug(
-						"FromUserName[{}] recommendInfo cann't be interpet{}",
-						jsonMsg.getString("FromUserName"),
-						recommendInfo == null ? "" : recommendInfo.toString());
+			String remarkName = runtimeDomain
+					.getUserRemarkName(recommendWechatId);
+			if (AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
+				String content = MessageFormat.format(
+						AppUtils.ASKRECOMMENDUNKNOWN, recommendWechatName);
+				webwxsendmsgM(content);
 				return;
 			}
 
-			runtimeDomain.setReadyWechatId(recommendWechatId);
-			String remarkName = runtimeDomain
-					.getUserRemarkName(recommendWechatId);
 			Long nowPoint = 0L;
-			if (!AppUtils.UNCONTACTUSRNAME.equals(remarkName)) {
-				Player pEntity = runtimeDomain.getRunningPlayeres().get(
-						remarkName);
-				if (pEntity != null) {
-					nowPoint = pEntity.getPoints();
+			Player pEntity = runtimeDomain.getRunningPlayeres().get(remarkName);
+			if (pEntity != null) {
+				if (!pEntity.getWebchatId().equals(recommendWechatId)) {
+					String content = MessageFormat.format(
+							AppUtils.ASKRECOMMENDWARNING, recommendWechatName);
+					webwxsendmsgM(content);
+					return;
 				}
+				nowPoint = pEntity.getPoints();
 			}
+
+			runtimeDomain.setReadyWechatId(recommendWechatId);
 			String content = MessageFormat.format(AppUtils.ASKRECOMMEND,
 					recommendWechatName, nowPoint);
 			webwxsendmsgM(content);

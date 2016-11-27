@@ -108,6 +108,8 @@ public class AppUtils {
 	public static final String ASKRECOMMEND = "@{0}\n目前积分{1,number,#}，您要修改吗？";
 
 	public static final String ASKRECOMMENDUNKNOWN = "{0}\n不是好友，请先添加！";
+	
+	public static final String ASKRECOMMENDWARNING = "{0}\n此玩家特征不对应，请注意！";
 
 	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");
 	public static final Long DEFAULT_MINBET = Long.valueOf("10");
