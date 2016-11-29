@@ -48,10 +48,10 @@ public class ConfigController extends FxmlController {
 
 	@FXML
 	private CheckBox showManageFee;
-	
+
 	@FXML
 	private CheckBox bothSendView;
-	
+
 	@FXML
 	private CheckBox bankerSSView;
 
@@ -79,6 +79,9 @@ public class ConfigController extends FxmlController {
 	private TextField firstBankerFee;
 	@FXML
 	private TextField definedStart;
+	
+	@FXML
+	private TextField playBankerRateView;
 
 	private ObservableList<PlayRule> ruleList;
 
@@ -102,7 +105,7 @@ public class ConfigController extends FxmlController {
 				runtimeDomain.setDefinedStartInfo(definedStart.getText());
 			}
 		});
-		
+
 		bothSendView.setSelected(runtimeDomain.getBothSend());
 		bothSendView.selectedProperty().addListener(
 				new ChangeListener<Boolean>() {
@@ -113,7 +116,7 @@ public class ConfigController extends FxmlController {
 						runtimeDomain.setBothSend(now);
 					}
 				});
-		
+
 		bankerSSView.setSelected(runtimeDomain.getBankerSS());
 		bankerSSView.selectedProperty().addListener(
 				new ChangeListener<Boolean>() {
@@ -303,11 +306,10 @@ public class ConfigController extends FxmlController {
 			public void changed(ObservableValue<? extends String> ov,
 					String oldValue, String newValue) {
 				try {
-					Matcher matcher = StringUtils.LONG.matcher(newValue);
-					if (matcher.find()) {
+					if (newValue.matches("\\d*")) {
 						bankerWinCut.setText(newValue);
-						runtimeDomain.setBankerWinCutRate(Long.valueOf(matcher
-								.group()));
+						runtimeDomain.setBankerWinCutRate(Long
+								.valueOf(newValue));
 					} else {
 						bankerWinCut.setText(oldValue);
 					}
@@ -325,16 +327,34 @@ public class ConfigController extends FxmlController {
 			public void changed(ObservableValue<? extends String> ov,
 					String oldValue, String newValue) {
 				try {
-					Matcher matcher = StringUtils.LONG.matcher(newValue);
-					if (matcher.find()) {
+					if (newValue.matches("\\d*")) {
 						firstBankerFee.setText(newValue);
-						runtimeDomain.setFirstBankerFee(Long.valueOf(matcher
-								.group()));
+						runtimeDomain.setFirstBankerFee(Long.valueOf(newValue));
 					} else {
 						firstBankerFee.setText(oldValue);
 					}
 				} catch (Exception e) {
 					firstBankerFee.setText(oldValue);
+				}
+			}
+		});
+
+		/* be banker rate */
+		playBankerRateView
+				.setText(String.valueOf(runtimeDomain.getPlayBankerRate()));
+		playBankerRateView.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov,
+					String oldValue, String newValue) {
+				try {
+					if (newValue.matches("\\d*")) {
+						playBankerRateView.setText(newValue);
+						runtimeDomain.setPlayBankerRate(Integer.valueOf(newValue));
+					} else {
+						playBankerRateView.setText(oldValue);
+					}
+				} catch (Exception e) {
+					playBankerRateView.setText(oldValue);
 				}
 			}
 		});

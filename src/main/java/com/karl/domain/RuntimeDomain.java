@@ -42,7 +42,7 @@ import freemarker.template.TemplateNotFoundException;
 public class RuntimeDomain implements Serializable {
 
 	private int messageBoardCount;
-	
+
 	public RuntimeDomain() {
 		groupMap = new HashMap<String, JSONObject>();
 		allUsrMap = new HashMap<String, JSONObject>();
@@ -93,14 +93,16 @@ public class RuntimeDomain implements Serializable {
 		bothSend = false;
 		bankerSS = false;
 		msgQueue = new ArrayBlockingQueue<MessageDomain>(100);
+		totalIndex = 6;
+		playBankerRate = 5;
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
-	
+
 	private BlockingQueue<MessageDomain> msgQueue;
 
 	private Boolean bothSend;
-	
+
 	private Boolean bankerSS;
 
 	private Configuration ftlCfg;
@@ -291,10 +293,16 @@ public class RuntimeDomain implements Serializable {
 	private Long firstBankerFee;
 
 	private String definedStartInfo;
-	
+
 	private List<String> illegalPlayer;
 
 	private Integer paceLotteryRule;
+
+	private Integer totalIndex;
+
+	private Integer playBankerRate;
+
+	private Long baseBankerBet;
 
 	public String getUserRemarkName(String id) {
 		String name = AppUtils.UNCONTACTUSRNAME;
@@ -319,7 +327,7 @@ public class RuntimeDomain implements Serializable {
 		}
 		return name;
 	}
-	
+
 	public String getUserNickName(JSONObject member) {
 		String name = AppUtils.UNCONTACTUSRNAME;
 		if (member != null) {
@@ -389,7 +397,7 @@ public class RuntimeDomain implements Serializable {
 	public void putGroupMap(String key, JSONObject value) {
 		this.groupMap.put(key, value);
 	}
-	
+
 	public void clearGroupMap() {
 		this.groupMap.clear();
 	}
@@ -397,7 +405,7 @@ public class RuntimeDomain implements Serializable {
 	public Map<String, JSONObject> getAllUsrMap() {
 		return allUsrMap;
 	}
-	
+
 	public JSONObject getSingleUsrMap(String remarkName) {
 		return allUsrMap.get(remarkName);
 	}
@@ -409,7 +417,7 @@ public class RuntimeDomain implements Serializable {
 	public void putAllUsrMap(String key, JSONObject value) {
 		this.allUsrMap.put(key, value);
 	}
-	
+
 	public void clearAllUsrMap() {
 		this.allUsrMap.clear();
 	}
@@ -573,6 +581,10 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBankerIndex(Integer bankerIndex) {
 		this.bankerIndex = bankerIndex;
+	}
+
+	public Integer getTotalIndex() {
+		return totalIndex;
 	}
 
 	public Integer getBetOrder() {
@@ -771,6 +783,10 @@ public class RuntimeDomain implements Serializable {
 	public Long getManageFee() {
 		return this.manageFee;
 	}
+	
+	public Long getManageFeeSum() {
+		return this.manageFee + getBaseBankerBet() * getPlayBankerRate() / 100;
+	}
 
 	public void setManageFee(Long manageFee) {
 		this.manageFee = manageFee;
@@ -859,6 +875,12 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBeforeGameInfo(GameInfo beforeGameInfo) {
 		this.beforeGameInfo = beforeGameInfo;
+		if (this.beforeGameInfo == null) {
+			this.baseBankerBet = this.bankerBetPoint;
+		} else if (!this.beforeGameInfo.getBankerRemarkName().equals(
+				beforeGameInfo.getBankerRemarkName())) {
+			this.baseBankerBet = this.bankerBetPoint;
+		}
 	}
 
 	public Long getFirstBankerFee() {
@@ -894,6 +916,21 @@ public class RuntimeDomain implements Serializable {
 		ftlCfg.setWhitespaceStripping(Boolean.TRUE);
 	}
 
+	public Template getBetSummaryTemplate() {
+		try {
+			return ftlCfg.getTemplate("bet.ftlh");
+		} catch (TemplateNotFoundException e) {
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public Template getRankTemplate() {
 		try {
 			return ftlCfg.getTemplate("ranking.ftlh");
@@ -908,10 +945,25 @@ public class RuntimeDomain implements Serializable {
 		}
 		return null;
 	}
-	
+
 	public Template getBillTemplate() {
 		try {
 			return ftlCfg.getTemplate("bill.ftlh");
+		} catch (TemplateNotFoundException e) {
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Template getBillLongSplitTemplate() {
+		try {
+			return ftlCfg.getTemplate("billSplit.ftlh");
 		} catch (TemplateNotFoundException e) {
 			e.printStackTrace();
 		} catch (MalformedTemplateNameException e) {
@@ -931,11 +983,11 @@ public class RuntimeDomain implements Serializable {
 	public void setIllegalPlayer(List<String> illegalPlayer) {
 		this.illegalPlayer = illegalPlayer;
 	}
-	
+
 	public void addIllegalPlayer(String playerName) {
 		illegalPlayer.add(playerName);
 	}
-	
+
 	public void clearIllegalPlayer() {
 		illegalPlayer.clear();
 	}
@@ -970,5 +1022,25 @@ public class RuntimeDomain implements Serializable {
 
 	public void setMsgQueue(BlockingQueue<MessageDomain> msgQueue) {
 		this.msgQueue = msgQueue;
+	}
+
+	public void setTotalIndex(Integer totalIndex) {
+		this.totalIndex = totalIndex;
+	}
+
+	public Integer getPlayBankerRate() {
+		return this.playBankerRate;
+	}
+
+	public void setPlayBankerRate(Integer playBankerRate) {
+		this.playBankerRate = playBankerRate;
+	}
+
+	public Long getBaseBankerBet() {
+		return baseBankerBet == null ? this.bankerBetPoint : baseBankerBet;
+	}
+
+	public void setBaseBankerBet(Long baseBankerBet) {
+		this.baseBankerBet = baseBankerBet;
 	}
 }

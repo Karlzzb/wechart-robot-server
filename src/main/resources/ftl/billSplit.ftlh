@@ -1,0 +1,52 @@
+第 ${currentGameId?string["0000"]} 期 ${.now?string["yyyyMMdd"]}
+
+<#if winnerList?has_content>
+----${Face}以下加分${Face}----
+
+<#list winnerList as winner>
+<#if winner.resultPoint <= 0>
+${winner.remarkName} ${winner.betPoint?string["0"]} ${winner.resultRuleName}(${winner.betIndexString}${winner.luckInfo?string["0.##"]}) 喝水
+<#else>
+${winner.remarkName} ${winner.betPoint?string["0"]} ${winner.resultRuleName}(${winner.betIndexString}${winner.luckInfo?string["0.##"]}) 赢 ${winner.resultPoint?string["0"]}
+</#if>
+</#list>
+
+</#if>
+<#if loserList?has_content>
+----/::<以下减分/::<----
+
+<#list loserList as loser>
+${loser.remarkName} ${loser.betPoint?string["0"]} ${loser.resultRuleName}(${loser.betIndexString}${loser.luckInfo?string["0.##"]}) 输 ${loser.resultPoint?abs?string["0"]}
+</#list>
+
+</#if>
+<#if paceList?has_content>
+----${RUN}以下跑路${RUN}----
+
+<#list paceList as pace>
+${pace.remarkName} ${pace.betPoint?string["0"]} ${pace.resultRuleName}(${pace.betIndexString}${pace.luckInfo?string["0.##"]}) 跑
+</#list>
+
+</#if>
+<#if allInList?has_content>
+----/:,@f以下梭哈/:,@f----
+
+<#list allInList as allInPlayer>
+${allInPlayer.remarkName} ${allInPlayer.betPoint?string["0"]} ${allInPlayer.resultRuleName}(${allInPlayer.betIndexString}${allInPlayer.luckInfo?string["0.##"]}) <#if allInPlayer.resultPoint <= 0>输<#else>赢</#if> ${allInPlayer.resultPoint?abs?string["0"]}
+</#list>
+
+</#if>
+--------------------------
+本 局 庄 家 : ${gameInfo.bankerRemarkName}
+庄 家 点 数: 第${gameInfo.betIndexString}门[${gameInfo.luckInfo?string["0.##"]}] ${gameInfo.resultRuleName} [${gameInfo.resultTimes?string["0"]}倍]
+吃 : ${loserList?size}家 /赔 : ${winnerList?size}家 /跑 : ${paceList?size}家
+开 局 庄 分 : ${(bankerBetPoint - gameInfo.resultPoint)?string["0"]}
+庄 家 获 利 : <#if (gameInfo.resultPoint + gameInfo.manageFee + gameInfo.packageFee + gameInfo.firstBankerFee + gameInfo.bankerWinCut) <= 0>输<#else>赢</#if>${(gameInfo.resultPoint + gameInfo.manageFee + gameInfo.packageFee + gameInfo.firstBankerFee + gameInfo.bankerWinCut)?abs?string["0"]}
+<#if showManageFee>
+管 理 费 用 : ${gameInfo.manageFee?string["0"]}
+</#if>
+发 包 金 额 : ${gameInfo.packageFee?string["0"]}
+本 局 基 金 : ${gameInfo.bankerWinCut?string["0"]}
+剩 余 庄 分 : ${bankerBetPoint?string["0"]}
+═══════════
+${R}-专注报数-仅供娱乐,严禁赌博!

@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -95,6 +96,18 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private Button singlePlayerInfoSend;
+	
+	@FXML
+	private HBox playLuckWayView;
+	
+	@FXML
+	private HBox playLongSplitView;
+	
+	@FXML
+	private TextField bankerBetIndexView;
+	
+	@FXML
+	private TextField totalIndexView;
 
 	private Boolean isInitializing;
 
@@ -218,7 +231,6 @@ public class MainDeskController extends FxmlController {
 		});
 
 		setCurrentBankSign(runtimeDomain.getBankerRemarkName());
-
 		definedBet.setText(runtimeDomain.getDefiendBet().toString());
 		definedBet.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -233,6 +245,44 @@ public class MainDeskController extends FxmlController {
 				}
 			}
 		});
+		if (!AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())) {
+			playLuckWayView.setDisable(Boolean.TRUE);
+			definedBet.setDisable(Boolean.TRUE);
+		}
+		bankerBetIndexView.setText(runtimeDomain.getBankerIndex().toString());
+		bankerBetIndexView.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					bankerBetIndexView.setText(oldValue);
+				} else {
+					bankerBetIndexView.setText(newValue);
+					runtimeDomain.setBankerIndex(Integer.valueOf(bankerBetIndexView
+							.getText()));
+				}
+			}
+		});
+		
+		totalIndexView.setText(runtimeDomain.getTotalIndex().toString());
+		totalIndexView.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					totalIndexView.setText(oldValue);
+				} else {
+					totalIndexView.setText(newValue);
+					runtimeDomain.setTotalIndex(Integer.valueOf(totalIndexView
+							.getText()));
+				}
+			}
+		});
+		if (!AppUtils.PLAYLONGSPLIT.equals(runtimeDomain.getCurrentGameKey())) {
+			bankerBetIndexView.setDisable(Boolean.TRUE);
+			totalIndexView.setDisable(Boolean.TRUE);
+			playLongSplitView.setDisable(Boolean.TRUE);
+		}
 	}
 
 	private void gameSingalHandle() {
@@ -282,7 +332,7 @@ public class MainDeskController extends FxmlController {
 			gameSingal.getStyleClass().add("start-button");
 			endGameViewAction();
 			if (!AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())) {
-				openMessageBoard(gameService.declareGame());
+				openMessageBoard(gameService.publishBetInfo());
 			}
 		}
 	}
@@ -484,8 +534,7 @@ public class MainDeskController extends FxmlController {
 					.getTime() + runtimeDomain.getCurrentTimeOut());
 		}
 
-		if (AppUtils.PLAYLUCKWAY.equals(runtimeDomain.getCurrentGameKey())
-				&& runtimeDomain.getGlobalGameSignal()) {
+		if (runtimeDomain.getGlobalGameSignal()) {
 			gameSingalHandle();
 		}
 

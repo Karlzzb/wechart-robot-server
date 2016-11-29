@@ -156,5 +156,77 @@ public class StringUtils {
     	return StringUtils.unicode2String("U+E24C");
     }
     
-	
+    /**
+     * unicode 转字符串
+     */
+    public static String label1() {
+    	return StringUtils.unicode2String("U+E21C");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label2() {
+    	return StringUtils.unicode2String("U+E21D");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label3() {
+    	return StringUtils.unicode2String("U+E21E");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label4() {
+    	return StringUtils.unicode2String("U+E21F");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label5() {
+    	return StringUtils.unicode2String("U+E220");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label6() {
+    	return StringUtils.unicode2String("U+E221");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label7() {
+    	return StringUtils.unicode2String("U+E222");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label8() {
+    	return StringUtils.unicode2String("U+E223");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label9() {
+    	return StringUtils.unicode2String("U+E224");
+    }
+    
+    /**
+     * unicode 转字符串
+     */
+    public static String label0() {
+    	return StringUtils.unicode2String("U+E225");
+    }
+    
+    public static String labelNotice() {
+    	return StringUtils.unicode2String("U+E142");
+    }
 }

@@ -51,7 +51,7 @@ public class AppUtils {
 
 	public static final String PLAYLONG = "数字下注玩法";
 
-	public static final String PLAYLONGSPLIT = "分数下注玩法";
+	public static final String PLAYLONGSPLIT = "比门玩法";
 
 	public static final String PLAYLUCKWAY = "3秒抢包";
 
@@ -110,7 +110,7 @@ public class AppUtils {
 	public static final String ASKRECOMMENDUNKNOWN = "{0}\n不是好友，请先添加！";
 	
 	public static final String ASKRECOMMENDWARNING = "{0}\n此玩家特征不对应，请注意！";
-
+	
 	public static final Long DEFAULT_MAXBET = Long.valueOf("1000");
 	public static final Long DEFAULT_MINBET = Long.valueOf("10");
 	public static final Integer DEFAULT_PACKAGE_NUM = 8;
@@ -147,6 +147,11 @@ public class AppUtils {
 	public static final String REALPACKAGEFEEMODEL = "实际包费";
 
 	public static final int MSGSENTRETRY = 5;
+	
+	public static final String BETINFOERROR = "{0}\n 玩家特征不对应，下注无效！";
+	public static final String BETINFOERRORNOPOINTS = "@{0}\n 下注无效！余额{1,number,#}不足支付！";
+	public static final String BETINFOERRORNOINDEX = "@{0}\n 下注无效！不可与庄家同门({1,number,#}门)！";
+
 	
 	//pace lottery rule
 	/**

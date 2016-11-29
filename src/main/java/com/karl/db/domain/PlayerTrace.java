@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.karl.utils.StringUtils;
+
 @Entity
 public class PlayerTrace implements Serializable {
 
@@ -224,6 +226,43 @@ public class PlayerTrace implements Serializable {
 
 	public void setIsBanker(Boolean isBanker) {
 		this.isBanker = isBanker;
+	}
+	
+	public String getBetIndexString() {
+		String indexCode = StringUtils.label0();
+		switch (betIndex) {
+		case 1:
+			indexCode = StringUtils.label1();
+			break;
+		case 2:
+			indexCode = StringUtils.label2();
+			break;
+		case 3:
+			indexCode = StringUtils.label3();
+			break;
+		case 4:
+			indexCode = StringUtils.label4();
+			break;
+		case 5:
+			indexCode = StringUtils.label5();
+			break;
+		case 6:
+			indexCode = StringUtils.label6();
+			break;
+		case 7:
+			indexCode = StringUtils.label7();
+			break;
+		case 8:
+			indexCode = StringUtils.label8();
+			break;
+		case 9:
+			indexCode = StringUtils.label9();
+			break;
+		default:
+			break;
+		}
+		
+		return indexCode;
 	}
 
 }

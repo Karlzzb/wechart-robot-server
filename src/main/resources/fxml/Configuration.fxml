@@ -105,9 +105,9 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
                               </Pane>
-                              <Pane id="config-fee-panel" prefHeight="262.0" prefWidth="318.0">
+                              <Pane id="config-fee-panel" prefHeight="294.0" prefWidth="317.0">
                                  <children>
-                                    <VBox prefHeight="262.0" prefWidth="319.0" styleClass="colorPanel">
+                                    <VBox prefHeight="294.0" prefWidth="319.0" styleClass="colorPanel">
                                        <children>
                                           <HBox>
                                              <children>
@@ -161,6 +161,12 @@
                                              <children>
                                                 <Label prefHeight="30.0" prefWidth="140.0" text="上庄费用：" />
                                                 <TextField fx:id="firstBankerFee" prefHeight="28.0" prefWidth="170.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="续庄费用（%）：" />
+                                                <TextField fx:id="playBankerRateView" prefHeight="28.0" prefWidth="170.0" />
                                              </children>
                                           </HBox>
                                        </children>

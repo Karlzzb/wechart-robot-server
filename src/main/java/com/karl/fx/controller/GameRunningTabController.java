@@ -214,6 +214,13 @@ public class GameRunningTabController extends FxmlController {
 	}
 
 	private void deleteTrace(PlayerTraceModel traceModel) {
+		if (traceModel.getIsBanker()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("不能删除");
+			alert.setContentText("不能删除庄家下注信息！");
+			return;
+		}
+
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("删除确认");
 		alert.setContentText("确定删除玩家【" + traceModel.getPlayerName()
@@ -258,11 +265,14 @@ public class GameRunningTabController extends FxmlController {
 					}
 
 					traceTab.getItems().add(
-							new PlayerTraceModel(trace.getTraceId(), trace.getRemarkName(),
-									pEntity.getPoints(), trace.getBetInfo(),
-									trace.getLuckInfo().toString(), trace
-											.getResultRuleName(), resultInfo,
-									trace.getIsBanker()));
+							new PlayerTraceModel(trace.getTraceId(), trace
+									.getRemarkName(), pEntity.getPoints(),
+									trace.getBetInfo(),
+									trace.getLuckInfo() == null ? "" : trace
+											.getLuckInfo().toString(), trace
+											.getResultRuleName() == null ? ""
+											: trace.getResultRuleName(),
+									resultInfo, trace.getIsBanker()));
 				}
 			}
 			flushDefiedCol();
@@ -283,7 +293,7 @@ public class GameRunningTabController extends FxmlController {
 				} catch (Exception e) {
 					LOGGER.error("Can not open luckinfo board!", e);
 				}
-				
+
 				LOGGER.debug("The open luckinfo complete!");
 
 				return 0;
@@ -295,10 +305,6 @@ public class GameRunningTabController extends FxmlController {
 
 	public void clearLuckInfo() {
 		fillTraceTab();
-	}
-
-	public void flushBetInfo() {
-		this.fillTraceTab();
 	}
 
 	public void flushResult() {
@@ -369,6 +375,24 @@ public class GameRunningTabController extends FxmlController {
 			} else {
 				setGraphic(null);
 			}
+		}
+	}
+
+	public void addBetInfo2UI(Player pEntity, PlayerTrace trace) {
+		try {
+			String resultInfo = "";
+			String luckInfo = "";
+			String resultName = "";
+			traceTab.getItems().add(
+					new PlayerTraceModel(trace.getTraceId(), trace
+							.getRemarkName(), pEntity.getPoints(), trace
+							.getBetInfo(), luckInfo, resultName, resultInfo,
+							trace.getIsBanker()));
+			flushDefiedCol();
+			LOGGER.debug("Trace table add table size={}!", traceTab.getItems()
+					.size());
+		} catch (Exception e) {
+			LOGGER.error("Trace table add betInfo failed!", e);
 		}
 	}
 }
