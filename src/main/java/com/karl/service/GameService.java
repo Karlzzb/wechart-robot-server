@@ -380,6 +380,9 @@ public class GameService {
 			if (Long.valueOf(0).compareTo(traceList.get(i).getResultPoint()) == 0) {
 				continue;
 			}
+			if (traceList.get(i).getIsBanker()) {
+				continue;
+			}
 			ryncPlayerPoint(traceList.get(i).getRemarkName(), traceList.get(i)
 					.getResultPoint() < 0, Math.abs(traceList.get(i)
 					.getResultPoint()));
