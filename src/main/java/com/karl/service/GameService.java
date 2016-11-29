@@ -611,7 +611,7 @@ public class GameService {
 			return null;
 		}
 		List<PlayerTrace> traceList = playerService
-				.getPlayerTraceListByGameId(currentGameId);
+				.getPlayerTraceListByGameId2(currentGameId);
 		if (traceList == null || traceList.size() < 1) {
 			return null;
 		}

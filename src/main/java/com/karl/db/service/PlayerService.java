@@ -107,6 +107,11 @@ public class PlayerService {
 		Assert.notNull(gameId, "gameId must not be null");
 		return playerTraceRepository.findByGameId(gameId);
 	}
+	
+	public List<PlayerTrace> getPlayerTraceListByGameId2(Long gameId) {
+		Assert.notNull(gameId, "gameId must not be null");
+		return playerTraceRepository.findByGameId2(gameId);
+	}
 
 	public void updateLuckInfo(Long luckInfo, Long gameSerialNo,
 			String playerId, String remarkName, String betInfo) {

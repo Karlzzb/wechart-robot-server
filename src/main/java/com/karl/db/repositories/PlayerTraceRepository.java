@@ -13,6 +13,9 @@ public interface PlayerTraceRepository extends CrudRepository<PlayerTrace, Long>
     @Query("from PlayerTrace p where p.gameSerialNo = ?1 order by resultTimes desc, p.betTime desc, betPoint desc")
     List<PlayerTrace> findByGameId(Long gameId);
     
+    @Query("from PlayerTrace p where p.gameSerialNo = ?1 order by resultTimes desc, p.betTime asc")
+    List<PlayerTrace> findByGameId2(Long gameId);
+    
     @Query("from PlayerTrace p where p.remarkName = ?1")
     List<PlayerTrace> findByRemarkName(String remarkName);
 
