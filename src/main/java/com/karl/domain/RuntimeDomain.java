@@ -95,6 +95,7 @@ public class RuntimeDomain implements Serializable {
 		msgQueue = new ArrayBlockingQueue<MessageDomain>(100);
 		totalIndex = 6;
 		playBankerRate = 5;
+		dirtyCut = 0L;
 	}
 
 	private static final long serialVersionUID = 5720576756640779509L;
@@ -303,6 +304,8 @@ public class RuntimeDomain implements Serializable {
 	private Integer playBankerRate;
 
 	private Long baseBankerBet;
+
+	private Long dirtyCut;
 
 	public String getUserRemarkName(String id) {
 		String name = AppUtils.UNCONTACTUSRNAME;
@@ -875,12 +878,6 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBeforeGameInfo(GameInfo beforeGameInfo) {
 		this.beforeGameInfo = beforeGameInfo;
-		if (this.beforeGameInfo == null) {
-			this.baseBankerBet = this.bankerBetPoint;
-		} else if (!this.beforeGameInfo.getBankerRemarkName().equals(
-				beforeGameInfo.getBankerRemarkName())) {
-			this.baseBankerBet = this.bankerBetPoint;
-		}
 	}
 
 	public Long getFirstBankerFee() {
@@ -1042,5 +1039,13 @@ public class RuntimeDomain implements Serializable {
 
 	public void setBaseBankerBet(Long baseBankerBet) {
 		this.baseBankerBet = baseBankerBet;
+	}
+
+	public Long getDirtyCut() {
+		return this.dirtyCut;
+	}
+
+	public void setDirtyCut(Long dirtyCut) {
+		this.dirtyCut = dirtyCut;
 	}
 }

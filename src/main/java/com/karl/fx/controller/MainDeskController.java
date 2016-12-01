@@ -217,8 +217,8 @@ public class MainDeskController extends FxmlController {
 					bankerBetPoint.setText(oldValue);
 					return;
 				}
-				Player banker = runtimeDomain.getRunningPlayeres()
-						.get(runtimeDomain.getBankerRemarkName());
+				Player banker = runtimeDomain.getRunningPlayeres().get(
+						runtimeDomain.getBankerRemarkName());
 				if (Long.valueOf(newValue).compareTo(banker.getPoints()) > 0) {
 					bankerBetPoint.setText(oldValue);
 					return;
@@ -327,6 +327,12 @@ public class MainDeskController extends FxmlController {
 			gameSingal.setText("结束");
 			openMessageBoard(gameService.declareGame());
 			gameRunningTabController.gameStartFlush();
+			if (runtimeDomain.getBeforeGameInfo() == null
+					|| !runtimeDomain.getBeforeGameInfo().getBankerRemarkName()
+							.equals(runtimeDomain.getBankerRemarkName())) {
+				runtimeDomain.setBaseBankerBet(runtimeDomain.getBankerBetPoint());
+			}
+			setCurrentBankSign(runtimeDomain.getBankerRemarkName());
 		} else {
 			gameSingal.setText("开局");
 			gameSingal.getStyleClass().clear();
@@ -339,7 +345,8 @@ public class MainDeskController extends FxmlController {
 	}
 
 	public void setCurrentBankSign(String bankerName) {
-		bankerLabel.setText("当前庄家： 【 " + bankerName + "】");
+		bankerLabel.setText("庄家:【 " + bankerName + "】锁定:【 "
+				+ runtimeDomain.getBaseBankerBet() + "】");
 	}
 
 	private void buildGroupBox() {

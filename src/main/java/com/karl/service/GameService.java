@@ -77,9 +77,9 @@ public class GameService {
 
 	public void mainSelfMessageHandle(String content) {
 		long start = System.currentTimeMillis();
-//		if (!runtimeDomain.getGlobalGameSignal()) {
-//			return;
-//		}
+		// if (!runtimeDomain.getGlobalGameSignal()) {
+		// return;
+		// }
 
 		if (!StringUtils.matchSelfPackageHead(content)) {
 			return;
@@ -395,14 +395,14 @@ public class GameService {
 		playerService.save(gameInfo);
 		return gameInfo;
 	}
-	
+
 	public String openLottery() {
 		if (runtimeDomain.getCurrentGameKey().equals(AppUtils.PLAYLUCKWAY)) {
 			return openLotteryLuckWay();
-		}else {
+		} else {
 			return openLotteryLongSplit();
 		}
-		
+
 	}
 
 	@Transactional
@@ -441,6 +441,7 @@ public class GameService {
 
 		// cut the all fee
 		bankerState -= runtimeDomain.getManageFee();
+		bankerState -= runtimeDomain.getDirtyCut();
 		Long packageFee = runtimeDomain.getCurrentPackageFee(traceList,
 				gameInfo);
 		bankerState -= packageFee;
@@ -557,9 +558,11 @@ public class GameService {
 		// banker win cut
 		Long bankerWinCut = 0L;
 		if (Long.valueOf(
-				bankerState + runtimeDomain.getManageFee() + packageFee
+				bankerState + runtimeDomain.getDirtyCut()
+						+ runtimeDomain.getManageFee() + packageFee
 						+ firstBankerFee).compareTo(Long.valueOf(0)) > 0) {
-			bankerWinCut = (bankerState + runtimeDomain.getManageFee() + packageFee)
+			bankerWinCut = (bankerState + runtimeDomain.getDirtyCut()
+					+ runtimeDomain.getManageFee() + packageFee)
 					* runtimeDomain.getBankerWinCutRate() / 100L;
 			bankerState -= bankerWinCut;
 		}
@@ -594,13 +597,13 @@ public class GameService {
 				+ runtimeDomain.getBankerBetPoint());
 
 		// config the message
-		String content = buildBillMsgLuckWay(gameInfo, traceList, firstPackgeTime,
-				bankerLuckTime, winnerList, loserList, paceList, allInList,
-				packageFee, firstBankerFee, bankerWinCut);
+		String content = buildBillMsgLuckWay(gameInfo, traceList,
+				firstPackgeTime, bankerLuckTime, winnerList, loserList,
+				paceList, allInList, packageFee, firstBankerFee, bankerWinCut);
 		runtimeDomain.setBeforeGameInfo(gameInfo);
 		return content;
 	}
-	
+
 	@Transactional
 	public String openLotteryLongSplit() {
 
@@ -637,6 +640,7 @@ public class GameService {
 
 		// cut the all fee
 		bankerState -= runtimeDomain.getManageFeeSum();
+		bankerState -= runtimeDomain.getDirtyCut();
 		Long packageFee = runtimeDomain.getCurrentPackageFee(traceList,
 				gameInfo);
 		bankerState -= packageFee;
@@ -705,9 +709,11 @@ public class GameService {
 		// banker win cut
 		Long bankerWinCut = 0L;
 		if (Long.valueOf(
-				bankerState + runtimeDomain.getManageFeeSum() + packageFee
+				bankerState + runtimeDomain.getDirtyCut()
+						+ runtimeDomain.getManageFeeSum() + packageFee
 						+ firstBankerFee).compareTo(Long.valueOf(0)) > 0) {
-			bankerWinCut = (bankerState + runtimeDomain.getManageFeeSum() + packageFee)
+			bankerWinCut = (bankerState + runtimeDomain.getDirtyCut()
+					+ runtimeDomain.getManageFeeSum() + packageFee)
 					* runtimeDomain.getBankerWinCutRate() / 100L;
 			bankerState -= bankerWinCut;
 		}
@@ -735,6 +741,7 @@ public class GameService {
 		gameInfo.setPackageFee(packageFee);
 		gameInfo.setFirstBankerFee(firstBankerFee);
 		gameInfo.setBankerWinCut(bankerWinCut);
+		gameInfo.setDirtyCut(runtimeDomain.getDirtyCut());
 		playerService.save(gameInfo);
 
 		// sync banker betpoint on the view
@@ -742,13 +749,12 @@ public class GameService {
 				+ runtimeDomain.getBankerBetPoint());
 
 		// config the message
-		String content = buildBillMsgLongSplit(gameInfo, traceList, firstPackgeTime,
-				bankerLuckTime, winnerList, loserList, paceList, allInList,
-				packageFee, firstBankerFee, bankerWinCut);
+		String content = buildBillMsgLongSplit(gameInfo, traceList,
+				firstPackgeTime, bankerLuckTime, winnerList, loserList,
+				paceList, allInList, packageFee, firstBankerFee, bankerWinCut);
 		runtimeDomain.setBeforeGameInfo(gameInfo);
 		return content;
 	}
-
 
 	private void singlePaceHandle(Integer bankerTimes, Double bankerLuck,
 			List<PlayerTrace> winnerList, List<PlayerTrace> loserList,
@@ -850,7 +856,7 @@ public class GameService {
 
 		return write.toString();
 	}
-	
+
 	private String buildBillMsgLongSplit(GameInfo gameInfo,
 			List<PlayerTrace> traceList, Long firstPackgeTime,
 			Long bankerLuckTime, List<PlayerTrace> winnerList,
@@ -887,7 +893,6 @@ public class GameService {
 
 		return write.toString();
 	}
-
 
 	private void singleWinHandle(List<PlayerTrace> winnerList,
 			List<PlayerTrace> allInList, PlayerTrace trace, Player pEntity) {
@@ -1780,6 +1785,7 @@ public class GameService {
 			Long packageFee = 0L;
 			Long firstBankerFee = 0L;
 			Long bankerWinCut = 0L;
+			Long dirtyCut = 0L;
 			Integer gameNum = currentGameInfo.size();
 			for (int i = 0; i < currentGameInfo.size(); i++) {
 				manageFee += currentGameInfo.get(i).getManageFee() == null ? 0L
@@ -1790,6 +1796,8 @@ public class GameService {
 						: currentGameInfo.get(i).getFirstBankerFee();
 				bankerWinCut += currentGameInfo.get(i).getBankerWinCut() == null ? 0L
 						: currentGameInfo.get(i).getBankerWinCut();
+				dirtyCut += currentGameInfo.get(i).getDirtyCut() == null ? 0L
+						: currentGameInfo.get(i).getDirtyCut();
 			}
 			currentStats = new GameStats();
 			currentStats.setStatsTime(statsTime);
@@ -1798,6 +1806,7 @@ public class GameService {
 			currentStats.setFirstBankerFee(firstBankerFee);
 			currentStats.setBankerWinCut(bankerWinCut);
 			currentStats.setGameNum(gameNum);
+			currentStats.setDirtyCut(dirtyCut);
 		}
 		return currentStats;
 	}
@@ -1811,14 +1820,15 @@ public class GameService {
 	}
 
 	public String publishBetInfo() {
-		//TODO
+		// TODO
 		Map<Object, Object> root = new HashMap<Object, Object>();
 		Template temp = runtimeDomain.getBetSummaryTemplate();
 		if (temp == null) {
 			return "";
 		}
 
-		List<PlayerTrace> traceList = playerService.getPlayerTraceListByGameId(runtimeDomain.getCurrentGameId());
+		List<PlayerTrace> traceList = playerService
+				.getPlayerTraceListByGameId(runtimeDomain.getCurrentGameId());
 		if (traceList == null) {
 			return "";
 		}

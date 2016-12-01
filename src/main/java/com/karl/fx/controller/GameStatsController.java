@@ -65,6 +65,9 @@ public class GameStatsController extends FxmlController {
 
 	@FXML
 	private TableColumn<GameStatsModel, Long> statsSumCol;
+	
+	@FXML
+	private TableColumn<GameStatsModel, Long> dirtyCutCol;
 
 	@FXML
 	private StackedBarChart<String, Number> sbc;
@@ -234,7 +237,8 @@ public class GameStatsController extends FxmlController {
 		statsSumCol
 				.setCellValueFactory(new PropertyValueFactory<GameStatsModel, Long>(
 						GameStatsModel.STATSSUMCOL));
-
+		dirtyCutCol.setCellValueFactory(new PropertyValueFactory<GameStatsModel, Long>(
+				GameStatsModel.DIRTYCUTCOL));
 		gameStatsTab.getSelectionModel().selectedItemProperty()
 				.addListener((obs, oldSelection, selectedPModel) -> {
 					if (selectedPModel != null) {
@@ -243,7 +247,6 @@ public class GameStatsController extends FxmlController {
 						clearPieBarChar();
 					}
 				});
-
 		fillStatsTable();
 	}
 
@@ -260,7 +263,7 @@ public class GameStatsController extends FxmlController {
 					currentGameStats.getManageFee(), currentGameStats
 							.getPackageFee(), currentGameStats
 							.getFirstBankerFee(), currentGameStats
-							.getBankerWinCut(), currentGameStats.getGameNum()));
+							.getBankerWinCut(), currentGameStats.getGameNum(),currentGameStats.getDirtyCut()));
 		}
 
 		List<GameStats> gameStatsList = gameService.getGameStatsList();
@@ -274,7 +277,7 @@ public class GameStatsController extends FxmlController {
 							.getPackageFee(), gameStatsList.get(i)
 							.getFirstBankerFee(), gameStatsList.get(i)
 							.getBankerWinCut(), gameStatsList.get(i)
-							.getGameNum()));
+							.getGameNum(),currentGameStats.getDirtyCut()));
 		}
 
 	}

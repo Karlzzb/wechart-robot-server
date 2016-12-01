@@ -53,9 +53,9 @@
 							<children>
 								<VBox prefHeight="154.0" prefWidth="256.0">
 									<children>
-										<HBox>
+										<HBox prefHeight="33.0" prefWidth="276.0">
 											<children>
-												<Label fx:id="bankerLabel" prefHeight="38.0" prefWidth="248.0" styleClass="txt" text="当前庄家：                         ">
+												<Label fx:id="bankerLabel" prefHeight="25.0" prefWidth="249.0" styleClass="txt" text="庄家：                         ">
 													<font>
 														<Font size="14.0" />
 													</font>
@@ -64,7 +64,7 @@
 										</HBox>
 										<HBox prefWidth="248.0">
 											<children>
-												<Label prefHeight="38.0" prefWidth="78.0" styleClass="txt" text="锁定积分 :">
+												<Label prefHeight="38.0" prefWidth="78.0" styleClass="txt" text="庄上积分 :">
 													<font>
 														<Font size="14.0" />
 													</font>

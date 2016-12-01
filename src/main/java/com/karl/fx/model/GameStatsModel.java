@@ -21,9 +21,11 @@ public class GameStatsModel {
 	public static final String GAMENUMCOL = "gameNum";
 
 	public static final String STATSSUMCOL = "statsSum";
+	
+	public static final String DIRTYCUTCOL = "dirtyCut";
 
 	public GameStatsModel(String statsSign, String statsTime, Long manageFee, Long packageFee,
-			Long firstBankerFee, Long bankerWinCut, Integer gameNum) {
+			Long firstBankerFee, Long bankerWinCut, Integer gameNum, Long dirtyCut) {
 		super();
 		this.statsSign = new SimpleStringProperty(statsSign);
 		this.statsTime = new SimpleStringProperty(statsTime);
@@ -33,6 +35,7 @@ public class GameStatsModel {
 		this.bankerWinCut = new SimpleLongProperty(bankerWinCut);
 		this.gameNum = new SimpleIntegerProperty(gameNum);
 		this.statsSum = new SimpleLongProperty(manageFee+packageFee+firstBankerFee+bankerWinCut);
+		this.dirtyCut = new SimpleLongProperty(dirtyCut);
 	}
 	
 	private SimpleStringProperty statsSign;
@@ -50,6 +53,8 @@ public class GameStatsModel {
 	private SimpleIntegerProperty gameNum;
 	
 	private SimpleLongProperty statsSum;
+	
+	private SimpleLongProperty dirtyCut;
 
 	public String getStatsTime() {
 		return statsTime.getValueSafe();
@@ -113,5 +118,13 @@ public class GameStatsModel {
 
 	public void setStatsSum(Long statsSum) {
 		this.statsSum = new SimpleLongProperty(statsSum);
+	}
+	
+	public Long getDirtyCut() {
+		return dirtyCut.getValue();
+	}
+
+	public void setDirtyCut(Long dirtyCut) {
+		this.dirtyCut = new SimpleLongProperty(dirtyCut);
 	}
 }

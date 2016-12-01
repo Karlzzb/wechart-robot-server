@@ -33,6 +33,9 @@ public class GameStats implements Serializable {
 
 	@Column(nullable = false)
 	private Long bankerWinCut;
+	
+	@Column(nullable = false)
+	private Long dirtyCut;
 
 	@Column(nullable = false)
 	private Integer gameNum;
@@ -91,5 +94,13 @@ public class GameStats implements Serializable {
 
 	public void setGameNum(Integer gameNum) {
 		this.gameNum = gameNum;
+	}
+
+	public Long getDirtyCut() {
+		return dirtyCut;
+	}
+
+	public void setDirtyCut(Long dirtyCut) {
+		this.dirtyCut = dirtyCut;
 	}
 }

@@ -61,6 +61,9 @@ public class GameInfo implements Serializable {
 	@Column(nullable = true)
 	private Long bankerWinCut;
 	
+	@Column(nullable = true)
+	private Long dirtyCut;
+	
 	public Long getGameSerialNo() {
 		return gameSerialNo;
 	}
@@ -208,6 +211,14 @@ public class GameInfo implements Serializable {
 		}
 		
 		return indexCode;
+	}
+
+	public Long getDirtyCut() {
+		return dirtyCut;
+	}
+
+	public void setDirtyCut(Long dirtyCut) {
+		this.dirtyCut = dirtyCut;
 	}
 
 }

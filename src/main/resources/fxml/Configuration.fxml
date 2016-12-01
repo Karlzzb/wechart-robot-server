@@ -57,7 +57,7 @@
                         <Region prefHeight="594.0" prefWidth="120.0" HBox.hgrow="ALWAYS" />
                         <VBox prefHeight="575.0" prefWidth="401.0">
                            <children>
-                              <Pane id="config-rule-panel" prefHeight="200.0" prefWidth="313.0">
+                              <Pane id="config-rule-panel" prefHeight="156.0" prefWidth="317.0">
                                  <children>
                                     <VBox prefHeight="200.0" prefWidth="321.0" styleClass="colorPanel">
                                        <children>
@@ -105,14 +105,14 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
                               </Pane>
-                              <Pane id="config-fee-panel" prefHeight="294.0" prefWidth="317.0">
+                              <Pane id="config-fee-panel" prefHeight="300.0" prefWidth="317.0">
                                  <children>
-                                    <VBox prefHeight="294.0" prefWidth="319.0" styleClass="colorPanel">
+                                    <VBox prefHeight="300.0" prefWidth="319.0" styleClass="colorPanel">
                                        <children>
                                           <HBox>
                                              <children>
                                                 <Label prefHeight="30.0" prefWidth="140.0" text="管理费用：" />
-                                                <TextField fx:id="manageFee" prefHeight="28.0" prefWidth="170.0" />
+                                                <TextField fx:id="manageFee" prefWidth="170.0" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets bottom="10.0" />
@@ -160,13 +160,19 @@
                                           <HBox>
                                              <children>
                                                 <Label prefHeight="30.0" prefWidth="140.0" text="上庄费用：" />
-                                                <TextField fx:id="firstBankerFee" prefHeight="28.0" prefWidth="170.0" />
+                                                <TextField fx:id="firstBankerFee" prefWidth="170.0" />
                                              </children>
                                           </HBox>
                                           <HBox>
                                              <children>
                                                 <Label prefHeight="30.0" prefWidth="140.0" text="续庄费用（%）：" />
-                                                <TextField fx:id="playBankerRateView" prefHeight="28.0" prefWidth="170.0" />
+                                                <TextField fx:id="playBankerRateView" prefWidth="170.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="30.0" prefWidth="140.0" text="暗扣：" />
+                                                <TextField fx:id="dirtyCutView" prefWidth="170.0" />
                                              </children>
                                           </HBox>
                                        </children>

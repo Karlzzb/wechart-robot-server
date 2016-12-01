@@ -79,9 +79,12 @@ public class ConfigController extends FxmlController {
 	private TextField firstBankerFee;
 	@FXML
 	private TextField definedStart;
-	
+
 	@FXML
 	private TextField playBankerRateView;
+
+	@FXML
+	private TextField dirtyCutView;
 
 	private ObservableList<PlayRule> ruleList;
 
@@ -340,21 +343,43 @@ public class ConfigController extends FxmlController {
 		});
 
 		/* be banker rate */
-		playBankerRateView
-				.setText(String.valueOf(runtimeDomain.getPlayBankerRate()));
-		playBankerRateView.textProperty().addListener(new ChangeListener<String>() {
+		playBankerRateView.setText(String.valueOf(runtimeDomain
+				.getPlayBankerRate()));
+		playBankerRateView.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(ObservableValue<? extends String> ov,
+							String oldValue, String newValue) {
+						try {
+							if (newValue.matches("\\d*")) {
+								playBankerRateView.setText(newValue);
+								runtimeDomain.setPlayBankerRate(Integer
+										.valueOf(newValue));
+							} else {
+								playBankerRateView.setText(oldValue);
+							}
+						} catch (Exception e) {
+							playBankerRateView.setText(oldValue);
+						}
+					}
+				});
+
+		/* dirty cut fee */
+		dirtyCutView.setText(String.valueOf(runtimeDomain.getDirtyCut()));
+		dirtyCutView.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov,
 					String oldValue, String newValue) {
 				try {
 					if (newValue.matches("\\d*")) {
-						playBankerRateView.setText(newValue);
-						runtimeDomain.setPlayBankerRate(Integer.valueOf(newValue));
+						dirtyCutView.setText(newValue);
+						runtimeDomain.setDirtyCut(Long
+								.valueOf(newValue));
 					} else {
-						playBankerRateView.setText(oldValue);
+						dirtyCutView.setText(oldValue);
 					}
 				} catch (Exception e) {
-					playBankerRateView.setText(oldValue);
+					dirtyCutView.setText(oldValue);
 				}
 			}
 		});

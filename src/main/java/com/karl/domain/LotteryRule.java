@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 import com.karl.utils.DigitalUtils;
 
 public enum LotteryRule {
-	MOMO_SAME("momo.same", 15) {
+	MOMO_SAME("momo.same", 18) {
 
 		@Override
 		public Boolean getRuleResult3(Double luckInfo) {
@@ -24,7 +24,7 @@ public enum LotteryRule {
 			return Boolean.FALSE;
 		}
 	},
-	MOMO_FULL("momo.full", 14) {
+	MOMO_FULL("momo.full", 15) {
 
 		@Override
 		public Boolean getRuleResult3(Double luckInfo) {
@@ -66,7 +66,7 @@ public enum LotteryRule {
 		}
 
 	},
-	MOMO_GOLD("momo.gold", 12) {
+	MOMO_GOLD("momo.gold", 11) {
 
 		@Override
 		public Boolean getRuleResult3(Double luckInfo) {
@@ -84,7 +84,7 @@ public enum LotteryRule {
 		}
 
 	},
-	MOMO_PAIR("momo.pair", 11) {
+	MOMO_PAIR("momo.pair", 12) {
 
 		@Override
 		public Boolean getRuleResult3(Double luckInfo) {
