@@ -18,6 +18,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -190,6 +191,51 @@ public class MainDeskController extends FxmlController {
 		}
 	}
 
+	@FXML
+	private void importTrace(ActionEvent event) {
+		// TODO
+		if (!runtimeDomain.getGlobalGameSignal()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请在开局过程中操作, 本操作用于导入之前某一局的投注信息！");
+			alert.showAndWait();
+			return;
+		}
+		if (runtimeDomain.getBeforeGameInfo() == null) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("暂无上一局记录，无法导入！");
+			alert.showAndWait();
+			return;
+		}
+
+		TextInputDialog dialog = new TextInputDialog(runtimeDomain
+				.getBeforeGameInfo().getGameSerialNo().toString());
+		dialog.setTitle("选择导入局");
+		dialog.setContentText("导入哪一期的数据？");
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			if (result.get().matches("\\d*")) {
+				Boolean sign = gameService.importTrance(
+						Long.valueOf(result.get()),
+						runtimeDomain.getCurrentGameId());
+				if (!sign) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("错误");
+					alert.setContentText("导入失败，第【" + result.get() + "】数据错误！");
+					alert.showAndWait();
+				} else {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("成功");
+					alert.setHeaderText(null);
+					alert.setContentText("第【" + result.get() + "】数据导入成功！");
+					alert.showAndWait();
+					gameRunningTabController.flushResult();
+				}
+			}
+		}
+	}
+
 	private void buildGameQuicker() {
 		if (runtimeDomain.getGlobalGameSignal()) {
 			gameSingal.getStyleClass().clear();
@@ -330,7 +376,8 @@ public class MainDeskController extends FxmlController {
 			if (runtimeDomain.getBeforeGameInfo() == null
 					|| !runtimeDomain.getBeforeGameInfo().getBankerRemarkName()
 							.equals(runtimeDomain.getBankerRemarkName())) {
-				runtimeDomain.setBaseBankerBet(runtimeDomain.getBankerBetPoint());
+				runtimeDomain.setBaseBankerBet(runtimeDomain
+						.getBankerBetPoint());
 			}
 			setCurrentBankSign(runtimeDomain.getBankerRemarkName());
 		} else {

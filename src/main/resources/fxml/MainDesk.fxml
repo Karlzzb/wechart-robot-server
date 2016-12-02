@@ -108,7 +108,7 @@
 								</VBox>
 								<Pane prefHeight="154.0" prefWidth="197.0">
 									<children>
-										<Button fx:id="gameSingal" layoutX="7.0" layoutY="17.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="85.0" text="开始">
+										<Button fx:id="gameSingal" layoutX="7.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="85.0" text="开始">
 											<font>
 												<Font size="12.0" />
 											</font>
@@ -116,7 +116,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-                              <Button fx:id="publishBut" layoutX="7.0" layoutY="73.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="28.0" prefWidth="85.0" text="发布榜单">
+                              <Button fx:id="publishBut" layoutX="7.0" layoutY="42.0" mnemonicParsing="false" onAction="#publishRanks" prefHeight="18.0" prefWidth="85.0" text="发布榜单">
                                  <styleClass>
                                     <String fx:value="btnGhost" />
                                     <String fx:value="btnNormal" />
@@ -125,7 +125,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-										<Button fx:id="openLotteryBut" layoutX="103.0" layoutY="38.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0" prefWidth="78.0" text="计算">
+										<Button fx:id="openLotteryBut" layoutX="103.0" layoutY="40.0" mnemonicParsing="false" onAction="#openLottery" prefHeight="28.0" prefWidth="78.0" text="计算">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -134,7 +134,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="108.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="28.0" prefWidth="85.0" text="作废上一局">
+										<Button fx:id="undoGameButton" layoutX="7.0" layoutY="75.0" mnemonicParsing="false" onAction="#confirmUndoGame" prefHeight="18.0" prefWidth="85.0" text="作废上一局">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -143,7 +143,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="manualFlushBut" layoutX="104.0" layoutY="73.0" mnemonicParsing="false" onAction="#manuallyFlushTraceTab" prefHeight="28.0" prefWidth="78.0" text="手动刷新">
+										<Button fx:id="manualFlushBut" layoutX="103.0" layoutY="74.0" mnemonicParsing="false" onAction="#manuallyFlushTraceTab" prefHeight="28.0" prefWidth="78.0" text="手动刷新">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -152,7 +152,7 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
-										<Button fx:id="cleanAllTraceBut" layoutX="104.0" layoutY="108.0" mnemonicParsing="false" onAction="#cleanAllTrace" prefHeight="28.0" prefWidth="78.0" text="清空">
+										<Button fx:id="cleanAllTraceBut" layoutX="103.0" layoutY="108.0" mnemonicParsing="false" onAction="#cleanAllTrace" prefHeight="28.0" prefWidth="78.0" text="清空">
 											<styleClass>
 												<String fx:value="btnGhost" />
 												<String fx:value="btnNormal" />
@@ -170,6 +170,15 @@
 												<Cursor fx:constant="HAND" />
 											</cursor>
 										</Button>
+                              <Button layoutX="7.0" layoutY="108.0" mnemonicParsing="false" onAction="#importTrace" prefHeight="18.0" prefWidth="85.0" text="导入上一局">
+                                 <styleClass>
+                                    <String fx:value="btnGhost" />
+                                    <String fx:value="btnNormal" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
 									</children>
 								</Pane>
 							</children>

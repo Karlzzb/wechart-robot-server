@@ -1819,6 +1819,46 @@ public class GameService {
 		return playerService.getPlayerListDescPoint();
 	}
 
+	public Boolean importTrance(Long fromGameId, Long toGameId) {
+		if (fromGameId == null || toGameId == null) {
+			return Boolean.FALSE;
+		}
+		List<PlayerTrace> fromTraceList = playerService
+				.getPlayerTraceListByGameId(fromGameId);
+
+		if (fromTraceList == null || fromTraceList.size() < 1) {
+			LOGGER.error("From Trace List is empty, import failed!");
+			return Boolean.FALSE;
+		}
+
+		GameInfo toGameInfo = playerService.getGameById(toGameId);
+		if (toGameInfo == null) {
+			LOGGER.error("To GameInfo is not exists, import failed!");
+			return Boolean.FALSE;
+		}
+
+		try {
+			for (int i = 0; i < fromTraceList.size(); i++) {
+				if (fromTraceList.get(i).getIsBanker()) {
+					continue;
+				}
+				playerService.save(new PlayerTrace(toGameId, fromTraceList.get(
+						i).getWebchatId(),
+						fromTraceList.get(i).getWechatName(), fromTraceList
+								.get(i).getRemarkName(), fromTraceList.get(i)
+								.getBetInfo(), fromTraceList.get(i)
+								.getBetPoint(), fromTraceList.get(i)
+								.getIslowRisk(), fromTraceList.get(i)
+								.getBetIndex(), fromTraceList.get(i)
+								.getBetTime(), Boolean.FALSE));
+			}
+			return Boolean.TRUE;
+		} catch (Exception e) {
+			LOGGER.error("Import failed!",e);
+			return Boolean.FALSE;
+		}
+	}
+
 	public String publishBetInfo() {
 		// TODO
 		Map<Object, Object> root = new HashMap<Object, Object>();
