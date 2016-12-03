@@ -277,7 +277,7 @@ public class GameStatsController extends FxmlController {
 							.getPackageFee(), gameStatsList.get(i)
 							.getFirstBankerFee(), gameStatsList.get(i)
 							.getBankerWinCut(), gameStatsList.get(i)
-							.getGameNum(),currentGameStats.getDirtyCut()));
+							.getGameNum(),gameStatsList.get(i).getDirtyCut()));
 		}
 
 	}

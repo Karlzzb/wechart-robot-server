@@ -30,17 +30,17 @@
 												</Label>
 												<HBox prefHeight="100.0" prefWidth="200.0" styleClass="colorPanel">
 													<children>
-														<Button fx:id="singlePlayerInfoSend" mnemonicParsing="false" onAction="#singleInfoSentOut" prefHeight="28.0" prefWidth="87.0" styleClass="btnBlock" text="发送积分">
+														<Button fx:id="singlePlayerInfoSend" mnemonicParsing="false" onAction="#singleInfoSentOut" prefHeight="27.0" prefWidth="106.0" styleClass="btnBlock" text="发送积分">
 															<cursor>
 																<Cursor fx:constant="HAND" />
 															</cursor>
 															<HBox.margin>
-																<Insets right="10.0" />
+																<Insets right="8.0" />
 															</HBox.margin>
 														</Button>
 														<Button fx:id="groupFlush" mnemonicParsing="false" onAction="#flushGroup" prefHeight="27.0" prefWidth="77.0" styleClass="btnBlock" text="刷新">
 															<HBox.margin>
-																<Insets right="10.0" />
+																<Insets right="8.0" />
 															</HBox.margin>
 															<cursor>
 																<Cursor fx:constant="HAND" />
@@ -48,12 +48,17 @@
 														</Button>
 														<Button fx:id="syncPlayer" mnemonicParsing="false" onAction="#savePlayerPoint" prefHeight="27.0" prefWidth="77.0" styleClass="btnBlock" text="保存">
 															<HBox.margin>
-																<Insets />
+																<Insets right="8.0" />
 															</HBox.margin>
 															<cursor>
 																<Cursor fx:constant="HAND" />
 															</cursor>
 														</Button>
+                        <Button mnemonicParsing="false" onAction="#addSigleBetInfo" prefHeight="27.0" prefWidth="83.0" styleClass="btnBlock" text="加注">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
 													</children>
 													<VBox.margin>
 														<Insets top="5.0" />

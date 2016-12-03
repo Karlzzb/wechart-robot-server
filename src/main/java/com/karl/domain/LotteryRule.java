@@ -231,13 +231,16 @@ public enum LotteryRule {
 
 	};
 
-	private final Integer times;
+	private Integer times;
+	
+	private Boolean isAvailable;
 
 	private final String ruleKey;
 
 	private LotteryRule(String ruleKey, Integer times) {
 		this.times = times;
 		this.ruleKey = ruleKey;
+		this.isAvailable = Boolean.TRUE;
 	}
 
 	public String getRuleName() {
@@ -258,6 +261,22 @@ public enum LotteryRule {
 
 	public Integer getTimes() {
 		return times;
+	}
+	
+	public void setTimes(Integer times) {
+		this.times = times;
+	}
+
+	public Boolean getIsAvailable() {
+		return isAvailable;
+	}
+
+	public void setIsAvailable(Boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
+
+	public String getRuleKey() {
+		return ruleKey;
 	}
 
 }

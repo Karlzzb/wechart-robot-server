@@ -786,10 +786,6 @@ public class RuntimeDomain implements Serializable {
 	public Long getManageFee() {
 		return this.manageFee;
 	}
-	
-	public Long getManageFeeSum() {
-		return this.manageFee + getBaseBankerBet() * getPlayBankerRate() / 100;
-	}
 
 	public void setManageFee(Long manageFee) {
 		this.manageFee = manageFee;
@@ -1027,6 +1023,10 @@ public class RuntimeDomain implements Serializable {
 
 	public Integer getPlayBankerRate() {
 		return this.playBankerRate;
+	}
+	
+	public Long getPlayBankerFee() {
+		return getBaseBankerBet() * getPlayBankerRate() / 100;
 	}
 
 	public void setPlayBankerRate(Integer playBankerRate) {

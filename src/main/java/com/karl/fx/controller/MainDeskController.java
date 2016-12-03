@@ -132,6 +132,7 @@ public class MainDeskController extends FxmlController {
 			return;
 		}
 		runtimeDomain.setBankerBetPoint(Long.valueOf(0));
+		runtimeDomain.setBeforeGameInfo(null);
 		this.bankerBetPoint.setText("0");
 		runtimeDomain.setBankerRemarkName(null);
 		bankerLabel.setText("当前庄家： 【 】");
@@ -193,7 +194,6 @@ public class MainDeskController extends FxmlController {
 
 	@FXML
 	private void importTrace(ActionEvent event) {
-		// TODO
 		if (!runtimeDomain.getGlobalGameSignal()) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("错误操作");
@@ -392,7 +392,7 @@ public class MainDeskController extends FxmlController {
 	}
 
 	public void setCurrentBankSign(String bankerName) {
-		bankerLabel.setText("庄家:【 " + bankerName + "】锁定:【 "
+		bankerLabel.setText("庄家:【 " + bankerName + "】初始:【 "
 				+ runtimeDomain.getBaseBankerBet() + "】");
 	}
 

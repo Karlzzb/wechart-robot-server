@@ -2,19 +2,25 @@ package com.karl.fx.controller;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -22,7 +28,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.karl.domain.LotteryRule;
-import com.karl.fx.model.CheckBoxButtonCellPlayRule;
 import com.karl.fx.model.PlayRule;
 import com.karl.utils.AppUtils;
 import com.karl.utils.StringUtils;
@@ -373,8 +378,7 @@ public class ConfigController extends FxmlController {
 				try {
 					if (newValue.matches("\\d*")) {
 						dirtyCutView.setText(newValue);
-						runtimeDomain.setDirtyCut(Long
-								.valueOf(newValue));
+						runtimeDomain.setDirtyCut(Long.valueOf(newValue));
 					} else {
 						dirtyCutView.setText(oldValue);
 					}
@@ -414,21 +418,98 @@ public class ConfigController extends FxmlController {
 	private void buidRuleTab() {
 		ruleTab.setEditable(true);
 		ruleCheck
-				.setCellFactory(new Callback<TableColumn<PlayRule, Boolean>, TableCell<PlayRule, Boolean>>() {
+				.setCellValueFactory(new Callback<CellDataFeatures<PlayRule, Boolean>, ObservableValue<Boolean>>() {
 					@Override
-					public TableCell<PlayRule, Boolean> call(
-							TableColumn<PlayRule, Boolean> arg0) {
-						return new CheckBoxButtonCellPlayRule();
+					public ObservableValue<Boolean> call(
+							CellDataFeatures<PlayRule, Boolean> param) {
+						return param.getValue().ruleCheckProperty();
 					}
-
 				});
+		ruleCheck.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
+		    @Override
+		    public ObservableValue<Boolean> call(Integer param) {
+		    	changeAvailable(ruleTab.getItems().get(param), ruleTab.getItems().get(param).getRuleCheck());
+		        return ruleTab.getItems().get(param).ruleCheckProperty();
+		    }
+		}));
 
 		ruleName.setCellValueFactory(new PropertyValueFactory<PlayRule, String>(
 				PlayRule.RULENAMEKEY));
 		ruleDetail
 				.setCellValueFactory(new PropertyValueFactory<PlayRule, String>(
 						PlayRule.RULEDETAILKEY));
+
+		// Table select mode
+		ruleTab.getSelectionModel()
+				.selectedItemProperty()
+				.addListener(
+						(obs, oldSelection, selectedRModel) -> {
+							if (selectedRModel != null) {
+								TextInputDialog dialog = new TextInputDialog(
+										selectedRModel.getTimes().toString());
+								dialog.setTitle("修改倍数");
+								dialog.setHeaderText(null);
+								dialog.setContentText("设置倍数:");
+								Optional<String> result = dialog.showAndWait();
+								if (result.isPresent()) {
+									if (result.get().matches("\\d*")) {
+										Service<Integer> service = new Service<Integer>() {
+											@Override
+											protected Task<Integer> createTask() {
+												return new Task<Integer>() {
+													@Override
+													protected Integer call()
+															throws Exception {
+														changeTimes(
+																selectedRModel,
+																Integer.valueOf(result
+																		.get()));
+														return Integer
+																.valueOf("0");
+													}
+												};
+											};
+										};
+										service.start();
+										service.setOnSucceeded((
+												WorkerStateEvent we) -> {
+											fillRuleTab();
+										});
+									}
+								}
+							}
+						});
 		fillRuleTab();
+	}
+
+	private void changeTimes(PlayRule selectRule, Integer newTimes) {
+		EnumSet<LotteryRule> theRule = runtimeDomain.getCurrentRule();
+		if (theRule == null) {
+			return;
+		}
+		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
+				.hasNext();) {
+			LotteryRule lotteryRule = (LotteryRule) iterator.next();
+			if (lotteryRule.getRuleKey().equals(selectRule.getRuleKey())) {
+				lotteryRule.setTimes(newTimes);
+				break;
+			}
+		}
+	}
+
+	private void changeAvailable(PlayRule selectRule, Boolean isAvailable) {
+		EnumSet<LotteryRule> theRule = runtimeDomain.getCurrentRule();
+		if (theRule == null) {
+			return;
+		}
+		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
+				.hasNext();) {
+			LotteryRule lotteryRule = (LotteryRule) iterator.next();
+			if (lotteryRule.getRuleKey().equals(selectRule.getRuleKey())) {
+				lotteryRule.setIsAvailable(isAvailable);
+				break;
+			}
+		}
 	}
 
 	private void fillRuleTab() {
@@ -443,10 +524,10 @@ public class ConfigController extends FxmlController {
 		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
 				.hasNext();) {
 			LotteryRule lotteryRule = (LotteryRule) iterator.next();
-			ruleList.add(new PlayRule(Boolean.TRUE, lotteryRule.getRuleName(),
-					lotteryRule.getRuleDetail()));
+			ruleList.add(new PlayRule(lotteryRule.getRuleKey(), lotteryRule
+					.getTimes(), lotteryRule.getIsAvailable(), lotteryRule
+					.getRuleName(), lotteryRule.getRuleDetail()));
 		}
 		ruleTab.setItems(ruleList);
 	}
-
 }

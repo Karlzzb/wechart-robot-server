@@ -639,7 +639,7 @@ public class GameService {
 		List<PlayerTrace> allInList = new ArrayList<PlayerTrace>();
 
 		// cut the all fee
-		bankerState -= runtimeDomain.getManageFeeSum();
+		bankerState -= runtimeDomain.getManageFee();
 		bankerState -= runtimeDomain.getDirtyCut();
 		Long packageFee = runtimeDomain.getCurrentPackageFee(traceList,
 				gameInfo);
@@ -649,7 +649,8 @@ public class GameService {
 				|| (runtimeDomain.getBeforeGameInfo().getGameSerialNo() > 0 && !runtimeDomain
 						.getBeforeGameInfo().getBankerRemarkName()
 						.equals(gameInfo.getBankerRemarkName()))) {
-			firstBankerFee = runtimeDomain.getFirstBankerFee();
+			firstBankerFee = runtimeDomain.getFirstBankerFee()
+					+ runtimeDomain.getPlayBankerFee();
 		}
 		bankerState -= firstBankerFee;
 
@@ -709,11 +710,11 @@ public class GameService {
 		// banker win cut
 		Long bankerWinCut = 0L;
 		if (Long.valueOf(
-				bankerState + runtimeDomain.getDirtyCut()
-						+ runtimeDomain.getManageFeeSum() + packageFee
+				bankerState + runtimeDomain.getPlayBankerFee() + runtimeDomain.getDirtyCut()
+						+ runtimeDomain.getManageFee() + packageFee
 						+ firstBankerFee).compareTo(Long.valueOf(0)) > 0) {
 			bankerWinCut = (bankerState + runtimeDomain.getDirtyCut()
-					+ runtimeDomain.getManageFeeSum() + packageFee)
+					+ runtimeDomain.getManageFee() + packageFee)
 					* runtimeDomain.getBankerWinCutRate() / 100L;
 			bankerState -= bankerWinCut;
 		}
@@ -737,7 +738,7 @@ public class GameService {
 				Math.abs(bankerState));
 		// game info rync to db
 		gameInfo.setResultPoint(bankerState);
-		gameInfo.setManageFee(runtimeDomain.getManageFeeSum());
+		gameInfo.setManageFee(runtimeDomain.getManageFee());
 		gameInfo.setPackageFee(packageFee);
 		gameInfo.setFirstBankerFee(firstBankerFee);
 		gameInfo.setBankerWinCut(bankerWinCut);
@@ -1173,6 +1174,9 @@ public class GameService {
 		for (Iterator<LotteryRule> iterator = theRule.iterator(); iterator
 				.hasNext();) {
 			lotteryRule = (LotteryRule) iterator.next();
+			if (!lotteryRule.getIsAvailable()) {
+				continue;
+			}
 			if (runtimeDomain.getCurrentLotteryRule().equals(
 					AppUtils.LOTTERYRULE3)) {
 				if (lotteryRule.getRuleResult3(luckInfo)) {
@@ -1746,6 +1750,7 @@ public class GameService {
 				Long packageFee = 0L;
 				Long firstBankerFee = 0L;
 				Long bankerWinCut = 0L;
+				Long dirtyCut = 0L;
 				Integer gameNum = currentGameInfo.size();
 				for (int i = 0; i < currentGameInfo.size(); i++) {
 					manageFee += currentGameInfo.get(i).getManageFee() == null ? 0L
@@ -1757,6 +1762,10 @@ public class GameService {
 							.get(i).getFirstBankerFee();
 					bankerWinCut += currentGameInfo.get(i).getBankerWinCut() == null ? 0L
 							: currentGameInfo.get(i).getBankerWinCut();
+					bankerWinCut += currentGameInfo.get(i).getBankerWinCut() == null ? 0L
+							: currentGameInfo.get(i).getBankerWinCut();
+					dirtyCut += currentGameInfo.get(i).getDirtyCut() == null ? 0L
+							: currentGameInfo.get(i).getDirtyCut();
 				}
 				GameStats currentStats = new GameStats();
 				currentStats.setStatsTime(statsTime);
@@ -1765,6 +1774,7 @@ public class GameService {
 				currentStats.setFirstBankerFee(firstBankerFee);
 				currentStats.setBankerWinCut(bankerWinCut);
 				currentStats.setGameNum(gameNum);
+				currentStats.setDirtyCut(dirtyCut);
 				currentStats = playerService.save(currentStats);
 			}
 			playerService.removeAllGameInfo();
@@ -1854,13 +1864,12 @@ public class GameService {
 			}
 			return Boolean.TRUE;
 		} catch (Exception e) {
-			LOGGER.error("Import failed!",e);
+			LOGGER.error("Import failed!", e);
 			return Boolean.FALSE;
 		}
 	}
 
 	public String publishBetInfo() {
-		// TODO
 		Map<Object, Object> root = new HashMap<Object, Object>();
 		Template temp = runtimeDomain.getBetSummaryTemplate();
 		if (temp == null) {

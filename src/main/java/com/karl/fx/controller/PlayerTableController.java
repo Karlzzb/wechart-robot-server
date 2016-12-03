@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -28,6 +29,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -41,6 +43,7 @@ import com.karl.db.domain.Player;
 import com.karl.fx.model.EditingCell;
 import com.karl.fx.model.PlayerModel;
 import com.karl.utils.AppUtils;
+import com.karl.utils.StringUtils;
 
 @Component
 @Lazy
@@ -339,6 +342,56 @@ public class PlayerTableController extends FxmlController {
 				return;
 			}
 			webWechat.webwxsendmsg(content);
+		}
+	}
+	
+	@FXML
+	private void addSigleBetInfo(ActionEvent event) {
+		if (!runtimeDomain.getGlobalGameSignal()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请开局过程中操作！");
+			alert.showAndWait();
+			return;
+		}
+		
+		if (!runtimeDomain.getCurrentGameKey().equals(AppUtils.PLAYLONGSPLIT)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("此操作仅适用【比门玩法】");
+			alert.showAndWait();
+			return;
+		} 
+		
+		Object selectedRow = singlePlayerInfoSend.getUserData();
+		if (selectedRow == null) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("错误操作");
+			alert.setContentText("请先在列表中选择一个玩家！");
+			alert.showAndWait();
+			return;
+		}
+
+		if (selectedRow instanceof PlayerModel) {
+			PlayerModel pMode = (PlayerModel) selectedRow;
+			
+			TextInputDialog dialog = new TextInputDialog("1/1000");
+			dialog.setTitle("手工加注");
+			dialog.setHeaderText("为玩家【"+pMode.getPlayerName()+"】手工加入下注信息");
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()) {
+				Matcher matcher = StringUtils.LONGSPLIT.matcher(result.get());
+				if (matcher.find()) {
+					gameService.puttingBetInfo(pMode.getWechatId(), pMode.getPlayerName(), matcher.group(),
+							Boolean.FALSE);
+				}else {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("错误操作");
+					alert.setContentText("格式不正确！");
+					alert.showAndWait();
+					return;
+				}
+			}
 		}
 	}
 
