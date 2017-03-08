@@ -5,16 +5,16 @@ import java.util.Date;
 import com.karl.utils.DateUtils;
 
 public enum CertificateRule {
-	USER1("hopeless", "qwer4321#", "2016-10-31"),
-	USER2("kevin", "qazwsx!", "2016-11-7"),
-	USER3("coal", "poilkj!", "2016-11-14"),
-	USER4("global", "qazwsx!", "2016-11-21"),
-	USER5("gold", "qwer4321#", "2016-11-28"),
-	USER6("wise", "poilkj!", "2016-12-2"),
-	USER7("unlike", "zxcvasdf#", "2016-12-9"),
-	USER8("luck", "4321rewq!", "2016-12-16"),
-	USER9("last", "asdf;lkj", "2016-12-23"),
-	USER10("final", "qazwsx!", "2017-1-1");
+	USER1("hopeless", "321qwer4321#", "2017-4-30"),
+	USER2("kevin", "qazwsx121!", "2017-5-7"),
+	USER3("coal", "poilkj22!", "2017-6-14"),
+	USER4("global", "qazw3sx!", "2017-7-21"),
+	USER5("gold", "qwer34321#", "2017-8-28"),
+	USER6("wise", "poilkj2!", "2017-9-2"),
+	USER7("unlike", "zx4cvasdf#", "2017-10-9"),
+	USER8("luck", "4321r1ewq!", "2017-11-16"),
+	USER9("last", "asdf;l6kj", "2017-12-23"),
+	USER10("final", "qazw8sx!", "2018-1-1");
 
 	private final String user;
 
